@@ -55,7 +55,7 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
             <div className="app-header">
                 <MuiThemeProvider theme={DARK_THEME}>
                     <span className="app-title">
-                        <Link to={NavUtils.getNavUrl[Page.Home]()}>Momo Tabs</Link>
+                        <Link to={NavUtils.getNavUrl[Page.Home]()}>Matektábor</Link>
                     </span>
                     {this.renderContactButton()}
                     {isLoggedIn && this.renderUser()}
