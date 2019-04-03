@@ -1,0 +1,54 @@
+@import "~normalize.css";
+@import "~firebaseui/dist/firebaseui.css";
+@import "../variables.less";
+
+.app-header {
+    height: 60px;
+
+    color: white;
+    background-color: @darkBackground;
+
+    padding: 10px 20px 10px 20px;
+
+    display: flex;
+    align-items: center;
+    
+    .app-title {
+        color: @momoPrimary;
+
+        font-size: 18px;
+        flex-grow: 1;
+    }
+
+    .app-header-create-button {
+        .material-icons {
+            font-size: 13px;
+        }
+    }
+
+    .app-header-contact-button {
+        width: 36px;
+        height: 36px;
+
+        color: white;
+
+        .material-icons {
+            font-size: 16px;
+        }
+    }
+
+    .app-header-sign-in-button {
+        color: @momoPrimary;
+    }
+
+    .app-header-avatar-button {
+        margin-left: 10px;
+        width: 36px;
+        height: 36px;
+    }
+
+    .app-header-avatar-image {
+        width: 30px;
+        height: 30px;
+    }
+}
