@@ -2,7 +2,7 @@ import "firebase/firestore";
 
 export class FirestoreService {
     public constructor(firestore: firebase.firestore.Firestore) {
-        const settings = { timestampsInSnapshots: true };
+        const settings = {};
         firestore.settings(settings);
     }
 }
