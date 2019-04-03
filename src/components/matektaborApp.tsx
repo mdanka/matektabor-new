@@ -23,7 +23,10 @@ export class MatektaborApp extends React.Component<{}, IMatektaborAppState> {
                             <Switch>
                                 <Route exact path={NavUtils.getNavUrlTemplate[Page.Home]} render={this.renderHome} />
                                 <Route path={NavUtils.getNavUrlTemplate[Page.SignIn]} render={this.renderRouteAuth} />
-                                <Route path={NavUtils.getNavUrlTemplate[Page.Song]} render={this.renderSong} />
+                                <Route
+                                    path={NavUtils.getNavUrlTemplate[Page.Barkochba]}
+                                    render={this.renderBarkochba}
+                                />
                                 <Route
                                     exact
                                     path={NavUtils.getNavUrlTemplate[Page.TermsOfService]}
@@ -45,11 +48,13 @@ export class MatektaborApp extends React.Component<{}, IMatektaborAppState> {
     }
 
     private renderHome = (_locationInfo: RouteComponentProps<any>) => {
-        return (
-            <DocumentTitle title={NavUtils.getNavUrlSimpleTitle[Page.Home]}>
-                <BarkochbaScreen />
-            </DocumentTitle>
-        );
+        // The home screen for now just redirects directly to the barkochba page
+        return <Redirect to={NavUtils.getNavUrl[Page.Barkochba]()} />;
+        // return (
+        //     <DocumentTitle title={NavUtils.getNavUrlSimpleTitle[Page.Home]}>
+        //         <BarkochbaScreen />
+        //     </DocumentTitle>
+        // );
     };
 
     private renderTermsOfService = (_locationInfo: RouteComponentProps<any>) => {
@@ -78,14 +83,12 @@ export class MatektaborApp extends React.Component<{}, IMatektaborAppState> {
         );
     };
 
-    private renderSong = (locationInfo: RouteComponentProps<any>) => {
-        const match = NavUtils.getNavUrlMatch[Page.Song](locationInfo.location.pathname);
-        if (match == null) {
-            return null;
-        }
-        // const { id } = match.params;
-        // return <Song id={id} />;
-        return "Hello";
+    private renderBarkochba = (_locationInfo: RouteComponentProps<any>) => {
+        return (
+            <DocumentTitle title={NavUtils.getNavUrlSimpleTitle[Page.Barkochba]}>
+                <BarkochbaScreen />
+            </DocumentTitle>
+        );
     };
 
     private renderRedirectToHome = (_locationInfo: RouteComponentProps<any>) => {

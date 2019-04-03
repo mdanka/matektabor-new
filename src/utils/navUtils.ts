@@ -5,7 +5,7 @@ import * as queryString from "query-string";
 export enum Page {
     Home = "home",
     SignIn = "signin",
-    Song = "song",
+    Barkochba = "barkochba",
     TermsOfService = "terms-of-service",
     PrivacyPolicy = "privacy-policy",
 }
@@ -15,7 +15,7 @@ export namespace NavUtils {
         [Page.Home]: () => "/",
         [Page.SignIn]: (redirectUrl?: string) =>
             `/signin${redirectUrl === undefined ? "" : `?redirectUrl=${redirectUrl}`}`,
-        [Page.Song]: (id: string) => `/songs/${id}`,
+        [Page.Barkochba]: () => `/barkochba`,
         [Page.TermsOfService]: () => `/terms-of-service`,
         [Page.PrivacyPolicy]: () => `/privacy-policy`,
     };
@@ -23,26 +23,14 @@ export namespace NavUtils {
     export const getNavUrlTemplate = {
         [Page.Home]: getNavUrl[Page.Home](),
         [Page.SignIn]: getNavUrl[Page.SignIn](),
-        [Page.Song]: `/songs/:id`,
+        [Page.Barkochba]: getNavUrl[Page.Barkochba](),
         [Page.TermsOfService]: getNavUrl[Page.TermsOfService](),
         [Page.PrivacyPolicy]: getNavUrl[Page.PrivacyPolicy](),
     };
 
-    interface ISongRouteComponentParams {
-        id: string;
-    }
-
     interface ISignInRouteQueryParams {
         redirectUrl: string | undefined;
     }
-
-    export const getNavUrlMatch = {
-        [Page.Song]: (pathName: string) => {
-            return matchPath<ISongRouteComponentParams>(pathName, {
-                path: getNavUrlTemplate[Page.Song],
-            });
-        },
-    };
 
     export const getNavUrlQueryParams = {
         [Page.SignIn]: (value: string) => (queryString.parse(value) as unknown) as ISignInRouteQueryParams,
@@ -63,7 +51,7 @@ export namespace NavUtils {
     }
 
     export function pathToPage(path: string) {
-        const pages = [Page.Home, Page.SignIn, Page.Song, Page.TermsOfService, Page.PrivacyPolicy];
+        const pages = [Page.Home, Page.SignIn, Page.Barkochba, Page.TermsOfService, Page.PrivacyPolicy];
         return pages.find(page => pageToMatch(path, page) !== null);
     }
 
@@ -76,9 +64,9 @@ export namespace NavUtils {
     }
 
     export const getNavUrlSimpleTitle = {
-        [Page.Home]: getPageTitle("Home"),
-        [Page.SignIn]: getPageTitle("Sign in"),
-        [Page.Song]: getPageTitle("Song"),
+        [Page.Home]: getPageTitle(),
+        [Page.SignIn]: getPageTitle("Bejelentkezés"),
+        [Page.Barkochba]: getPageTitle("Barkochba"),
         [Page.TermsOfService]: getPageTitle("Terms of Service"),
         [Page.PrivacyPolicy]: getPageTitle("Privacy Policy"),
     };

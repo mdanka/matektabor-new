@@ -31,7 +31,7 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
     private renderStory = (story: IStory) => {
         const { id, title } = story;
         return (
-            <Link key={id} to={NavUtils.getNavUrl[Page.Song](id)}>
+            <Link key={id} to={NavUtils.getNavUrl[Page.Barkochba]()}>
                 <ListItem button divider={true}>
                     <ListItemText primary={title} secondary={"Hello"} />
                 </ListItem>
