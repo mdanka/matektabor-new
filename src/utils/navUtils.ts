@@ -54,8 +54,8 @@ export namespace NavUtils {
         history.push(getNavUrl[Page.SignIn](currentPath));
     };
 
-    const pageTitleBase = "Momo Tabs";
-    const pageTitleEnding = " - Guitar Tabs and Chord Sheets";
+    const pageTitleBase = "Matektábor";
+    const pageTitleEnding = "";
 
     function getPageTitle(title?: string) {
         const titlePrefix = title === undefined ? "" : `${title} - `;
