@@ -1,15 +1,42 @@
 .barkochba-screen {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 
     width: 100%;
     padding: 40px;
 }
 
-.barkochba-screen-browser {
-    width: 30%;
+.barkochba-screen-row-header {
+    display: flex;
+    flex-direction: row;
+
+    width: 100%;
+    height: 200px;
+    overflow: scroll;
+
+    .barkochba-screen-info {
+        width: 30%;
+    }
+    
+    .barkochba-screen-selector {
+        width: 70%;
+    }
 }
 
-.barkochba-screen-panel {
-    width: 70%;
+.barkochba-screen-row-main {
+    display: flex;
+    flex-direction: row;
+
+    width: 100%;
+    top: 260px;
+    bottom: 0;
+    overflow: hidden;
+
+    .barkochba-screen-browser {
+        width: 30%;
+    }
+    
+    .barkochba-screen-panel {
+        width: 70%;
+    }
 }

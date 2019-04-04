@@ -55,7 +55,7 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, {}>
     private renderPlaceholder = () => {
         return (
             <Typography variant="display1" paragraph={true} align="center">
-                Válassz egy barkochbatörténetet
+                ← Válassz egy barkochbatörténetet!
             </Typography>
         );
     };
