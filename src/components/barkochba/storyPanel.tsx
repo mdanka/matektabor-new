@@ -46,7 +46,7 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, {}>
         const { title, description, solution, number } = story;
         return (
             <div>
-                <Typography variant="headline" paragraph={true}>
+                <Typography variant="h5" paragraph={true}>
                     {number} - {title}
                 </Typography>
                 <Typography variant="body1" paragraph={true}>
@@ -54,7 +54,7 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, {}>
                 </Typography>
                 <ExpansionPanel>
                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography variant="subheading">Megoldás</Typography>
+                        <Typography variant="subtitle1">Megoldás</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                         <Typography variant="body1">{solution}</Typography>
@@ -62,7 +62,7 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, {}>
                 </ExpansionPanel>
                 <ExpansionPanel>
                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography variant="subheading">Kik ismerik?</Typography>
+                        <Typography variant="subtitle1">Kik ismerik?</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails className="story-panel-people-who-know">
                         <PersonsSelector

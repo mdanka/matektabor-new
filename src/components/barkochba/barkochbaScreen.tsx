@@ -35,7 +35,7 @@ class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, 
             <div className="barkochba-screen">
                 <div className="barkochba-screen-row-header">
                     <div className="barkochba-screen-info">
-                        <Typography variant="title" paragraph={true}>
+                        <Typography variant="h6" paragraph={true}>
                             Nekik mesélek:
                         </Typography>
                         <Typography variant="body1" paragraph={true}>
