@@ -1,11 +1,8 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { IAppState, selectSongsOrderedByNumber } from "../../store";
+import { IAppState, selectSongsOrderedByNumber, SetCurrentStoryId } from "../../store";
 import { Dispatch } from "redux";
 import { List, ListItemText, ListItem } from "@material-ui/core";
-import { Page } from "../../utils";
-import { Link } from "react-router-dom";
-import { NavUtils } from "../../utils";
 import { IStory } from "../../commons";
 
 export interface IStoryBrowserOwnProps {}
@@ -14,7 +11,9 @@ export interface IStoryBrowserStateProps {
     stories: IStory[];
 }
 
-export interface IStoryBrowserDispatchProps {}
+export interface IStoryBrowserDispatchProps {
+    selectStory: (id: string | undefined) => void;
+}
 
 export type IStoryBrowserProps = IStoryBrowserOwnProps & IStoryBrowserStateProps & IStoryBrowserDispatchProps;
 
@@ -31,12 +30,15 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
     private renderStory = (story: IStory) => {
         const { id, title, number } = story;
         return (
-            <Link key={id} to={NavUtils.getNavUrl[Page.Barkochba]()}>
-                <ListItem button divider={true}>
-                    <ListItemText primary={`${number} - ${title}`} />
-                </ListItem>
-            </Link>
+            <ListItem key={id} button divider={true} onClick={this.getStorySelectionHandler(id)}>
+                <ListItemText primary={`${number} - ${title}`} />
+            </ListItem>
         );
+    };
+
+    private getStorySelectionHandler = (id: string) => {
+        const { selectStory } = this.props;
+        return () => selectStory(id);
     };
 }
 
@@ -46,8 +48,10 @@ function mapStateToProps(state: IAppState, _ownProps: IStoryBrowserOwnProps): IS
     };
 }
 
-function mapDispatchToProps(_dispatch: Dispatch, _ownProps: IStoryBrowserOwnProps): IStoryBrowserDispatchProps {
-    return {};
+function mapDispatchToProps(dispatch: Dispatch, _ownProps: IStoryBrowserOwnProps): IStoryBrowserDispatchProps {
+    return {
+        selectStory: (currentStoryId: string | undefined) => dispatch(SetCurrentStoryId.create({ currentStoryId })),
+    };
 }
 
 export const StoryBrowser = connect(
