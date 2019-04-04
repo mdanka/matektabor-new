@@ -10,6 +10,7 @@ import {
 import { Dispatch } from "redux";
 import { List, ListItemText, ListItem } from "@material-ui/core";
 import { IStory } from "../../commons";
+import * as classNames from "classnames";
 
 export interface IStoryBrowserOwnProps {}
 
@@ -44,8 +45,14 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
         );
         const numberWhoKnow = listeningPersonsWhoKnow.length;
         const secondaryLabel = numberWhoKnow === 0 ? undefined : `${numberWhoKnow} gyerek ismeri`;
+        const classes = classNames({
+            "story-list-item-known-by-1": numberWhoKnow === 1,
+            "story-list-item-known-by-2": numberWhoKnow === 2,
+            "story-list-item-known-by-3": numberWhoKnow >= 3,
+        });
         return (
             <ListItem
+                className={classes}
                 key={id}
                 selected={id === currentStoryId}
                 button
