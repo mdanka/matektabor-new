@@ -6,8 +6,7 @@ export class FirebaseService {
 
     private firebaseAppConfig = {
         apiKey: "AIzaSyCe-gLA62Z68YVh_8jx-wCXuXksT-ZD3ws",
-        // authDomain: "matektabor.miklosdanka.com",
-        authDomain: "barkochba-app.firebaseapp.com",
+        authDomain: "matektabor.miklosdanka.com",
         databaseURL: "https://barkochba-app.firebaseio.com",
         projectId: "barkochba-app",
         storageBucket: "barkochba-app.appspot.com",
