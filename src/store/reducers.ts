@@ -1,5 +1,5 @@
 import { setWith, TypedReducer } from "redoodle";
-import { SetCurrentUser, SetPersons, SetCamps, SetStories } from "./actions";
+import { SetCurrentUser, SetPersons, SetCamps, SetStories, SetCurrentStoryId } from "./actions";
 import { IAppState } from "./state";
 
 export const appReducer = TypedReducer.builder<IAppState>()
@@ -21,6 +21,11 @@ export const appReducer = TypedReducer.builder<IAppState>()
     .withHandler(SetStories.TYPE, (state, payload) => {
         return setWith(state, {
             stories: payload.stories,
+        });
+    })
+    .withHandler(SetCurrentStoryId.TYPE, (state, payload) => {
+        return setWith(state, {
+            currentStoryId: payload.currentStoryId,
         });
     })
     .build();

@@ -5,6 +5,7 @@ export interface IAppState {
     persons: IPersonsState;
     camps: ICampsState;
     stories: IStoriesState;
+    currentStoryId: string | undefined;
 }
 
 export type IPersonsState = IMapState<IPersonApi>;

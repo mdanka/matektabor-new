@@ -17,3 +17,7 @@ export const SetCamps = TypedAction.define("MATEKTABOR//SET_CAMPS")<{
 export const SetStories = TypedAction.define("MATEKTABOR//SET_STORIES")<{
     stories: IStoriesState;
 }>();
+
+export const SetCurrentStoryId = TypedAction.define("MATEKTABOR//SET_CURRENT_STORY_ID")<{
+    currentStoryId: string | undefined;
+}>();

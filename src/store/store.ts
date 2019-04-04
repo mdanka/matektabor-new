@@ -8,6 +8,7 @@ const initialState: IAppState = {
     persons: {},
     camps: {},
     stories: {},
+    currentStoryId: undefined,
 };
 
 export function createAppStore() {

@@ -51,3 +51,17 @@ export const selectStory = createCachedSelector(
 export const selectPersons = (state: IAppState) => state.persons;
 
 export const selectCamps = (state: IAppState) => state.camps;
+
+export const selectCurrentStoryId = (state: IAppState) => state.currentStoryId;
+
+export const selectCurrentStory = createSelector(
+    selectStories,
+    selectCurrentStoryId,
+    (stories: IStoriesState, id: string | undefined): IStory | undefined => {
+        if (id === undefined) {
+            return undefined;
+        }
+        const storyApi = stories[id];
+        return storyApi === undefined ? undefined : { id, ...storyApi };
+    },
+);

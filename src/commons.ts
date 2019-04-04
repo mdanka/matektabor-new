@@ -23,9 +23,9 @@ export interface IStoryApi {
     solution: string;
 
     /**
-     * The number matching Lajos' list. New stories might not have numbers.
+     * The number matching Lajos' list. New stories have to have a new number.
      */
-    number: number | undefined;
+    number: number;
 
     /**
      * List of user IDs of people who know this story.
