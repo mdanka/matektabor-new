@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { IAppState, selectSongsOrderedByNumber, SetCurrentStoryId, selectCurrentStoryId } from "../../store";
+import { IAppState, selectStoriesOrderedByNumber, SetCurrentStoryId, selectCurrentStoryId } from "../../store";
 import { Dispatch } from "redux";
 import { List, ListItemText, ListItem } from "@material-ui/core";
 import { IStory } from "../../commons";
@@ -53,7 +53,7 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
 function mapStateToProps(state: IAppState, _ownProps: IStoryBrowserOwnProps): IStoryBrowserStateProps {
     return {
         currentStoryId: selectCurrentStoryId(state),
-        stories: selectSongsOrderedByNumber(state),
+        stories: selectStoriesOrderedByNumber(state),
     };
 }
 

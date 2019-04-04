@@ -19,7 +19,7 @@ export const selectStoriesList = createSelector(
     },
 );
 
-export const selectSongsOrderedByNumber = createSelector(
+export const selectStoriesOrderedByNumber = createSelector(
     selectStoriesList,
     (songs: IStory[]) => {
         return songs.sort((a: IStory, b: IStory) => {
