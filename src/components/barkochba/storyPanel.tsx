@@ -37,9 +37,6 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, {}>
 
     private renderStory = () => {
         const { story, personsWhoKnowAsSelectOptions, personsAsSelectOptions } = this.props;
-        // tslint:disable:no-console
-        console.log(personsAsSelectOptions);
-        console.log(personsWhoKnowAsSelectOptions);
         if (story === undefined) {
             return null;
         }
