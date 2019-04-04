@@ -10,8 +10,8 @@ import { Dispatch } from "redux";
 import { ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Paper, Typography } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { IStory, ISelectOption } from "../../commons";
-import { ActionMeta } from "react-select/lib/types";
 import { PersonsSelector } from "./personsSelector";
+import { getGlobalServices } from "../../services";
 
 export interface IStoryPanelOwnProps {}
 
@@ -84,10 +84,15 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, {}>
         );
     };
 
-    private handlePersonsWhoKnowChange = (value: ISelectOption[], action: ActionMeta) => {
-        // tslint:disable:no-console
-        console.log(value);
-        console.log(action);
+    private handlePersonsWhoKnowChange = (values: ISelectOption[]) => {
+        const globalServices = getGlobalServices();
+        const { story } = this.props;
+        if (globalServices === undefined || story === undefined) {
+            return;
+        }
+        const { id: storyId } = story;
+        const peopleIds = values.map(value => value.value);
+        globalServices.dataService.updatePersonsWhoKnowStory(storyId, peopleIds);
     };
 }
 

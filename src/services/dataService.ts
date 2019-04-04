@@ -84,6 +84,16 @@ export class DataService {
             .catch((reason: any) => console.error(`[DataService] Failed to get all ${collection} IDs. ${reason}`));
     };
 
+    public updatePersonsWhoKnowStory = (storyId: string, peopleIds: string[]) => {
+        return this.firestore
+            .collection(DataService.COLLECTION_STORIES)
+            .doc(storyId)
+            .update({ personsWhoKnow: peopleIds })
+            .catch((reason: any) =>
+                console.error(`[DataService] Failed to update story with persons who know it. ${reason}`),
+            );
+    };
+
     private querySnapshotToObjects = <API>(querySnapshot: firebase.firestore.QuerySnapshot) => {
         const songs: { [id: string]: API } = {};
         querySnapshot.forEach(doc => {

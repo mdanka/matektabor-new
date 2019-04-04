@@ -12,9 +12,14 @@ service cloud.firestore {
       return get(/databases/$(database)/documents/admin/roles).data.viewers
     }
 
+    function areSetsEqual(list1, list2) {
+      return list1.hasAll(list2) && list2.hasAll(list1);
+    }
+
     match /stories/{document=**} {
       allow read: if isSignedIn() && isViewer();
-      allow create, update, delete: if false;
+      allow update: if isSignedIn() && isViewer() && areSetsEqual(request.writeFields, ["personsWhoKnow"]);
+      allow create, delete: if false;
     }
 
     match /persons/{document=**} {
