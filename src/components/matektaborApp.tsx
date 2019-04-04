@@ -5,7 +5,7 @@ import { Login } from "./login";
 import { AppHeader } from "./appHeader";
 import { AppFooter } from "./appFooter";
 import { NavUtils, Page } from "../utils";
-import { BarkochbaScreen } from "./barkochba/barkochbaScreen";
+import { BarkochbaScreen } from "./barkochba";
 import { StaticContent } from "./staticContent";
 import { ScrollToTop } from "./common";
 import DocumentTitle = require("react-document-title");

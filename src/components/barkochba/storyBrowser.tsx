@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { IAppState, selectSongsOrderedByNumber, SetCurrentStoryId } from "../../store";
+import { IAppState, selectSongsOrderedByNumber, SetCurrentStoryId, selectCurrentStoryId } from "../../store";
 import { Dispatch } from "redux";
 import { List, ListItemText, ListItem } from "@material-ui/core";
 import { IStory } from "../../commons";
@@ -8,6 +8,7 @@ import { IStory } from "../../commons";
 export interface IStoryBrowserOwnProps {}
 
 export interface IStoryBrowserStateProps {
+    currentStoryId: string | undefined;
     stories: IStory[];
 }
 
@@ -28,9 +29,16 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
     }
 
     private renderStory = (story: IStory) => {
+        const { currentStoryId } = this.props;
         const { id, title, number } = story;
         return (
-            <ListItem key={id} button divider={true} onClick={this.getStorySelectionHandler(id)}>
+            <ListItem
+                key={id}
+                selected={id === currentStoryId}
+                button
+                divider={true}
+                onClick={this.getStorySelectionHandler(id)}
+            >
                 <ListItemText primary={`${number} - ${title}`} />
             </ListItem>
         );
@@ -44,6 +52,7 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
 
 function mapStateToProps(state: IAppState, _ownProps: IStoryBrowserOwnProps): IStoryBrowserStateProps {
     return {
+        currentStoryId: selectCurrentStoryId(state),
         stories: selectSongsOrderedByNumber(state),
     };
 }

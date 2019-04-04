@@ -21,3 +21,7 @@ export const SetStories = TypedAction.define("MATEKTABOR//SET_STORIES")<{
 export const SetCurrentStoryId = TypedAction.define("MATEKTABOR//SET_CURRENT_STORY_ID")<{
     currentStoryId: string | undefined;
 }>();
+
+export const SetCurrentListeningPersonIds = TypedAction.define("MATEKTABOR//SET_CURRENT_LISTENING_PERSON_IDS")<{
+    currentListeningPersonIds: string[];
+}>();

@@ -20,8 +20,8 @@
         "verify": "yarn run es-check es5 './dist/bundle.js'"
     },
     "dependencies": {
-        "@material-ui/core": "^1.5.1",
-        "@material-ui/icons": "^3.0.1",
+        "@material-ui/core": "^3.9.3",
+        "@material-ui/icons": "^3.0.2",
         "classnames": "^2.2.5",
         "commonjs": "^0.0.1",
         "es6-shim": "^0.35.3",
@@ -43,6 +43,7 @@
         "react-redux": "^5.0.7",
         "react-router": "^4.3.1",
         "react-router-dom": "^4.3.1",
+        "react-select": "^2.4.2",
         "redoodle": "^2.3.2",
         "redux": "^4.0.0",
         "redux-logger": "^3.0.6",
@@ -63,6 +64,7 @@
         "@types/react-redux": "^6.0.6",
         "@types/react-router": "^4.0.30",
         "@types/react-router-dom": "^4.3.0",
+        "@types/react-select": "^2.0.15",
         "@types/url-join": "^0.8.2",
         "copy-webpack-plugin": "^4.5.4",
         "css-loader": "^1.0.0",

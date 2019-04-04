@@ -1,7 +1,7 @@
-import { IAppState, IStoriesState } from "./state";
+import { IAppState, IStoriesState, IPersonsState } from "./state";
 import createCachedSelector from "re-reselect";
 import { createSelector } from "reselect";
-import { IStory } from "../commons";
+import { IStory, IPerson, ISelectOption } from "../commons";
 
 export const selectCurrentUser = (state: IAppState) => state.currentUser;
 
@@ -50,6 +50,25 @@ export const selectStory = createCachedSelector(
 
 export const selectPersons = (state: IAppState) => state.persons;
 
+export const selectPersonsList = createSelector(
+    selectPersons,
+    (persons: IPersonsState): IPerson[] => {
+        return Object.keys(persons)
+            .map(personId => {
+                const person = persons[personId];
+                return person === undefined ? undefined : { id: personId, ...person };
+            })
+            .filter(person => person !== undefined) as IPerson[];
+    },
+);
+
+export const selectPersonsAsSelectOptions = createSelector(
+    selectPersonsList,
+    (persons: IPerson[]): ISelectOption[] => {
+        return persons.map(personToSelectOption);
+    },
+);
+
 export const selectCamps = (state: IAppState) => state.camps;
 
 export const selectCurrentStoryId = (state: IAppState) => state.currentStoryId;
@@ -65,3 +84,40 @@ export const selectCurrentStory = createSelector(
         return storyApi === undefined ? undefined : { id, ...storyApi };
     },
 );
+
+export const selectCurrentStoryPersonsAsSelectOptions = createSelector(
+    selectCurrentStory,
+    selectPersons,
+    (story: IStory | undefined, personsMap: IPersonsState): ISelectOption[] => {
+        if (story === undefined) {
+            return [];
+        }
+        const { personsWhoKnow } = story;
+        return mapPersonIdsToSelectOptions(personsWhoKnow, personsMap);
+    },
+);
+
+export const selectCurrentListeningPersonIds = (state: IAppState) => state.currentListeningPersonIds;
+
+export const selectCurrentListeningPersonsAsSelectOptions = createSelector(
+    selectCurrentListeningPersonIds,
+    selectPersons,
+    (currentListeningPersonIds: string[], personsMap: IPersonsState): ISelectOption[] => {
+        return mapPersonIdsToSelectOptions(currentListeningPersonIds, personsMap);
+    },
+);
+
+const mapPersonIdsToSelectOptions = (personIds: string[], personsMap: IPersonsState): ISelectOption[] => {
+    return ((personIds
+        .map(personId => {
+            const person = personsMap[personId];
+            return person === undefined ? undefined : { id: personId, ...person };
+        })
+        .filter(person => person !== undefined) as unknown) as IPerson[]).map(personToSelectOption);
+};
+
+const personToSelectOption = (person: IPerson): ISelectOption => {
+    const { id, name, group } = person;
+    const label = group === undefined ? name : `${name} (${group})`;
+    return { value: id, label };
+};

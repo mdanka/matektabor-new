@@ -1,12 +1,36 @@
 import * as React from "react";
 import { StoryBrowser } from "./storyBrowser";
-import { StoryPanel } from "./storyPanel";
 import { Typography } from "@material-ui/core";
+import { PersonsSelector } from "./personsSelector";
+import { ISelectOption } from "../../commons";
+import {
+    IAppState,
+    selectCurrentListeningPersonsAsSelectOptions,
+    selectPersonsAsSelectOptions,
+    SetCurrentListeningPersonIds,
+} from "../../store";
+import { Dispatch } from "redux";
+import { connect } from "react-redux";
+import { StoryPanel } from "./storyPanel";
 
-export interface IBarkochbaScreenProps {}
+export interface IBarkochbaScreenOwnProps {}
 
-export class BarkochbaScreen extends React.Component<IBarkochbaScreenProps, {}> {
+export interface IBarkochbaScreenStateProps {
+    currentListeningPersonsAsSelectOptions: ISelectOption[];
+    personsAsSelectOptions: ISelectOption[];
+}
+
+export interface IBarkochbaScreenDispatchProps {
+    setCurrentListeningPersonIds: (ids: string[]) => void;
+}
+
+export type IBarkochbaScreenProps = IBarkochbaScreenOwnProps &
+    IBarkochbaScreenStateProps &
+    IBarkochbaScreenDispatchProps;
+
+class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, {}> {
     public render() {
+        const { currentListeningPersonsAsSelectOptions, personsAsSelectOptions } = this.props;
         return (
             <div className="barkochba-screen">
                 <div className="barkochba-screen-row-header">
@@ -20,7 +44,13 @@ export class BarkochbaScreen extends React.Component<IBarkochbaScreenProps, {}> 
                             gyerek már hallotta.
                         </Typography>
                     </div>
-                    <div className="barkochba-screen-person-selector">Selector</div>
+                    <div className="barkochba-screen-person-selector">
+                        <PersonsSelector
+                            allPersons={personsAsSelectOptions}
+                            selectedPersons={currentListeningPersonsAsSelectOptions}
+                            onChange={this.handleCurrentListeningPersonsChange}
+                        />
+                    </div>
                 </div>
                 <div className="barkochba-screen-row-main">
                     <div className="barkochba-screen-browser">
@@ -33,4 +63,29 @@ export class BarkochbaScreen extends React.Component<IBarkochbaScreenProps, {}> 
             </div>
         );
     }
+
+    private handleCurrentListeningPersonsChange = (values: ISelectOption[]) => {
+        const { setCurrentListeningPersonIds } = this.props;
+        const personIds = values.map(value => value.value);
+        setCurrentListeningPersonIds(personIds);
+    };
 }
+
+function mapStateToProps(state: IAppState, _ownProps: IBarkochbaScreenOwnProps): IBarkochbaScreenStateProps {
+    return {
+        currentListeningPersonsAsSelectOptions: selectCurrentListeningPersonsAsSelectOptions(state),
+        personsAsSelectOptions: selectPersonsAsSelectOptions(state),
+    };
+}
+
+function mapDispatchToProps(dispatch: Dispatch, _ownProps: IBarkochbaScreenOwnProps): IBarkochbaScreenDispatchProps {
+    return {
+        setCurrentListeningPersonIds: (ids: string[]) =>
+            dispatch(SetCurrentListeningPersonIds.create({ currentListeningPersonIds: ids })),
+    };
+}
+
+export const BarkochbaScreen = connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(UnconnectedBarkochbaScreen);

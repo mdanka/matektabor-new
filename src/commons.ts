@@ -1,7 +1,7 @@
 export type IUser = firebase.User;
 
 export interface IPersonApi {
-    group: string;
+    group: string | undefined;
     name: string;
 }
 
@@ -41,4 +41,9 @@ export type IStory = IStoryApi & IWithId;
 
 interface IWithId {
     id: string;
+}
+
+export interface ISelectOption {
+    value: string;
+    label: string;
 }

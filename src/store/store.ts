@@ -9,6 +9,7 @@ const initialState: IAppState = {
     camps: {},
     stories: {},
     currentStoryId: undefined,
+    currentListeningPersonIds: [],
 };
 
 export function createAppStore() {

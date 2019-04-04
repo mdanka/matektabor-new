@@ -6,6 +6,7 @@ export interface IAppState {
     camps: ICampsState;
     stories: IStoriesState;
     currentStoryId: string | undefined;
+    currentListeningPersonIds: string[];
 }
 
 export type IPersonsState = IMapState<IPersonApi>;

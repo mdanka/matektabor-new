@@ -1,15 +1,24 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { IAppState, selectCurrentStory } from "../../store";
+import {
+    IAppState,
+    selectCurrentStory,
+    selectCurrentStoryPersonsAsSelectOptions,
+    selectPersonsAsSelectOptions,
+} from "../../store";
 import { Dispatch } from "redux";
 import { ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Paper, Typography } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { IStory } from "../../commons";
+import { IStory, ISelectOption } from "../../commons";
+import { ActionMeta } from "react-select/lib/types";
+import { PersonsSelector } from "./personsSelector";
 
 export interface IStoryPanelOwnProps {}
 
 export interface IStoryPanelStateProps {
     story: IStory | undefined;
+    personsWhoKnowAsSelectOptions: ISelectOption[];
+    personsAsSelectOptions: ISelectOption[];
 }
 
 export interface IStoryPanelDispatchProps {}
@@ -27,7 +36,10 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, {}>
     }
 
     private renderStory = () => {
-        const { story } = this.props;
+        const { story, personsWhoKnowAsSelectOptions, personsAsSelectOptions } = this.props;
+        // tslint:disable:no-console
+        console.log(personsAsSelectOptions);
+        console.log(personsWhoKnowAsSelectOptions);
         if (story === undefined) {
             return null;
         }
@@ -48,6 +60,18 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, {}>
                         <Typography variant="body1">{solution}</Typography>
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
+                <ExpansionPanel>
+                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography variant="subheading">Kik ismerik?</Typography>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails className="story-panel-people-who-know">
+                        <PersonsSelector
+                            allPersons={personsAsSelectOptions}
+                            selectedPersons={personsWhoKnowAsSelectOptions}
+                            onChange={this.handlePersonsWhoKnowChange}
+                        />
+                    </ExpansionPanelDetails>
+                </ExpansionPanel>
             </div>
         );
     };
@@ -59,11 +83,19 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, {}>
             </Typography>
         );
     };
+
+    private handlePersonsWhoKnowChange = (value: ISelectOption[], action: ActionMeta) => {
+        // tslint:disable:no-console
+        console.log(value);
+        console.log(action);
+    };
 }
 
 function mapStateToProps(state: IAppState, _ownProps: IStoryPanelOwnProps): IStoryPanelStateProps {
     return {
         story: selectCurrentStory(state),
+        personsWhoKnowAsSelectOptions: selectCurrentStoryPersonsAsSelectOptions(state),
+        personsAsSelectOptions: selectPersonsAsSelectOptions(state),
     };
 }
 
