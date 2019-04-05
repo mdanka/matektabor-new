@@ -6,6 +6,7 @@ export enum Page {
     Home = "home",
     SignIn = "signin",
     Barkochba = "barkochba",
+    BarkochbaExport = "barkochba-export",
     TermsOfService = "terms-of-service",
     PrivacyPolicy = "privacy-policy",
 }
@@ -16,6 +17,7 @@ export namespace NavUtils {
         [Page.SignIn]: (redirectUrl?: string) =>
             `/signin${redirectUrl === undefined ? "" : `?redirectUrl=${redirectUrl}`}`,
         [Page.Barkochba]: () => `/barkochba`,
+        [Page.BarkochbaExport]: (campId?: string) => `/barkochba-export/${campId === undefined ? "" : `${campId}`}`,
         [Page.TermsOfService]: () => `/terms-of-service`,
         [Page.PrivacyPolicy]: () => `/privacy-policy`,
     };
@@ -24,6 +26,7 @@ export namespace NavUtils {
         [Page.Home]: getNavUrl[Page.Home](),
         [Page.SignIn]: getNavUrl[Page.SignIn](),
         [Page.Barkochba]: getNavUrl[Page.Barkochba](),
+        [Page.BarkochbaExport]: `/barkochba-export/:campId?`,
         [Page.TermsOfService]: getNavUrl[Page.TermsOfService](),
         [Page.PrivacyPolicy]: getNavUrl[Page.PrivacyPolicy](),
     };
@@ -32,8 +35,22 @@ export namespace NavUtils {
         redirectUrl: string | undefined;
     }
 
+    interface IBarkochbaExportRouteComponentParams {
+        campId: string;
+    }
+
+    export const getNavUrlMatch = {
+        [Page.BarkochbaExport]: (pathName: string) => {
+            return matchPath<IBarkochbaExportRouteComponentParams>(pathName, {
+                path: getNavUrlTemplate[Page.BarkochbaExport],
+            });
+        },
+    };
+
     export const getNavUrlQueryParams = {
         [Page.SignIn]: (value: string) => (queryString.parse(value) as unknown) as ISignInRouteQueryParams,
+        [Page.BarkochbaExport]: (value: string) =>
+            (queryString.parse(value) as unknown) as IBarkochbaExportRouteComponentParams,
     };
 
     export const singInAndReturn = (reactRouterProps: RouteComponentProps<any>) => {
@@ -67,6 +84,7 @@ export namespace NavUtils {
         [Page.Home]: getPageTitle(),
         [Page.SignIn]: getPageTitle("Bejelentkezés"),
         [Page.Barkochba]: getPageTitle("Barkochba"),
+        [Page.BarkochbaExport]: getPageTitle("Barkochba - Export"),
         [Page.TermsOfService]: getPageTitle("Terms of Service"),
         [Page.PrivacyPolicy]: getPageTitle("Privacy Policy"),
     };

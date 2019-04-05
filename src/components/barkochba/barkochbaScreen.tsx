@@ -1,6 +1,6 @@
 import * as React from "react";
 import { StoryBrowser } from "./storyBrowser";
-import { Typography } from "@material-ui/core";
+import { Typography, Link } from "@material-ui/core";
 import { PersonsSelector } from "./personsSelector";
 import { ISelectOption } from "../../commons";
 import {
@@ -13,6 +13,8 @@ import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { StoryPanel } from "./storyPanel";
 import { ListeningCampRoomSelector } from "./listeningCampRoomSelector";
+import { NavUtils, Page } from "../../utils";
+import { Link as RouterLink } from "react-router-dom";
 
 export interface IBarkochbaScreenOwnProps {}
 
@@ -29,6 +31,10 @@ export type IBarkochbaScreenProps = IBarkochbaScreenOwnProps &
     IBarkochbaScreenStateProps &
     IBarkochbaScreenDispatchProps;
 
+const BarkochbaExportLink = (props: any) => (
+    <RouterLink to={NavUtils.getNavUrl[Page.BarkochbaExport](undefined)} {...props} />
+);
+
 class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, {}> {
     public render() {
         const { currentListeningPersonsAsSelectOptions, personsAsSelectOptions } = this.props;
@@ -43,6 +49,11 @@ class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, 
                             Válaszd ki a tábort és a szobát, vagy írd be azon gyerekek neveit, akiknek mesélni
                             szeretnél. Ezután a listában színesek lesznek azok a barkochbatörténetek, amiket valamelyik
                             gyerek már hallotta.
+                        </Typography>
+                        <Typography variant="body1" paragraph={true}>
+                            <Link variant="body1" component={BarkochbaExportLink}>
+                                Áttekintő táblázatok az egyes táborokhoz
+                            </Link>
                         </Typography>
                     </div>
                     <div className="barkochba-screen-person-selector">

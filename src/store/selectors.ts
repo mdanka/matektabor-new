@@ -75,6 +75,15 @@ export const selectCampsAsSelectOptions = createSelector(
     },
 );
 
+export const selectCamp = createCachedSelector(
+    selectCamps,
+    (_state: IAppState, id: string) => id,
+    (camps: ICampsState, id: string): ICamp | undefined => {
+        const camp = camps[id];
+        return camp === undefined ? undefined : { id, ...camp };
+    },
+)((_state: IAppState, id: string) => id);
+
 export const selectCurrentStoryId = (state: IAppState) => state.currentStoryId;
 
 export const selectCurrentStory = createSelector(

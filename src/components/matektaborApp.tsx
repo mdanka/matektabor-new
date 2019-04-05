@@ -9,6 +9,7 @@ import { BarkochbaScreen } from "./barkochba";
 import { StaticContent } from "./staticContent";
 import { ScrollToTop } from "./common";
 import DocumentTitle = require("react-document-title");
+import { BarkochbaExportScreen } from "./barkochba/barkochbaExportScreen";
 
 export interface IMatektaborAppState {}
 
@@ -18,14 +19,18 @@ export class MatektaborApp extends React.Component<{}, IMatektaborAppState> {
             <DocumentTitle title={NavUtils.getNavUrlSimpleTitle[Page.Home]}>
                 <ScrollToTop>
                     <div className="matektabor-app">
-                        <AppHeader />
                         <div className="app-content">
                             <Switch>
                                 <Route exact path={NavUtils.getNavUrlTemplate[Page.Home]} render={this.renderHome} />
                                 <Route path={NavUtils.getNavUrlTemplate[Page.SignIn]} render={this.renderRouteAuth} />
                                 <Route
+                                    exact
                                     path={NavUtils.getNavUrlTemplate[Page.Barkochba]}
                                     render={this.renderBarkochba}
+                                />
+                                <Route
+                                    path={NavUtils.getNavUrlTemplate[Page.BarkochbaExport]}
+                                    render={this.renderBarkochbaExport}
                                 />
                                 <Route
                                     exact
@@ -60,7 +65,10 @@ export class MatektaborApp extends React.Component<{}, IMatektaborAppState> {
     private renderTermsOfService = (_locationInfo: RouteComponentProps<any>) => {
         return (
             <DocumentTitle title={NavUtils.getNavUrlSimpleTitle[Page.TermsOfService]}>
-                <StaticContent type="terms of service" />
+                <div>
+                    <AppHeader />
+                    <StaticContent type="terms of service" />
+                </div>
             </DocumentTitle>
         );
     };
@@ -68,7 +76,10 @@ export class MatektaborApp extends React.Component<{}, IMatektaborAppState> {
     private renderPrivacyPolicy = (_locationInfo: RouteComponentProps<any>) => {
         return (
             <DocumentTitle title={NavUtils.getNavUrlSimpleTitle[Page.PrivacyPolicy]}>
-                <StaticContent type="privacy policy" />
+                <div>
+                    <AppHeader />
+                    <StaticContent type="privacy policy" />
+                </div>
             </DocumentTitle>
         );
     };
@@ -78,7 +89,10 @@ export class MatektaborApp extends React.Component<{}, IMatektaborAppState> {
         const { redirectUrl } = signInQueryParams;
         return (
             <DocumentTitle title={NavUtils.getNavUrlSimpleTitle[Page.SignIn]}>
-                <Login redirectUrl={redirectUrl} />
+                <div>
+                    <AppHeader />
+                    <Login redirectUrl={redirectUrl} />
+                </div>
             </DocumentTitle>
         );
     };
@@ -86,7 +100,23 @@ export class MatektaborApp extends React.Component<{}, IMatektaborAppState> {
     private renderBarkochba = (_locationInfo: RouteComponentProps<any>) => {
         return (
             <DocumentTitle title={NavUtils.getNavUrlSimpleTitle[Page.Barkochba]}>
-                <BarkochbaScreen />
+                <div>
+                    <AppHeader />
+                    <BarkochbaScreen />
+                </div>
+            </DocumentTitle>
+        );
+    };
+
+    private renderBarkochbaExport = (locationInfo: RouteComponentProps<any>) => {
+        const match = NavUtils.getNavUrlMatch[Page.BarkochbaExport](locationInfo.location.pathname);
+        if (match == null) {
+            return null;
+        }
+        const { campId } = match.params;
+        return (
+            <DocumentTitle title={NavUtils.getNavUrlSimpleTitle[Page.BarkochbaExport]}>
+                <BarkochbaExportScreen campId={campId} />
             </DocumentTitle>
         );
     };
