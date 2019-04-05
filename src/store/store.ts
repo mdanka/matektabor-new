@@ -14,6 +14,7 @@ const initialState: IAppState = {
         campId: undefined,
         roomName: undefined,
     },
+    hasPendingWrites: false,
 };
 
 export function createAppStore() {

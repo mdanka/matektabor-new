@@ -8,6 +8,7 @@ export interface IAppState {
     currentStoryId: string | undefined;
     currentListeningPersonIds: string[];
     currentListeningCampRoom: ICampRoomState;
+    hasPendingWrites: boolean;
 }
 
 export type IPersonsState = IMapState<IPersonApi>;

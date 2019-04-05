@@ -156,6 +156,8 @@ export const selectCurrentListeningCampRoomNameAsSelectOption = createSelector(
     },
 );
 
+export const selectHasPendingWrites = (state: IAppState) => state.hasPendingWrites;
+
 const mapPersonIdsToSelectOptions = (personIds: string[], personsMap: IPersonsState): ISelectOption[] => {
     return ((personIds
         .map(personId => {

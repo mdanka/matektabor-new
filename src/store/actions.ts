@@ -29,3 +29,7 @@ export const SetCurrentListeningPersonIds = TypedAction.define("MATEKTABOR//SET_
 export const SetCurrentListeningCampRoom = TypedAction.define("MATEKTABOR//SET_CURRENT_LISTENING_CAMP_ROOM")<{
     currentListeningCampRoom: ICampRoomState;
 }>();
+
+export const SetHasPendingWrites = TypedAction.define("MATEKTABOR//SET_HAS_PENDING_WRITES")<{
+    hasPendingWrites: boolean;
+}>();

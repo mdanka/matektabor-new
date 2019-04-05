@@ -1,5 +1,5 @@
 import * as firebase from "firebase/app";
-import { SetStories, IAppState, SetPersons, SetCamps } from "../store";
+import { SetStories, IAppState, SetPersons, SetCamps, SetHasPendingWrites } from "../store";
 import { IStoryApi, IPersonApi, ICampApi } from "../commons";
 import { Store } from "redoodle";
 import { FirebaseAuthService } from "./firebaseAuthService";
@@ -47,21 +47,31 @@ export class DataService {
             }),
         );
         this.snapshotUnsubscribers.push(
-            this.subscribeToCollection<IStoryApi>(DataService.COLLECTION_STORIES, documents => {
+            this.subscribeToCollection<IStoryApi>(DataService.COLLECTION_STORIES, (documents, hasPendingWrites) => {
                 store.dispatch(SetStories.create({ stories: documents }));
+                store.dispatch(SetHasPendingWrites.create({ hasPendingWrites }));
             }),
         );
     };
 
-    public subscribeToCollection = <API>(collection: string, onUpdate: (documents: { [id: string]: API }) => void) => {
+    public subscribeToCollection = <API>(
+        collection: string,
+        onUpdate: (documents: { [id: string]: API }, hasPendingWrites: boolean) => void,
+    ) => {
         const currentUser = this.firebaseAuthService.authGetCurrentUser();
         if (currentUser == null) {
             throw new Error(`Cannot subscribe to collection ${collection} if user is not logged in.`);
         }
-        return this.firestore.collection(collection).onSnapshot((querySnapshot: firebase.firestore.QuerySnapshot) => {
-            const documents = this.querySnapshotToObjects<API>(querySnapshot);
-            onUpdate(documents);
-        });
+        return this.firestore.collection(collection).onSnapshot(
+            {
+                includeMetadataChanges: true,
+            },
+            (querySnapshot: firebase.firestore.QuerySnapshot) => {
+                const documents = this.querySnapshotToObjects<API>(querySnapshot);
+                const hasPendingWrites = querySnapshot.docs.some(doc => doc.metadata.hasPendingWrites);
+                onUpdate(documents, hasPendingWrites);
+            },
+        );
     };
 
     public getAllDocuments = async <API>(collection: string) => {

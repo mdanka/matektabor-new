@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { IAppState, selectCurrentUser } from "../store";
+import { IAppState, selectCurrentUser, selectHasPendingWrites } from "../store";
 import { Dispatch } from "redux";
 import { RouteComponentProps } from "react-router";
 import { Link, withRouter } from "react-router-dom";
@@ -16,15 +16,18 @@ import {
     ListItemText,
     Snackbar,
     MuiThemeProvider,
+    SnackbarContent,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { IUser } from "../commons";
 import { DARK_THEME, CONTACT_HREF } from "../utils";
+import amber from "@material-ui/core/colors/amber";
 
 export interface IAppHeaderOwnProps extends RouteComponentProps<any> {}
 
 export interface IAppHeaderStateProps {
     currentUser: IUser | undefined;
+    hasPendingWrites: boolean;
 }
 
 export interface IAppHeaderDispatchProps {}
@@ -62,6 +65,7 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
                     {isLoggedIn && this.renderUserMenu()}
                     {!isLoggedIn && this.renderSignIn()}
                     {this.renderSignedOutMessage()}
+                    {this.renderPendingWritesMessage()}
                 </MuiThemeProvider>
             </div>
         );
@@ -137,6 +141,7 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
         return (
             <Snackbar
                 autoHideDuration={3000}
+                anchorOrigin={{ horizontal: "center", vertical: "top" }}
                 message={<span>Sikeresen kiléptél. Ügyes vagy!</span>}
                 onClose={this.closeSignedOutMessage}
                 open={isSignedOutMessageOpen}
@@ -146,6 +151,18 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
                     </IconButton>,
                 ]}
             />
+        );
+    };
+
+    private renderPendingWritesMessage = () => {
+        const { hasPendingWrites } = this.props;
+        return (
+            <Snackbar anchorOrigin={{ horizontal: "right" as "right", vertical: "top" }} open={hasPendingWrites}>
+                <SnackbarContent
+                    message={<span>Mentés... (ha nem vagy online, csatlakozz)</span>}
+                    style={{ backgroundColor: amber[700] }}
+                />
+            </Snackbar>
         );
     };
 
@@ -183,6 +200,7 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
 function mapStateToProps(state: IAppState, _ownProps: IAppHeaderOwnProps): IAppHeaderStateProps {
     return {
         currentUser: selectCurrentUser(state),
+        hasPendingWrites: selectHasPendingWrites(state),
     };
 }
 
