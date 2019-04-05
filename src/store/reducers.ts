@@ -6,6 +6,7 @@ import {
     SetStories,
     SetCurrentStoryId,
     SetCurrentListeningPersonIds,
+    SetCurrentListeningCampRoom,
 } from "./actions";
 import { IAppState } from "./state";
 
@@ -38,6 +39,11 @@ export const appReducer = TypedReducer.builder<IAppState>()
     .withHandler(SetCurrentListeningPersonIds.TYPE, (state, payload) => {
         return setWith(state, {
             currentListeningPersonIds: payload.currentListeningPersonIds,
+        });
+    })
+    .withHandler(SetCurrentListeningCampRoom.TYPE, (state, payload) => {
+        return setWith(state, {
+            currentListeningCampRoom: payload.currentListeningCampRoom,
         });
     })
     .build();

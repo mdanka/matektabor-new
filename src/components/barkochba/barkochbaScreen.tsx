@@ -12,6 +12,7 @@ import {
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { StoryPanel } from "./storyPanel";
+import { ListeningCampRoomSelector } from "./listeningCampRoomSelector";
 
 export interface IBarkochbaScreenOwnProps {}
 
@@ -45,6 +46,7 @@ class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, 
                         </Typography>
                     </div>
                     <div className="barkochba-screen-person-selector">
+                        <ListeningCampRoomSelector />
                         <PersonsSelector
                             allPersons={personsAsSelectOptions}
                             selectedPersons={currentListeningPersonsAsSelectOptions}

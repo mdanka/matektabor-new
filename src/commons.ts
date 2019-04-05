@@ -39,7 +39,7 @@ export type ICamp = ICampApi & IWithId;
 
 export type IStory = IStoryApi & IWithId;
 
-interface IWithId {
+export interface IWithId {
     id: string;
 }
 

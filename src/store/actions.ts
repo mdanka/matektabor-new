@@ -1,6 +1,6 @@
 import { TypedAction } from "redoodle";
 import { IUser } from "../commons";
-import { IPersonsState, ICampsState, IStoriesState } from "./state";
+import { IPersonsState, ICampsState, IStoriesState, ICampRoomState } from "./state";
 
 export const SetCurrentUser = TypedAction.define("MATEKTABOR//SET_CURRENT_USER")<{
     currentUser: IUser | undefined;
@@ -24,4 +24,8 @@ export const SetCurrentStoryId = TypedAction.define("MATEKTABOR//SET_CURRENT_STO
 
 export const SetCurrentListeningPersonIds = TypedAction.define("MATEKTABOR//SET_CURRENT_LISTENING_PERSON_IDS")<{
     currentListeningPersonIds: string[];
+}>();
+
+export const SetCurrentListeningCampRoom = TypedAction.define("MATEKTABOR//SET_CURRENT_LISTENING_CAMP_ROOM")<{
+    currentListeningCampRoom: ICampRoomState;
 }>();

@@ -1,7 +1,7 @@
-import { IAppState, IStoriesState, IPersonsState } from "./state";
+import { IAppState, IStoriesState, IPersonsState, ICampsState, ICampRoomState } from "./state";
 import createCachedSelector from "re-reselect";
 import { createSelector } from "reselect";
-import { IStory, IPerson, ISelectOption } from "../commons";
+import { IStory, IPerson, ISelectOption, IWithId, ICamp } from "../commons";
 
 export const selectCurrentUser = (state: IAppState) => state.currentUser;
 
@@ -10,12 +10,7 @@ export const selectStories = (state: IAppState) => state.stories;
 export const selectStoriesList = createSelector(
     selectStories,
     (stories: IStoriesState): IStory[] => {
-        return Object.keys(stories)
-            .map(storyId => {
-                const story = stories[storyId];
-                return story === undefined ? undefined : { id: storyId, ...story };
-            })
-            .filter(story => story !== undefined) as IStory[];
+        return idMapToList(stories);
     },
 );
 
@@ -53,12 +48,7 @@ export const selectPersons = (state: IAppState) => state.persons;
 export const selectPersonsList = createSelector(
     selectPersons,
     (persons: IPersonsState): IPerson[] => {
-        return Object.keys(persons)
-            .map(personId => {
-                const person = persons[personId];
-                return person === undefined ? undefined : { id: personId, ...person };
-            })
-            .filter(person => person !== undefined) as IPerson[];
+        return idMapToList(persons);
     },
 );
 
@@ -70,6 +60,20 @@ export const selectPersonsAsSelectOptions = createSelector(
 );
 
 export const selectCamps = (state: IAppState) => state.camps;
+
+export const selectCampsList = createSelector(
+    selectCamps,
+    (camps: ICampsState): ICamp[] => {
+        return idMapToList(camps);
+    },
+);
+
+export const selectCampsAsSelectOptions = createSelector(
+    selectCampsList,
+    (camps: ICamp[]): ISelectOption[] => {
+        return camps.map(campToSelectOption);
+    },
+);
 
 export const selectCurrentStoryId = (state: IAppState) => state.currentStoryId;
 
@@ -107,6 +111,51 @@ export const selectCurrentListeningPersonsAsSelectOptions = createSelector(
     },
 );
 
+export const selectCurrentListeningCampRoom = (state: IAppState) => state.currentListeningCampRoom;
+
+export const selectCurrentListeningCampRoomCamp = createSelector(
+    selectCurrentListeningCampRoom,
+    selectCamps,
+    (currentListeningRoom: ICampRoomState, campsMap: ICampsState): ICamp | undefined => {
+        const { campId } = currentListeningRoom;
+        if (campId === undefined) {
+            return undefined;
+        }
+        const camp = campsMap[campId];
+        if (camp === undefined) {
+            return undefined;
+        }
+        return { id: campId, ...camp };
+    },
+);
+
+export const selectCurrentListeningCampRoomCampAsSelectOption = createSelector(
+    selectCurrentListeningCampRoomCamp,
+    (camp: ICamp | undefined): ISelectOption | undefined => {
+        return camp === undefined ? undefined : campToSelectOption(camp);
+    },
+);
+
+export const selectCurrentListeningCampRoomNamesAsSelectOptions = createSelector(
+    selectCurrentListeningCampRoomCamp,
+    (camp: ICamp | undefined): ISelectOption[] => {
+        if (camp === undefined) {
+            return [];
+        }
+        const { rooms } = camp;
+        const roomNames = Object.keys(rooms);
+        return roomNames.map(stringToSelectOption);
+    },
+);
+
+export const selectCurrentListeningCampRoomNameAsSelectOption = createSelector(
+    selectCurrentListeningCampRoom,
+    (currentListeningRoom: ICampRoomState): ISelectOption | undefined => {
+        const { roomName } = currentListeningRoom;
+        return roomName === undefined ? undefined : stringToSelectOption(roomName);
+    },
+);
+
 const mapPersonIdsToSelectOptions = (personIds: string[], personsMap: IPersonsState): ISelectOption[] => {
     return ((personIds
         .map(personId => {
@@ -120,4 +169,25 @@ const personToSelectOption = (person: IPerson): ISelectOption => {
     const { id, name, group } = person;
     const label = group === undefined ? name : `${name} (${group})`;
     return { value: id, label };
+};
+
+const campToSelectOption = (camp: ICamp): ISelectOption => {
+    const { id, group, number } = camp;
+    return { value: id, label: `${group}/${number}` };
+};
+
+const idMapToList = <T>(idMap: { [id: string]: T }): Array<T & IWithId> => {
+    return Object.keys(idMap)
+        .map(id => {
+            const value = idMap[id];
+            return value === undefined ? undefined : { id, ...value };
+        })
+        .filter(value => value !== undefined) as Array<T & IWithId>;
+};
+
+const stringToSelectOption = (value: string) => {
+    return {
+        value,
+        label: value,
+    };
 };
