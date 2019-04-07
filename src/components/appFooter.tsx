@@ -21,7 +21,7 @@ export class UnconnectedAppFooter extends React.Component<IAppFooterProps, IAppF
             <div className="app-footer">
                 <MuiThemeProvider theme={DARK_THEME}>
                     <span className="app-footer-item">
-                        <a className="underline" href={CONTACT_HREF}>
+                        <a className="underline inherit-color" href={CONTACT_HREF}>
                             Kérdésed van? Írj emailt!
                         </a>
                     </span>
