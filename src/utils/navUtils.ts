@@ -7,6 +7,7 @@ export enum Page {
     SignIn = "signin",
     Barkochba = "barkochba",
     BarkochbaExport = "barkochba/export",
+    BarkochbaManage = "barkochba/manage",
     TermsOfService = "terms-of-service",
     PrivacyPolicy = "privacy-policy",
 }
@@ -18,6 +19,7 @@ export namespace NavUtils {
             `/signin${redirectUrl === undefined ? "" : `?redirectUrl=${redirectUrl}`}`,
         [Page.Barkochba]: () => `/barkochba`,
         [Page.BarkochbaExport]: (campId?: string) => `/barkochba/export/${campId === undefined ? "" : `${campId}`}`,
+        [Page.BarkochbaManage]: () => `/barkochba/manage`,
         [Page.TermsOfService]: () => `/terms-of-service`,
         [Page.PrivacyPolicy]: () => `/privacy-policy`,
     };
@@ -27,6 +29,7 @@ export namespace NavUtils {
         [Page.SignIn]: getNavUrl[Page.SignIn](),
         [Page.Barkochba]: getNavUrl[Page.Barkochba](),
         [Page.BarkochbaExport]: `/barkochba/export/:campId?`,
+        [Page.BarkochbaManage]: getNavUrl[Page.BarkochbaManage](),
         [Page.TermsOfService]: getNavUrl[Page.TermsOfService](),
         [Page.PrivacyPolicy]: getNavUrl[Page.PrivacyPolicy](),
     };
@@ -84,7 +87,8 @@ export namespace NavUtils {
         [Page.Home]: getPageTitle(),
         [Page.SignIn]: getPageTitle("Bejelentkezés"),
         [Page.Barkochba]: getPageTitle("Barkochba"),
-        [Page.BarkochbaExport]: getPageTitle("Barkochba - Export"),
+        [Page.BarkochbaExport]: getPageTitle("Barkochba - Áttekintő táblázatok"),
+        [Page.BarkochbaManage]: getPageTitle("Barkochba - Szerkesztés"),
         [Page.TermsOfService]: getPageTitle("Terms of Service"),
         [Page.PrivacyPolicy]: getPageTitle("Privacy Policy"),
     };

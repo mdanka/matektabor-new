@@ -35,6 +35,8 @@ const BarkochbaExportLink = (props: any) => (
     <RouterLink to={NavUtils.getNavUrl[Page.BarkochbaExport](undefined)} {...props} />
 );
 
+const BarkochbaManageLink = (props: any) => <RouterLink to={NavUtils.getNavUrl[Page.BarkochbaManage]()} {...props} />;
+
 class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, {}> {
     public render() {
         const { currentListeningPersonsAsSelectOptions, personsAsSelectOptions } = this.props;
@@ -53,6 +55,11 @@ class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, 
                         <Typography variant="body1" paragraph={true}>
                             <Link variant="body1" component={BarkochbaExportLink}>
                                 Áttekintő táblázatok az egyes táborokhoz
+                            </Link>
+                        </Typography>
+                        <Typography variant="body1" paragraph={true}>
+                            <Link variant="body1" component={BarkochbaManageLink}>
+                                Gyerekek és táborok szerkesztése
                             </Link>
                         </Typography>
                     </div>

@@ -5,11 +5,10 @@ import { Login } from "./login";
 import { AppHeader } from "./appHeader";
 import { AppFooter } from "./appFooter";
 import { NavUtils, Page } from "../utils";
-import { BarkochbaScreen } from "./barkochba";
+import { BarkochbaScreen, BarkochbaManageScreen, BarkochbaExportScreen } from "./barkochba";
 import { StaticContent } from "./staticContent";
 import { ScrollToTop } from "./common";
 import DocumentTitle = require("react-document-title");
-import { BarkochbaExportScreen } from "./barkochba/barkochbaExportScreen";
 
 export interface IMatektaborAppState {}
 
@@ -31,6 +30,10 @@ export class MatektaborApp extends React.Component<{}, IMatektaborAppState> {
                                 <Route
                                     path={NavUtils.getNavUrlTemplate[Page.BarkochbaExport]}
                                     render={this.renderBarkochbaExport}
+                                />
+                                <Route
+                                    path={NavUtils.getNavUrlTemplate[Page.BarkochbaManage]}
+                                    render={this.renderBarkochbaManage}
                                 />
                                 <Route
                                     exact
@@ -117,6 +120,17 @@ export class MatektaborApp extends React.Component<{}, IMatektaborAppState> {
         return (
             <DocumentTitle title={NavUtils.getNavUrlSimpleTitle[Page.BarkochbaExport]}>
                 <BarkochbaExportScreen campId={campId} />
+            </DocumentTitle>
+        );
+    };
+
+    private renderBarkochbaManage = (_locationInfo: RouteComponentProps<any>) => {
+        return (
+            <DocumentTitle title={NavUtils.getNavUrlSimpleTitle[Page.BarkochbaManage]}>
+                <div>
+                    <AppHeader />
+                    <BarkochbaManageScreen />
+                </div>
             </DocumentTitle>
         );
     };
