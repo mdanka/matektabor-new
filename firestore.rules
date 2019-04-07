@@ -23,13 +23,13 @@ service cloud.firestore {
     }
 
     match /persons/{document=**} {
-      allow read: if isSignedIn() && isViewer();
-      allow create, update, delete: if false;
+      allow read, create: if isSignedIn() && isViewer();
+      allow update, delete: if false;
     }
 
     match /camps/{document=**} {
-      allow read: if isSignedIn() && isViewer();
-      allow create, update, delete: if false;
+      allow read, create, update: if isSignedIn() && isViewer();
+      allow delete: if false;
     }
   }
 }
