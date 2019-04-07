@@ -3,7 +3,7 @@ import { ICamp, IStory } from "../../commons";
 import { IAppState, IPersonsState, selectStoriesOrderedByNumber, selectPersons } from "../../store";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
-import { selectCamp, selectCampsList } from "../../store/selectors";
+import { selectCamp, selectCampsListOrderedByNameAndNumber } from "../../store/selectors";
 import { List, ListItem, ListItemText } from "@material-ui/core";
 import { NavUtils, Page } from "../../utils";
 import { Link } from "react-router-dom";
@@ -111,7 +111,7 @@ function mapStateToProps(state: IAppState, ownProps: IBarkochbaExportScreenOwnPr
     const { campId } = ownProps;
     return {
         camp: campId === undefined ? undefined : selectCamp(state, campId),
-        camps: selectCampsList(state),
+        camps: selectCampsListOrderedByNameAndNumber(state),
         stories: selectStoriesOrderedByNumber(state),
         personMap: selectPersons(state),
     };

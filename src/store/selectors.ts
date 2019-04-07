@@ -16,8 +16,8 @@ export const selectStoriesList = createSelector(
 
 export const selectStoriesOrderedByNumber = createSelector(
     selectStoriesList,
-    (songs: IStory[]) => {
-        return songs.sort((a: IStory, b: IStory) => {
+    (stories: IStory[]) => {
+        return stories.sort((a: IStory, b: IStory) => {
             if (a.number === undefined && b.number === undefined) {
                 return 0;
             } else if (a.number === undefined) {
@@ -68,8 +68,29 @@ export const selectCampsList = createSelector(
     },
 );
 
-export const selectCampsAsSelectOptions = createSelector(
+export const selectCampsListOrderedByNameAndNumber = createSelector(
     selectCampsList,
+    (camps: ICamp[]) => {
+        return camps.sort((a: ICamp, b: ICamp) => {
+            const { group: groupA, number: numberA } = a;
+            const { group: groupB, number: numberB } = b;
+            if (groupA > groupB) {
+                return 1;
+            } else if (groupA < groupB) {
+                return -1;
+            } else if (numberA > numberB) {
+                return -1;
+            } else if (numberA < numberB) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+    },
+);
+
+export const selectCampsAsSelectOptions = createSelector(
+    selectCampsListOrderedByNameAndNumber,
     (camps: ICamp[]): ISelectOption[] => {
         return camps.map(campToSelectOption);
     },
