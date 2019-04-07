@@ -140,7 +140,8 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                             Melyik szoba?
                         </Typography>
                         <Typography variant="subtitle2">
-                            Új szoba létrehozásához csak gépeld be a szoba nevét.
+                            Új szoba létrehozásához csak gépeld be a szoba nevét. (A kiválasztott opciók nem törölhetők
+                            - csak klikkelj a mezőbe, és kezdj el gépelni.)
                         </Typography>
                         <div>
                             <AutoCompleteSelector
