@@ -59,7 +59,7 @@ class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, 
                         </Typography>
                         <Typography variant="body1" paragraph={true}>
                             <Link variant="body1" component={BarkochbaManageLink}>
-                                Gyerekek és táborok szerkesztése
+                                Táborok szerkesztése
                             </Link>
                         </Typography>
                     </div>

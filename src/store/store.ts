@@ -19,7 +19,7 @@ const initialState: IAppState = {
         newPersonName: "",
         newPersonGroup: "",
         newCampGroup: "",
-        newCampNumber: undefined,
+        newCampNumber: "",
         roomsSelectionCampId: undefined,
         roomsNewRoomName: "",
         roomsSelectionRoomName: undefined,

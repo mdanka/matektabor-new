@@ -4,7 +4,7 @@ import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { Typography, TextField, Button, Paper, Select } from "@material-ui/core";
 import { getGlobalServices } from "../../services";
-import { IPersonApi } from "../../commons";
+import { IPersonApi, ICampApi } from "../../commons";
 
 export interface IBarkochbaManageScreenOwnProps {}
 
@@ -39,14 +39,14 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                 <Typography variant="h5">Új gyerek</Typography>
                 <TextField
                     value={newPersonName}
-                    onChange={this.getFieldUpdater("newPersonName")}
+                    onChange={this.getTextFieldUpdater("newPersonName")}
                     className="barkochba-manage-input-space"
                     label="Név"
                     placeholder="Tóth János"
                 />
                 <TextField
                     value={newPersonGroup}
-                    onChange={this.getFieldUpdater("newPersonGroup")}
+                    onChange={this.getTextFieldUpdater("newPersonGroup")}
                     className="barkochba-manage-input-space"
                     label="Csoport"
                     placeholder="Beluga"
@@ -59,12 +59,27 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
     };
 
     private renderCampAdd = () => {
+        const { manageState } = this.props;
+        const { newCampGroup, newCampNumber } = manageState;
         return (
             <Paper className="barkochba-manage-panel">
                 <Typography variant="h5">Új tábor</Typography>
-                <TextField className="barkochba-manage-input-space" label="Csoport" placeholder="Beluga" />
-                <TextField className="barkochba-manage-input-space" label="Szám" placeholder="3" type="number" />
-                <Button variant="contained" color="primary">
+                <TextField
+                    value={newCampGroup}
+                    onChange={this.getTextFieldUpdater("newCampGroup")}
+                    className="barkochba-manage-input-space"
+                    label="Csoport"
+                    placeholder="Beluga"
+                />
+                <TextField
+                    value={newCampNumber}
+                    onChange={this.getTextFieldUpdater("newCampNumber")}
+                    className="barkochba-manage-input-space"
+                    label="Szám"
+                    placeholder="3"
+                    type="number"
+                />
+                <Button variant="contained" color="primary" onClick={this.handleNewCampAdd}>
                     Létrehozás
                 </Button>
             </Paper>
@@ -114,7 +129,7 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
         );
     };
 
-    private getFieldUpdater = (fieldName: keyof IBarkochbaManageState) => (
+    private getTextFieldUpdater = (fieldName: keyof IBarkochbaManageState) => (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
     ) => {
         const { update } = this.props;
@@ -125,6 +140,10 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
     private handleNewPersonAdd = () => {
         const { manageState, update } = this.props;
         const { newPersonName, newPersonGroup } = manageState;
+        if (newPersonName === "" || newPersonGroup === "") {
+            console.error("Nem lehet személyt létrehozni üres névvel vagy csoporttal.");
+            return;
+        }
         const newPerson: IPersonApi = {
             name: newPersonName,
             group: newPersonGroup,
@@ -136,6 +155,32 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
         const { dataService } = globalServices;
         dataService.createPerson(newPerson);
         update({ newPersonName: "", newPersonGroup: "" });
+    };
+
+    private handleNewCampAdd = () => {
+        const { manageState, update } = this.props;
+        const { newCampGroup, newCampNumber } = manageState;
+        const newCampNumberParsed = parseInt(newCampNumber);
+        if (isNaN(newCampNumberParsed)) {
+            console.error("A tábor számának - meglepetés - számnak kell lennie.");
+            return;
+        }
+        if (newCampGroup === "" || newCampNumber === "" || newCampNumberParsed < 0) {
+            console.error("Nem lehet tábort létrehozni üres névvel vagy számmal, és negatív számmal sem.");
+            return;
+        }
+        const newCamp: ICampApi = {
+            group: newCampGroup,
+            number: newCampNumberParsed,
+            rooms: {},
+        };
+        const globalServices = getGlobalServices();
+        if (globalServices === undefined) {
+            return;
+        }
+        const { dataService } = globalServices;
+        dataService.createCamp(newCamp);
+        update({ newCampGroup: "", newCampNumber: "" });
     };
 }
 
