@@ -104,6 +104,10 @@ export class DataService {
             );
     };
 
+    public createPerson = (newPerson: IPersonApi) => {
+        return this.firestore.collection(DataService.COLLECTION_PERSONS).add(newPerson);
+    };
+
     private querySnapshotToObjects = <API>(querySnapshot: firebase.firestore.QuerySnapshot) => {
         const songs: { [id: string]: API } = {};
         querySnapshot.forEach(doc => {

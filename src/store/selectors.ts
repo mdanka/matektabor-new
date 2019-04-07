@@ -188,6 +188,8 @@ export const selectCurrentListeningCampRoomNameAsSelectOption = createSelector(
 
 export const selectHasPendingWrites = (state: IAppState) => state.hasPendingWrites;
 
+export const selectBarkochbaManageState = (state: IAppState) => state.barkochbaManageState;
+
 const mapPersonIdsToSelectOptions = (personIds: string[], personsMap: IPersonsState): ISelectOption[] => {
     return ((personIds
         .map(personId => {

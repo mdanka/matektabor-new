@@ -8,8 +8,9 @@ import {
     SetCurrentListeningPersonIds,
     SetCurrentListeningCampRoom,
     SetHasPendingWrites,
+    SetBarkochbaManageState,
 } from "./actions";
-import { IAppState } from "./state";
+import { IAppState, IBarkochbaManageState } from "./state";
 
 export const appReducer = TypedReducer.builder<IAppState>()
     .withHandler(SetCurrentUser.TYPE, (state, payload) => {
@@ -50,6 +51,11 @@ export const appReducer = TypedReducer.builder<IAppState>()
     .withHandler(SetHasPendingWrites.TYPE, (state, payload) => {
         return setWith(state, {
             hasPendingWrites: payload.hasPendingWrites,
+        });
+    })
+    .withHandler(SetBarkochbaManageState.TYPE, (state, payload) => {
+        return setWith(state, {
+            barkochbaManageState: setWith(state.barkochbaManageState, payload) as IBarkochbaManageState,
         });
     })
     .build();

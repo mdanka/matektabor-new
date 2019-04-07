@@ -9,6 +9,7 @@ export interface IAppState {
     currentListeningPersonIds: string[];
     currentListeningCampRoom: ICampRoomState;
     hasPendingWrites: boolean;
+    barkochbaManageState: IBarkochbaManageState;
 }
 
 export type IPersonsState = IMapState<IPersonApi>;
@@ -20,6 +21,16 @@ export type IStoriesState = IMapState<IStoryApi>;
 export interface ICampRoomState {
     campId: string | undefined;
     roomName: string | undefined;
+}
+
+export interface IBarkochbaManageState {
+    newPersonName: string;
+    newPersonGroup: string;
+    newCampGroup: string;
+    newCampNumber: number | undefined;
+    roomsSelectionCampId: string | undefined;
+    roomsNewRoomName: string;
+    roomsSelectionRoomName: string | undefined;
 }
 
 interface IMapState<T> {

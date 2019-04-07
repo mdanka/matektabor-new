@@ -15,6 +15,15 @@ const initialState: IAppState = {
         roomName: undefined,
     },
     hasPendingWrites: false,
+    barkochbaManageState: {
+        newPersonName: "",
+        newPersonGroup: "",
+        newCampGroup: "",
+        newCampNumber: undefined,
+        roomsSelectionCampId: undefined,
+        roomsNewRoomName: "",
+        roomsSelectionRoomName: undefined,
+    },
 };
 
 export function createAppStore() {

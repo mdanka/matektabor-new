@@ -1,14 +1,20 @@
 import * as React from "react";
-import { IAppState } from "../../store";
+import { IAppState, IBarkochbaManageState, selectBarkochbaManageState, SetBarkochbaManageState } from "../../store";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { Typography, TextField, Button, Paper, Select } from "@material-ui/core";
+import { getGlobalServices } from "../../services";
+import { IPersonApi } from "../../commons";
 
 export interface IBarkochbaManageScreenOwnProps {}
 
-export interface IBarkochbaManageScreenStateProps {}
+export interface IBarkochbaManageScreenStateProps {
+    manageState: IBarkochbaManageState;
+}
 
-export interface IBarkochbaManageScreenDispatchProps {}
+export interface IBarkochbaManageScreenDispatchProps {
+    update: (fields: Partial<IBarkochbaManageState>) => void;
+}
 
 export type IBarkochbaManageScreenProps = IBarkochbaManageScreenOwnProps &
     IBarkochbaManageScreenStateProps &
@@ -26,12 +32,26 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
     }
 
     private renderPersonAdd = () => {
+        const { manageState } = this.props;
+        const { newPersonName, newPersonGroup } = manageState;
         return (
             <Paper className="barkochba-manage-panel">
                 <Typography variant="h5">Új gyerek</Typography>
-                <TextField className="barkochba-manage-input-space" label="Név" placeholder="Tóth János" />
-                <TextField className="barkochba-manage-input-space" label="Csoport" placeholder="Beluga" />
-                <Button variant="contained" color="primary">
+                <TextField
+                    value={newPersonName}
+                    onChange={this.getFieldUpdater("newPersonName")}
+                    className="barkochba-manage-input-space"
+                    label="Név"
+                    placeholder="Tóth János"
+                />
+                <TextField
+                    value={newPersonGroup}
+                    onChange={this.getFieldUpdater("newPersonGroup")}
+                    className="barkochba-manage-input-space"
+                    label="Csoport"
+                    placeholder="Beluga"
+                />
+                <Button variant="contained" color="primary" onClick={this.handleNewPersonAdd}>
                     Létrehozás
                 </Button>
             </Paper>
@@ -93,20 +113,50 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
             </Paper>
         );
     };
+
+    private getFieldUpdater = (fieldName: keyof IBarkochbaManageState) => (
+        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+    ) => {
+        const { update } = this.props;
+        const value = event.target.value;
+        update({ [fieldName]: value });
+    };
+
+    private handleNewPersonAdd = () => {
+        const { manageState, update } = this.props;
+        const { newPersonName, newPersonGroup } = manageState;
+        const newPerson: IPersonApi = {
+            name: newPersonName,
+            group: newPersonGroup,
+        };
+        const globalServices = getGlobalServices();
+        if (globalServices === undefined) {
+            return;
+        }
+        const { dataService } = globalServices;
+        dataService.createPerson(newPerson);
+        update({ newPersonName: "", newPersonGroup: "" });
+    };
 }
 
 function mapStateToProps(
-    _state: IAppState,
+    state: IAppState,
     _ownProps: IBarkochbaManageScreenOwnProps,
 ): IBarkochbaManageScreenStateProps {
-    return {};
+    return {
+        manageState: selectBarkochbaManageState(state),
+    };
 }
 
 function mapDispatchToProps(
-    _dispatch: Dispatch,
+    dispatch: Dispatch,
     _ownProps: IBarkochbaManageScreenOwnProps,
 ): IBarkochbaManageScreenDispatchProps {
-    return {};
+    return {
+        update: (fields: Partial<IBarkochbaManageState>) => {
+            dispatch(SetBarkochbaManageState.create(fields));
+        },
+    };
 }
 
 export const BarkochbaManageScreen = connect(

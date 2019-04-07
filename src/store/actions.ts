@@ -1,6 +1,6 @@
 import { TypedAction } from "redoodle";
 import { IUser } from "../commons";
-import { IPersonsState, ICampsState, IStoriesState, ICampRoomState } from "./state";
+import { IPersonsState, ICampsState, IStoriesState, ICampRoomState, IBarkochbaManageState } from "./state";
 
 export const SetCurrentUser = TypedAction.define("MATEKTABOR//SET_CURRENT_USER")<{
     currentUser: IUser | undefined;
@@ -33,3 +33,7 @@ export const SetCurrentListeningCampRoom = TypedAction.define("MATEKTABOR//SET_C
 export const SetHasPendingWrites = TypedAction.define("MATEKTABOR//SET_HAS_PENDING_WRITES")<{
     hasPendingWrites: boolean;
 }>();
+
+export const SetBarkochbaManageState = TypedAction.define("MATEKTABOR//SET_BARKOCHBA_MANAGE_STATE")<
+    Partial<IBarkochbaManageState>
+>();
