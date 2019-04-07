@@ -115,6 +115,17 @@ export class DataService {
         return this.firestore.collection(DataService.COLLECTION_PERSONS).add(newPerson);
     };
 
+    public createCamp = (newCamp: ICampApi) => {
+        return this.firestore.collection(DataService.COLLECTION_CAMPS).add(newCamp);
+    };
+
+    public updateCampRooms = (campId: string, roomName: string, personIds: string[]) => {
+        return this.firestore
+            .collection(DataService.COLLECTION_CAMPS)
+            .doc(campId)
+            .update({ rooms: { [roomName]: personIds } });
+    };
+
     private querySnapshotToObjects = <API>(querySnapshot: firebase.firestore.QuerySnapshot) => {
         const songs: { [id: string]: API } = {};
         querySnapshot.forEach(doc => {
