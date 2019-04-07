@@ -10,6 +10,11 @@ export class DataService {
     private static COLLECTION_STORIES = "stories";
 
     private snapshotUnsubscribers: Array<() => void> = [];
+    private hasPendingWritesMap = {
+        [DataService.COLLECTION_PERSONS]: false,
+        [DataService.COLLECTION_CAMPS]: false,
+        [DataService.COLLECTION_STORIES]: false,
+    };
 
     public constructor(
         private firestore: firebase.firestore.Firestore,
@@ -37,19 +42,21 @@ export class DataService {
         this.snapshotUnsubscribers.splice(0, this.snapshotUnsubscribers.length);
         // Subscribe new listeners
         this.snapshotUnsubscribers.push(
-            this.subscribeToCollection<IPersonApi>(DataService.COLLECTION_PERSONS, documents => {
+            this.subscribeToCollection<IPersonApi>(DataService.COLLECTION_PERSONS, (documents, hasPendingWrites) => {
                 store.dispatch(SetPersons.create({ persons: documents }));
+                this.setPendingWrite(DataService.COLLECTION_PERSONS, hasPendingWrites);
             }),
         );
         this.snapshotUnsubscribers.push(
-            this.subscribeToCollection<ICampApi>(DataService.COLLECTION_CAMPS, documents => {
+            this.subscribeToCollection<ICampApi>(DataService.COLLECTION_CAMPS, (documents, hasPendingWrites) => {
                 store.dispatch(SetCamps.create({ camps: documents }));
+                this.setPendingWrite(DataService.COLLECTION_CAMPS, hasPendingWrites);
             }),
         );
         this.snapshotUnsubscribers.push(
             this.subscribeToCollection<IStoryApi>(DataService.COLLECTION_STORIES, (documents, hasPendingWrites) => {
                 store.dispatch(SetStories.create({ stories: documents }));
-                store.dispatch(SetHasPendingWrites.create({ hasPendingWrites }));
+                this.setPendingWrite(DataService.COLLECTION_STORIES, hasPendingWrites);
             }),
         );
     };
@@ -114,5 +121,15 @@ export class DataService {
             songs[doc.id] = doc.data() as API;
         });
         return songs;
+    };
+
+    private setPendingWrite = (key: string, value: boolean) => {
+        this.hasPendingWritesMap[key] = value;
+        const hasPendingWrites = Object.values(this.hasPendingWritesMap).indexOf(true) !== -1;
+        const store = this.store;
+        if (store === undefined) {
+            return;
+        }
+        store.dispatch(SetHasPendingWrites.create({ hasPendingWrites }));
     };
 }
