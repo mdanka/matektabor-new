@@ -6,7 +6,7 @@ export enum Page {
     Home = "home",
     SignIn = "signin",
     Barkochba = "barkochba",
-    BarkochbaExport = "barkochba-export",
+    BarkochbaExport = "barkochba/export",
     TermsOfService = "terms-of-service",
     PrivacyPolicy = "privacy-policy",
 }
@@ -17,7 +17,7 @@ export namespace NavUtils {
         [Page.SignIn]: (redirectUrl?: string) =>
             `/signin${redirectUrl === undefined ? "" : `?redirectUrl=${redirectUrl}`}`,
         [Page.Barkochba]: () => `/barkochba`,
-        [Page.BarkochbaExport]: (campId?: string) => `/barkochba-export/${campId === undefined ? "" : `${campId}`}`,
+        [Page.BarkochbaExport]: (campId?: string) => `/barkochba/export/${campId === undefined ? "" : `${campId}`}`,
         [Page.TermsOfService]: () => `/terms-of-service`,
         [Page.PrivacyPolicy]: () => `/privacy-policy`,
     };
@@ -26,7 +26,7 @@ export namespace NavUtils {
         [Page.Home]: getNavUrl[Page.Home](),
         [Page.SignIn]: getNavUrl[Page.SignIn](),
         [Page.Barkochba]: getNavUrl[Page.Barkochba](),
-        [Page.BarkochbaExport]: `/barkochba-export/:campId?`,
+        [Page.BarkochbaExport]: `/barkochba/export/:campId?`,
         [Page.TermsOfService]: getNavUrl[Page.TermsOfService](),
         [Page.PrivacyPolicy]: getNavUrl[Page.PrivacyPolicy](),
     };
