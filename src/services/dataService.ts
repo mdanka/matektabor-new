@@ -1,8 +1,18 @@
 import * as firebase from "firebase/app";
-import { SetStories, IAppState, SetPersons, SetCamps, SetHasPendingWrites } from "../store";
+import {
+    SetStories,
+    IAppState,
+    SetPersons,
+    SetCamps,
+    SetHasPendingWrites,
+    IPersonsState,
+    ICampsState,
+    IStoriesState,
+} from "../store";
 import { IStoryApi, IPersonApi, ICampApi } from "../commons";
 import { Store } from "redoodle";
 import { FirebaseAuthService } from "./firebaseAuthService";
+import { runImport } from "../components/import/dataTransform";
 
 export class DataService {
     private static COLLECTION_PERSONS = "persons";
@@ -24,6 +34,8 @@ export class DataService {
     private subscribeToDataStoreIfLoggedIn = (currentUser: firebase.User | undefined | null) => {
         if (currentUser != null) {
             this.subscribeToDataStore();
+            // TODO(mdanka): remove
+            runImport();
         }
     };
 
@@ -102,6 +114,54 @@ export class DataService {
             .catch((reason: any) =>
                 console.error(`[DataService] Failed to update story with persons who know it. ${reason}`),
             );
+    };
+
+    /*
+     * TEMP IMPORT
+     */
+    public deleteAllCollections = () => {
+        return Promise.all([
+            this.deleteCollection(DataService.COLLECTION_PERSONS),
+            this.deleteCollection(DataService.COLLECTION_STORIES),
+            this.deleteCollection(DataService.COLLECTION_CAMPS),
+        ]);
+    };
+
+    public createData = (personMap: IPersonsState, campMap: ICampsState, storyMap: IStoriesState) => {
+        return Promise.all([
+            this.createFromMap(personMap, DataService.COLLECTION_PERSONS),
+            this.createFromMap(campMap, DataService.COLLECTION_CAMPS),
+            this.createFromMap(storyMap, DataService.COLLECTION_STORIES),
+        ]);
+    };
+
+    private createFromMap = <T>(map: { [id: string]: T }, collection: string) => {
+        return Promise.all(
+            Object.keys(map).map(id => {
+                const value = map[id];
+                return this.firestore
+                    .collection(collection)
+                    .doc(id)
+                    .set(value);
+            }),
+        );
+    };
+
+    private deleteCollection = (collection: string) => {
+        return this.firestore
+            .collection(collection)
+            .get()
+            .then(querySnapshot => {
+                return Promise.all(querySnapshot.docs.map(doc => doc.id).map(this.getDocDeleter(collection)));
+            })
+            .catch((reason: any) => console.error(`[DataService] Failed to get all ${collection} IDs. ${reason}`));
+    };
+
+    private getDocDeleter = (collection: string) => (id: string) => {
+        return this.firestore
+            .collection(collection)
+            .doc(id)
+            .delete();
     };
 
     private querySnapshotToObjects = <API>(querySnapshot: firebase.firestore.QuerySnapshot) => {
