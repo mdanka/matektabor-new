@@ -114,7 +114,7 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
             manageState,
             allPersonsAsOptions,
         } = this.props;
-        const { roomsSelectionRoomName, roomsNewRoomName } = manageState;
+        const { roomsSelectionRoomName } = manageState;
         const currentCampOption = selectedCamp === undefined ? undefined : campToSelectOption(selectedCamp);
         const currentRoomOption =
             roomsSelectionRoomName === undefined
@@ -135,24 +135,9 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                     />
                 </div>
                 <Typography className="barkochba-manage-subtitle" variant="subtitle1">
-                    Új szoba
-                </Typography>
-                <div>
-                    <TextField
-                        value={roomsNewRoomName}
-                        onChange={this.getTextFieldUpdater("roomsNewRoomName")}
-                        className="barkochba-manage-input-space"
-                        label="Szobanév"
-                        placeholder="K"
-                        disabled={currentCampOption === undefined}
-                    />
-                    <Button variant="contained" color="primary" onClick={this.handleNewRoomAdd}>
-                        Létrehozás
-                    </Button>
-                </div>
-                <Typography className="barkochba-manage-subtitle" variant="subtitle1">
                     Melyik szoba?
                 </Typography>
+                <Typography variant="subtitle2">Új szoba létrehozásához csak gépeld be a szoba nevét.</Typography>
                 <div>
                     <AutoCompleteSelector
                         options={availableRoomsAsOptions}
@@ -160,6 +145,9 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                         onChange={this.handleRoomChange}
                         placeholder="Válassz szobát"
                         disabled={currentCampOption === undefined}
+                        creatable={true}
+                        isValidNewOption={(value: string) => value !== ""}
+                        onCreateOption={this.handleNewRoomAdd}
                     />
                 </div>
                 <Typography className="barkochba-manage-subtitle" variant="subtitle1">
@@ -231,14 +219,13 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
         update({ newCampGroup: "", newCampNumber: "" });
     };
 
-    private handleNewRoomAdd = () => {
-        const { manageState, update, selectedCamp } = this.props;
-        const { roomsNewRoomName } = manageState;
+    private handleNewRoomAdd = (newRoomName: string) => {
+        const { selectedCamp } = this.props;
         if (selectedCamp === undefined) {
             console.error("Előbb válassz tábort.");
             return;
         }
-        if (roomsNewRoomName === "") {
+        if (newRoomName === "") {
             console.error("Nem lehet szobát létrehozni üres névvel.");
             return;
         }
@@ -247,8 +234,8 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
             return;
         }
         const { dataService } = globalServices;
-        dataService.createRoom(selectedCamp, roomsNewRoomName);
-        update({ roomsNewRoomName: "" });
+        dataService.createRoom(selectedCamp, newRoomName);
+        this.handleRoomChange({ value: newRoomName, label: newRoomName });
     };
 
     private handleCampChange = (value: ValueType<ISelectOption>) => {

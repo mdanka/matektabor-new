@@ -1,6 +1,7 @@
 import * as React from "react";
 import { ISelectOption } from "../../commons";
 import Select from "react-select";
+import CreatableSelect from "react-select/lib/Creatable";
 import { ActionMeta, ValueType } from "react-select/lib/types";
 import { Typography, TextField, MenuItem, Chip, Paper, withStyles } from "@material-ui/core";
 import CancelIcon from "@material-ui/icons/Cancel";
@@ -16,11 +17,26 @@ export interface IAutoCompleteSelectorProps {
     value?: ValueType<ISelectOption>;
     options?: ISelectOption[];
     disabled?: boolean;
+    creatable?: boolean;
+    isValidNewOption?: (inputValue: string) => boolean;
+    onCreateOption?: (inputValue: string) => void;
 }
 
 class UnstyledAutoCompleteSelector extends React.Component<IAutoCompleteSelectorProps, {}> {
     public render() {
-        const { disabled, placeholder, isMulti, onChange, value, options, classes, theme } = this.props;
+        const {
+            creatable,
+            disabled,
+            isValidNewOption,
+            onCreateOption,
+            placeholder,
+            isMulti,
+            onChange,
+            value,
+            options,
+            classes,
+            theme,
+        } = this.props;
 
         const selectStyles = {
             input: (base: any) => ({
@@ -32,7 +48,26 @@ class UnstyledAutoCompleteSelector extends React.Component<IAutoCompleteSelector
             }),
         };
 
-        return (
+        return creatable ? (
+            <CreatableSelect
+                classes={classes}
+                styles={selectStyles}
+                textFieldProps={{
+                    InputLabelProps: {
+                        shrink: true,
+                    },
+                }}
+                options={options}
+                components={components}
+                value={value}
+                onChange={onChange}
+                placeholder={placeholder}
+                isMulti={isMulti}
+                isDisabled={disabled}
+                isValidNewOption={isValidNewOption}
+                onCreateOption={onCreateOption}
+            />
+        ) : (
             <Select
                 classes={classes}
                 styles={selectStyles}

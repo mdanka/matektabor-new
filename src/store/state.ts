@@ -29,7 +29,6 @@ export interface IBarkochbaManageState {
     newCampGroup: string;
     newCampNumber: string;
     roomsSelectionCampId: string | undefined;
-    roomsNewRoomName: string;
     roomsSelectionRoomName: string | undefined;
 }
 

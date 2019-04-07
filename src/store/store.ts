@@ -21,7 +21,6 @@ const initialState: IAppState = {
         newCampGroup: "",
         newCampNumber: "",
         roomsSelectionCampId: undefined,
-        roomsNewRoomName: "",
         roomsSelectionRoomName: undefined,
     },
 };
