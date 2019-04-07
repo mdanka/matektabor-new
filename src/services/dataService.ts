@@ -1,6 +1,6 @@
 import * as firebase from "firebase/app";
 import { SetStories, IAppState, SetPersons, SetCamps, SetHasPendingWrites } from "../store";
-import { IStoryApi, IPersonApi, ICampApi } from "../commons";
+import { IStoryApi, IPersonApi, ICampApi, ICamp } from "../commons";
 import { Store } from "redoodle";
 import { FirebaseAuthService } from "./firebaseAuthService";
 
@@ -119,11 +119,17 @@ export class DataService {
         return this.firestore.collection(DataService.COLLECTION_CAMPS).add(newCamp);
     };
 
-    public updateCampRooms = (campId: string, roomName: string, personIds: string[]) => {
+    public createRoom = (camp: ICamp, roomName: string) => {
+        return this.updateCampRoom(camp, roomName, []);
+    };
+
+    public updateCampRoom = (camp: ICamp, roomName: string, personIds: string[]) => {
+        const { id, rooms } = camp;
+        const newRooms = Object.assign(rooms, { [roomName]: personIds });
         return this.firestore
             .collection(DataService.COLLECTION_CAMPS)
-            .doc(campId)
-            .update({ rooms: { [roomName]: personIds } });
+            .doc(id)
+            .update({ rooms: newRooms });
     };
 
     private querySnapshotToObjects = <API>(querySnapshot: firebase.firestore.QuerySnapshot) => {

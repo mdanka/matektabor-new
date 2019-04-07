@@ -7,11 +7,12 @@ export interface IPersonsSelectorProps {
     allPersons: ISelectOption[];
     selectedPersons: ISelectOption[];
     onChange: (values: ISelectOption[], action: ActionMeta) => void;
+    disabled?: boolean;
 }
 
 export class PersonsSelector extends React.Component<IPersonsSelectorProps, {}> {
     public render() {
-        const { allPersons, selectedPersons } = this.props;
+        const { allPersons, selectedPersons, disabled } = this.props;
         return (
             <AutoCompleteSelector
                 options={allPersons}
@@ -19,6 +20,7 @@ export class PersonsSelector extends React.Component<IPersonsSelectorProps, {}> 
                 onChange={this.handlePersonsWhoKnowChange}
                 placeholder="Keress egy gyerek nevére"
                 isMulti
+                disabled={disabled}
             />
         );
     }

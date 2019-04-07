@@ -190,6 +190,39 @@ export const selectHasPendingWrites = (state: IAppState) => state.hasPendingWrit
 
 export const selectBarkochbaManageState = (state: IAppState) => state.barkochbaManageState;
 
+export const selectCampRoomsAsOptions = createCachedSelector(
+    selectCamp,
+    (_state: IAppState, id: string) => id,
+    (camp: ICamp | undefined, _id: string): ISelectOption[] => {
+        return camp === undefined
+            ? []
+            : Object.keys(camp.rooms).map(roomName => {
+                  return { value: roomName, label: roomName };
+              });
+    },
+)((_state: IAppState, id: string) => id);
+
+export const selectCampRoomPeopleAsOptions = createCachedSelector(
+    selectCamp,
+    (_state: IAppState, campId: string, _roomName: string) => campId,
+    (_state: IAppState, _campId: string, roomName: string) => roomName,
+    selectPersons,
+    (camp: ICamp | undefined, _id: string, roomName: string, personMap: IPersonsState): ISelectOption[] => {
+        if (camp === undefined) {
+            return [];
+        }
+        const peopleIds = camp.rooms[roomName];
+        return peopleIds === undefined
+            ? []
+            : peopleIds.map(personId => {
+                  const personApi = personMap[personId];
+                  return personApi === undefined
+                      ? { value: personId, label: "<ismeretlen>" }
+                      : personToSelectOption({ id: personId, ...personApi });
+              });
+    },
+)((_state: IAppState, campId: string, roomName: string) => `${campId}:${roomName}`);
+
 const mapPersonIdsToSelectOptions = (personIds: string[], personsMap: IPersonsState): ISelectOption[] => {
     return ((personIds
         .map(personId => {
@@ -205,7 +238,7 @@ const personToSelectOption = (person: IPerson): ISelectOption => {
     return { value: id, label };
 };
 
-const campToSelectOption = (camp: ICamp): ISelectOption => {
+export const campToSelectOption = (camp: ICamp): ISelectOption => {
     const { id, group, number } = camp;
     return { value: id, label: `${group}/${number}` };
 };

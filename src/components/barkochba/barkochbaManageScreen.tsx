@@ -1,15 +1,34 @@
 import * as React from "react";
-import { IAppState, IBarkochbaManageState, selectBarkochbaManageState, SetBarkochbaManageState } from "../../store";
+import {
+    IAppState,
+    IBarkochbaManageState,
+    selectBarkochbaManageState,
+    SetBarkochbaManageState,
+    selectCampsAsSelectOptions,
+    selectCamp,
+    selectCampRoomPeopleAsOptions,
+    selectCampRoomsAsOptions,
+    campToSelectOption,
+    selectPersonsAsSelectOptions,
+} from "../../store";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
-import { Typography, TextField, Button, Paper, Select } from "@material-ui/core";
+import { Typography, TextField, Button, Paper } from "@material-ui/core";
 import { getGlobalServices } from "../../services";
-import { IPersonApi, ICampApi } from "../../commons";
+import { IPersonApi, ICampApi, ISelectOption, ICamp } from "../../commons";
+import { AutoCompleteSelector } from "./autoCompleteSelector";
+import { PersonsSelector } from "./personsSelector";
+import { ValueType } from "react-select/lib/types";
 
 export interface IBarkochbaManageScreenOwnProps {}
 
 export interface IBarkochbaManageScreenStateProps {
     manageState: IBarkochbaManageState;
+    availableCampsAsOptions: ISelectOption[];
+    selectedCamp: ICamp | undefined;
+    availableRoomsAsOptions: ISelectOption[];
+    roomPeopleAsOptions: ISelectOption[];
+    allPersonsAsOptions: ISelectOption[];
 }
 
 export interface IBarkochbaManageScreenDispatchProps {
@@ -87,6 +106,20 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
     };
 
     private renderRoomEdit = () => {
+        const {
+            availableCampsAsOptions,
+            availableRoomsAsOptions,
+            roomPeopleAsOptions,
+            selectedCamp,
+            manageState,
+            allPersonsAsOptions,
+        } = this.props;
+        const { roomsSelectionRoomName, roomsNewRoomName } = manageState;
+        const currentCampOption = selectedCamp === undefined ? undefined : campToSelectOption(selectedCamp);
+        const currentRoomOption =
+            roomsSelectionRoomName === undefined
+                ? undefined
+                : { value: roomsSelectionRoomName, label: roomsSelectionRoomName };
         return (
             <Paper className="barkochba-manage-panel">
                 <Typography variant="h5">Szobabeosztás</Typography>
@@ -94,19 +127,26 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                     Melyik tábor?
                 </Typography>
                 <div>
-                    <Select native placeholder="Beluga/3">
-                        <option value="" />
-                        <option value={10}>Ten</option>
-                        <option value={20}>Twenty</option>
-                        <option value={30}>Thirty</option>
-                    </Select>
+                    <AutoCompleteSelector
+                        options={availableCampsAsOptions}
+                        value={currentCampOption}
+                        onChange={this.handleCampChange}
+                        placeholder="Válassz tábort"
+                    />
                 </div>
                 <Typography className="barkochba-manage-subtitle" variant="subtitle1">
                     Új szoba
                 </Typography>
                 <div>
-                    <TextField className="barkochba-manage-input-space" label="Szobanév" placeholder="K" />
-                    <Button variant="contained" color="primary">
+                    <TextField
+                        value={roomsNewRoomName}
+                        onChange={this.getTextFieldUpdater("roomsNewRoomName")}
+                        className="barkochba-manage-input-space"
+                        label="Szobanév"
+                        placeholder="K"
+                        disabled={currentCampOption === undefined}
+                    />
+                    <Button variant="contained" color="primary" onClick={this.handleNewRoomAdd}>
                         Létrehozás
                     </Button>
                 </div>
@@ -114,17 +154,25 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                     Melyik szoba?
                 </Typography>
                 <div>
-                    <Select native placeholder="K">
-                        <option value="" />
-                        <option value={10}>Ten</option>
-                        <option value={20}>Twenty</option>
-                        <option value={30}>Thirty</option>
-                    </Select>
+                    <AutoCompleteSelector
+                        options={availableRoomsAsOptions}
+                        value={currentRoomOption}
+                        onChange={this.handleRoomChange}
+                        placeholder="Válassz szobát"
+                        disabled={currentCampOption === undefined}
+                    />
                 </div>
                 <Typography className="barkochba-manage-subtitle" variant="subtitle1">
                     A szoba lakói
                 </Typography>
-                <div>{/* People selector */}</div>
+                <div>
+                    <PersonsSelector
+                        allPersons={allPersonsAsOptions}
+                        selectedPersons={roomPeopleAsOptions}
+                        onChange={this.handleRoomPersonsChange}
+                        disabled={currentCampOption === undefined || currentRoomOption === undefined}
+                    />
+                </div>
             </Paper>
         );
     };
@@ -182,14 +230,72 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
         dataService.createCamp(newCamp);
         update({ newCampGroup: "", newCampNumber: "" });
     };
+
+    private handleNewRoomAdd = () => {
+        const { manageState, update, selectedCamp } = this.props;
+        const { roomsNewRoomName } = manageState;
+        if (selectedCamp === undefined) {
+            console.error("Előbb válassz tábort.");
+            return;
+        }
+        if (roomsNewRoomName === "") {
+            console.error("Nem lehet szobát létrehozni üres névvel.");
+            return;
+        }
+        const globalServices = getGlobalServices();
+        if (globalServices === undefined) {
+            return;
+        }
+        const { dataService } = globalServices;
+        dataService.createRoom(selectedCamp, roomsNewRoomName);
+        update({ roomsNewRoomName: "" });
+    };
+
+    private handleCampChange = (value: ValueType<ISelectOption>) => {
+        const { update } = this.props;
+        const newCampId = value == null ? undefined : (value as ISelectOption).value;
+        update({ roomsSelectionCampId: newCampId });
+    };
+
+    private handleRoomChange = (value: ValueType<ISelectOption>) => {
+        const { update } = this.props;
+        const newRoomName = value == null ? undefined : (value as ISelectOption).value;
+        update({ roomsSelectionRoomName: newRoomName });
+    };
+
+    private handleRoomPersonsChange = (values: ISelectOption[]) => {
+        const { manageState, selectedCamp } = this.props;
+        const { roomsSelectionRoomName } = manageState;
+        if (selectedCamp === undefined || roomsSelectionRoomName === undefined) {
+            return;
+        }
+        const peopleIds = values.map(value => value.value);
+        const globalServices = getGlobalServices();
+        if (globalServices === undefined) {
+            return;
+        }
+        const { dataService } = globalServices;
+        dataService.updateCampRoom(selectedCamp, roomsSelectionRoomName, peopleIds);
+    };
 }
 
 function mapStateToProps(
     state: IAppState,
     _ownProps: IBarkochbaManageScreenOwnProps,
 ): IBarkochbaManageScreenStateProps {
+    const manageState = selectBarkochbaManageState(state);
+    const { roomsSelectionCampId, roomsSelectionRoomName } = manageState;
     return {
-        manageState: selectBarkochbaManageState(state),
+        manageState,
+        availableCampsAsOptions: selectCampsAsSelectOptions(state),
+        selectedCamp: roomsSelectionCampId === undefined ? undefined : selectCamp(state, roomsSelectionCampId),
+        availableRoomsAsOptions:
+            roomsSelectionCampId === undefined ? [] : selectCampRoomsAsOptions(state, roomsSelectionCampId),
+        roomPeopleAsOptions:
+            roomsSelectionCampId === undefined
+                ? []
+                : selectCampRoomPeopleAsOptions(state, roomsSelectionCampId, roomsSelectionRoomName),
+        allPersonsAsOptions: selectPersonsAsSelectOptions(state),
     };
 }
 

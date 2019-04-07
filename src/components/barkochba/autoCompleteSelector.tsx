@@ -15,11 +15,12 @@ export interface IAutoCompleteSelectorProps {
     isMulti?: boolean;
     value?: ValueType<ISelectOption>;
     options?: ISelectOption[];
+    disabled?: boolean;
 }
 
 class UnstyledAutoCompleteSelector extends React.Component<IAutoCompleteSelectorProps, {}> {
     public render() {
-        const { placeholder, isMulti, onChange, value, options, classes, theme } = this.props;
+        const { disabled, placeholder, isMulti, onChange, value, options, classes, theme } = this.props;
 
         const selectStyles = {
             input: (base: any) => ({
@@ -46,6 +47,7 @@ class UnstyledAutoCompleteSelector extends React.Component<IAutoCompleteSelector
                 onChange={onChange}
                 placeholder={placeholder}
                 isMulti={isMulti}
+                isDisabled={disabled}
             />
         );
     }
