@@ -134,33 +134,43 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                         placeholder="Válassz tábort"
                     />
                 </div>
-                <Typography className="barkochba-manage-subtitle" variant="subtitle1">
-                    Melyik szoba?
-                </Typography>
-                <Typography variant="subtitle2">Új szoba létrehozásához csak gépeld be a szoba nevét.</Typography>
-                <div>
-                    <AutoCompleteSelector
-                        options={availableRoomsAsOptions}
-                        value={currentRoomOption}
-                        onChange={this.handleRoomChange}
-                        placeholder="Válassz szobát"
-                        disabled={currentCampOption === undefined}
-                        creatable={true}
-                        isValidNewOption={(value: string) => value !== ""}
-                        onCreateOption={this.handleNewRoomAdd}
-                    />
-                </div>
-                <Typography className="barkochba-manage-subtitle" variant="subtitle1">
-                    A szoba lakói
-                </Typography>
-                <div>
-                    <PersonsSelector
-                        allPersons={allPersonsAsOptions}
-                        selectedPersons={roomPeopleAsOptions}
-                        onChange={this.handleRoomPersonsChange}
-                        disabled={currentCampOption === undefined || currentRoomOption === undefined}
-                    />
-                </div>
+                {currentCampOption !== undefined && (
+                    <div>
+                        <Typography className="barkochba-manage-subtitle" variant="subtitle1">
+                            Melyik szoba?
+                        </Typography>
+                        <Typography variant="subtitle2">
+                            Új szoba létrehozásához csak gépeld be a szoba nevét.
+                        </Typography>
+                        <div>
+                            <AutoCompleteSelector
+                                options={availableRoomsAsOptions}
+                                value={currentRoomOption}
+                                onChange={this.handleRoomChange}
+                                placeholder="Válassz szobát"
+                                disabled={currentCampOption === undefined}
+                                creatable={true}
+                                isValidNewOption={(value: string) => value !== ""}
+                                onCreateOption={this.handleNewRoomAdd}
+                            />
+                        </div>
+                    </div>
+                )}
+                {currentCampOption !== undefined && currentRoomOption !== undefined && (
+                    <div>
+                        <Typography className="barkochba-manage-subtitle" variant="subtitle1">
+                            A szoba lakói
+                        </Typography>
+                        <div>
+                            <PersonsSelector
+                                allPersons={allPersonsAsOptions}
+                                selectedPersons={roomPeopleAsOptions}
+                                onChange={this.handleRoomPersonsChange}
+                                disabled={currentCampOption === undefined || currentRoomOption === undefined}
+                            />
+                        </div>
+                    </div>
+                )}
             </Paper>
         );
     };
