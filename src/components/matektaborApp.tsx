@@ -48,7 +48,6 @@ export class MatektaborApp extends React.Component<{}, IMatektaborAppState> {
                                 <Route render={this.renderRedirectToHome} />
                             </Switch>
                         </div>
-                        <AppFooter />
                     </div>
                 </ScrollToTop>
             </DocumentTitle>
@@ -71,6 +70,7 @@ export class MatektaborApp extends React.Component<{}, IMatektaborAppState> {
                 <div>
                     <AppHeader />
                     <StaticContent type="terms of service" />
+                    <AppFooter />
                 </div>
             </DocumentTitle>
         );
@@ -82,6 +82,7 @@ export class MatektaborApp extends React.Component<{}, IMatektaborAppState> {
                 <div>
                     <AppHeader />
                     <StaticContent type="privacy policy" />
+                    <AppFooter />
                 </div>
             </DocumentTitle>
         );
@@ -95,6 +96,7 @@ export class MatektaborApp extends React.Component<{}, IMatektaborAppState> {
                 <div>
                     <AppHeader />
                     <Login redirectUrl={redirectUrl} />
+                    <AppFooter />
                 </div>
             </DocumentTitle>
         );
@@ -106,6 +108,7 @@ export class MatektaborApp extends React.Component<{}, IMatektaborAppState> {
                 <div>
                     <AppHeader />
                     <BarkochbaScreen />
+                    <AppFooter />
                 </div>
             </DocumentTitle>
         );
@@ -130,6 +133,7 @@ export class MatektaborApp extends React.Component<{}, IMatektaborAppState> {
                 <div>
                     <AppHeader />
                     <BarkochbaManageScreen />
+                    <AppFooter />
                 </div>
             </DocumentTitle>
         );
