@@ -12,6 +12,7 @@ export interface IAutoCompleteSelectorProps {
     classes: any;
     theme: any;
     onChange?: (value: ValueType<ISelectOption>, action: ActionMeta) => void;
+    className?: string;
     placeholder?: string;
     isMulti?: boolean;
     value?: ValueType<ISelectOption>;
@@ -19,6 +20,7 @@ export interface IAutoCompleteSelectorProps {
     disabled?: boolean;
     creatable?: boolean;
     isClearable?: boolean;
+    label?: string;
     isValidNewOption?: (inputValue: string) => boolean;
     onCreateOption?: (inputValue: string) => void;
 }
@@ -26,6 +28,7 @@ export interface IAutoCompleteSelectorProps {
 class UnstyledAutoCompleteSelector extends React.Component<IAutoCompleteSelectorProps, {}> {
     public render() {
         const {
+            className,
             creatable,
             disabled,
             isValidNewOption,
@@ -38,6 +41,7 @@ class UnstyledAutoCompleteSelector extends React.Component<IAutoCompleteSelector
             classes,
             theme,
             isClearable,
+            label,
         } = this.props;
 
         const selectStyles = {
@@ -52,6 +56,7 @@ class UnstyledAutoCompleteSelector extends React.Component<IAutoCompleteSelector
 
         return creatable ? (
             <CreatableSelect
+                className={className}
                 classes={classes}
                 styles={selectStyles}
                 textFieldProps={{
@@ -68,10 +73,12 @@ class UnstyledAutoCompleteSelector extends React.Component<IAutoCompleteSelector
                 isDisabled={disabled}
                 isValidNewOption={isValidNewOption}
                 isClearable={isClearable}
+                label={label}
                 onCreateOption={onCreateOption}
             />
         ) : (
             <Select
+                className={className}
                 classes={classes}
                 styles={selectStyles}
                 textFieldProps={{
@@ -87,6 +94,7 @@ class UnstyledAutoCompleteSelector extends React.Component<IAutoCompleteSelector
                 isMulti={isMulti}
                 isDisabled={disabled}
                 isClearable={isClearable}
+                label={label}
             />
         );
     }

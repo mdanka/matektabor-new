@@ -105,6 +105,25 @@ export const selectCamp = createCachedSelector(
     },
 )((_state: IAppState, id: string) => id);
 
+export const selectGroups = createSelector(
+    selectCampsList,
+    selectPersonsList,
+    (camps: ICamp[], persons: IPerson[]): string[] => {
+        const groupList = [...camps.map(camp => camp.group), ...persons.map(person => person.group)].filter(
+            value => value !== undefined,
+        ) as string[];
+        const uniqueGroupList = Array.from(new Set(groupList));
+        return uniqueGroupList.sort();
+    },
+);
+
+export const selectGroupsAsSelectOptions = createSelector(
+    selectGroups,
+    (groups: string[]): ISelectOption[] => {
+        return groups.map(stringToSelectOption);
+    },
+);
+
 export const selectCurrentStoryId = (state: IAppState) => state.currentStoryId;
 
 export const selectCurrentStory = createSelector(
@@ -252,7 +271,7 @@ const idMapToList = <T>(idMap: { [id: string]: T }): Array<T & IWithId> => {
         .filter(value => value !== undefined) as Array<T & IWithId>;
 };
 
-const stringToSelectOption = (value: string) => {
+export const stringToSelectOption = (value: string) => {
     return {
         value,
         label: value,

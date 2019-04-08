@@ -10,6 +10,8 @@ import {
     selectCampRoomsAsOptions,
     campToSelectOption,
     selectPersonsAsSelectOptions,
+    selectGroupsAsSelectOptions,
+    stringToSelectOption,
 } from "../../store";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
@@ -29,6 +31,7 @@ export interface IBarkochbaManageScreenStateProps {
     availableRoomsAsOptions: ISelectOption[];
     roomPeopleAsOptions: ISelectOption[];
     allPersonsAsOptions: ISelectOption[];
+    allGroupsAsOptions: ISelectOption[];
 }
 
 export interface IBarkochbaManageScreenDispatchProps {
@@ -59,17 +62,11 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                 <TextField
                     value={newPersonName}
                     onChange={this.getTextFieldUpdater("newPersonName")}
-                    className="barkochba-manage-input-space"
+                    className="barkochba-manage-input"
                     label="Név"
                     placeholder="Tóth János"
                 />
-                <TextField
-                    value={newPersonGroup}
-                    onChange={this.getTextFieldUpdater("newPersonGroup")}
-                    className="barkochba-manage-input-space"
-                    label="Csoport"
-                    placeholder="Beluga"
-                />
+                {this.renderGroupSelector("newPersonGroup", newPersonGroup)}
                 <Button variant="contained" color="primary" onClick={this.handleNewPersonAdd}>
                     Létrehozás
                 </Button>
@@ -83,17 +80,11 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
         return (
             <Paper className="barkochba-manage-panel">
                 <Typography variant="h5">Új tábor</Typography>
-                <TextField
-                    value={newCampGroup}
-                    onChange={this.getTextFieldUpdater("newCampGroup")}
-                    className="barkochba-manage-input-space"
-                    label="Csoport"
-                    placeholder="Beluga"
-                />
+                {this.renderGroupSelector("newCampGroup", newCampGroup)}
                 <TextField
                     value={newCampNumber}
                     onChange={this.getTextFieldUpdater("newCampNumber")}
-                    className="barkochba-manage-input-space"
+                    className="barkochba-manage-input"
                     label="Szám"
                     placeholder="3"
                     type="number"
@@ -178,12 +169,42 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
         );
     };
 
+    private renderGroupSelector = (fieldName: keyof IBarkochbaManageState, value: string) => {
+        const { allGroupsAsOptions } = this.props;
+        return (
+            <AutoCompleteSelector
+                className="barkochba-manage-input"
+                options={allGroupsAsOptions}
+                value={stringToSelectOption(value)}
+                onChange={this.getAutoCompleteFieldUpdater(fieldName)}
+                onCreateOption={this.getAutoCompleteNewValueUpdater(fieldName)}
+                label="Csoport"
+                placeholder="Beluga"
+                creatable={true}
+                isValidNewOption={(value: string) => value !== ""}
+                isClearable={true}
+            />
+        );
+    };
+
     private getTextFieldUpdater = (fieldName: keyof IBarkochbaManageState) => (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
     ) => {
         const { update } = this.props;
         const value = event.target.value;
         update({ [fieldName]: value });
+    };
+
+    private getAutoCompleteFieldUpdater = (fieldName: keyof IBarkochbaManageState) => (
+        value: ValueType<ISelectOption>,
+    ) => {
+        const { update } = this.props;
+        const newValue = value == null ? undefined : (value as ISelectOption).value;
+        update({ [fieldName]: newValue });
+    };
+
+    private getAutoCompleteNewValueUpdater = (fieldName: keyof IBarkochbaManageState) => (value: string) => {
+        this.getAutoCompleteFieldUpdater(fieldName)({ value, label: value });
     };
 
     private handleNewPersonAdd = () => {
@@ -301,6 +322,7 @@ function mapStateToProps(
                 ? []
                 : selectCampRoomPeopleAsOptions(state, roomsSelectionCampId, roomsSelectionRoomName),
         allPersonsAsOptions: selectPersonsAsSelectOptions(state),
+        allGroupsAsOptions: selectGroupsAsSelectOptions(state),
     };
 }
 
