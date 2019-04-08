@@ -8,7 +8,7 @@ import {
     selectCurrentListeningPersonIds,
 } from "../../store";
 import { Dispatch } from "redux";
-import { List, ListItemText, ListItem } from "@material-ui/core";
+import { List, ListItemText, ListItem, Chip, Tooltip } from "@material-ui/core";
 import { IStory } from "../../commons";
 import * as classNames from "classnames";
 
@@ -50,6 +50,17 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
             "story-list-item-known-by-2": numberWhoKnow === 2,
             "story-list-item-known-by-3": numberWhoKnow >= 3,
         });
+        // <Chip label="Basic Chip" className={classes.chip} />
+        const primaryLabel = (
+            <div className="story-list-item-primary-label">
+                <span className="story-list-item-label-title">
+                    {number} - {title}
+                </span>
+                <Tooltip title="Ennyien hallották már" placement="right">
+                    <Chip className="story-list-item-label-heard-number" label={personsWhoKnow.length.toString()} />
+                </Tooltip>
+            </div>
+        );
         return (
             <ListItem
                 className={classes}
@@ -59,7 +70,7 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
                 divider={true}
                 onClick={this.getStorySelectionHandler(id)}
             >
-                <ListItemText primary={`${number} - ${title}`} secondary={secondaryLabel} />
+                <ListItemText primary={primaryLabel} secondary={secondaryLabel} />
             </ListItem>
         );
     };
