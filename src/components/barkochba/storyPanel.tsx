@@ -46,7 +46,7 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, {}>
     }
 
     private renderStory = () => {
-        const { story, personsWhoKnowAsSelectOptions, personsAsSelectOptions } = this.props;
+        const { story, personsWhoKnowAsSelectOptions, personsAsSelectOptions, currentListeningPersonIds } = this.props;
         if (story === undefined) {
             return null;
         }
@@ -59,6 +59,7 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, {}>
                         variant="contained"
                         color="primary"
                         onClick={this.handleDoneClicked}
+                        disabled={currentListeningPersonIds.length === 0}
                     >
                         <Icon className="story-panel-done-button-icon">done</Icon>
                         Elmeséltem
