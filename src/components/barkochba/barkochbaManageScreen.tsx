@@ -97,6 +97,7 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                     label="Szám"
                     placeholder="3"
                     type="number"
+                    error={this.isNewCampNumberError(newCampNumber)}
                 />
                 <Button variant="contained" color="primary" onClick={this.handleNewCampAdd}>
                     Létrehozás
@@ -209,12 +210,12 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
         const { manageState, update } = this.props;
         const { newCampGroup, newCampNumber } = manageState;
         const newCampNumberParsed = parseInt(newCampNumber);
-        if (isNaN(newCampNumberParsed)) {
-            console.error("A tábor számának - meglepetés - számnak kell lennie.");
+        if (this.isNewCampNumberError(newCampNumber)) {
+            console.error("A tábor számának - meglepetés - nem-negatív egész számnak kell lennie.");
             return;
         }
-        if (newCampGroup === "" || newCampNumber === "" || newCampNumberParsed < 0) {
-            console.error("Nem lehet tábort létrehozni üres névvel vagy számmal, és negatív számmal sem.");
+        if (newCampGroup === "" || newCampNumber === "") {
+            console.error("Nem lehet tábort létrehozni üres névvel vagy számmal");
             return;
         }
         const newCamp: ICampApi = {
@@ -275,6 +276,11 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
         }
         const { dataService } = globalServices;
         dataService.updateCampRoom(selectedCamp, roomsSelectionRoomName, peopleIds);
+    };
+
+    private isNewCampNumberError = (value: string) => {
+        const valueInt = parseInt(value);
+        return value !== "" && (isNaN(valueInt) || valueInt < 0 || valueInt.toString() !== value);
     };
 }
 
