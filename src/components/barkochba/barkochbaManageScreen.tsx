@@ -132,6 +132,7 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                         value={currentCampOption}
                         onChange={this.handleCampChange}
                         placeholder="Válassz tábort"
+                        isClearable={true}
                     />
                 </div>
                 {currentCampOption !== undefined && (
@@ -140,8 +141,7 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                             Melyik szoba?
                         </Typography>
                         <Typography variant="subtitle2">
-                            Új szoba létrehozásához csak gépeld be a szoba nevét. (A kiválasztott opciók nem törölhetők
-                            - csak klikkelj a mezőbe, és kezdj el gépelni.)
+                            Új szoba létrehozásához csak gépeld be a szoba nevét.
                         </Typography>
                         <div>
                             <AutoCompleteSelector
@@ -153,6 +153,7 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                                 creatable={true}
                                 isValidNewOption={(value: string) => value !== ""}
                                 onCreateOption={this.handleNewRoomAdd}
+                                isClearable={true}
                             />
                         </div>
                     </div>

@@ -56,6 +56,7 @@ class UnconnectedListeningCampRoomSelector extends React.Component<IListeningCam
                     value={selectedCamp}
                     onChange={this.handleCampChange}
                     placeholder="Válassz tábort"
+                    isClearable={true}
                 />
             </div>
         );
@@ -70,6 +71,7 @@ class UnconnectedListeningCampRoomSelector extends React.Component<IListeningCam
                     value={selectedRoom}
                     onChange={this.handleRoomChange}
                     placeholder="Válassz szobát"
+                    isClearable={true}
                 />
             </div>
         );

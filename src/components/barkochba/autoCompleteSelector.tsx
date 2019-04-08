@@ -18,6 +18,7 @@ export interface IAutoCompleteSelectorProps {
     options?: ISelectOption[];
     disabled?: boolean;
     creatable?: boolean;
+    isClearable?: boolean;
     isValidNewOption?: (inputValue: string) => boolean;
     onCreateOption?: (inputValue: string) => void;
 }
@@ -36,6 +37,7 @@ class UnstyledAutoCompleteSelector extends React.Component<IAutoCompleteSelector
             options,
             classes,
             theme,
+            isClearable,
         } = this.props;
 
         const selectStyles = {
@@ -65,6 +67,7 @@ class UnstyledAutoCompleteSelector extends React.Component<IAutoCompleteSelector
                 isMulti={isMulti}
                 isDisabled={disabled}
                 isValidNewOption={isValidNewOption}
+                isClearable={isClearable}
                 onCreateOption={onCreateOption}
             />
         ) : (
@@ -83,6 +86,7 @@ class UnstyledAutoCompleteSelector extends React.Component<IAutoCompleteSelector
                 placeholder={placeholder}
                 isMulti={isMulti}
                 isDisabled={disabled}
+                isClearable={isClearable}
             />
         );
     }
