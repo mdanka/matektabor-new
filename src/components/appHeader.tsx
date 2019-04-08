@@ -22,6 +22,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import { IUser } from "../commons";
 import { DARK_THEME, CONTACT_HREF } from "../utils";
 import amber from "@material-ui/core/colors/amber";
+import { green } from "@material-ui/core/colors";
 
 export interface IAppHeaderOwnProps extends RouteComponentProps<any> {}
 
@@ -35,6 +36,7 @@ export interface IAppHeaderDispatchProps {}
 export interface IAppHeaderLocalState {
     isUserMenuOpen: boolean;
     isSignedOutMessageOpen: boolean;
+    isSaveSuccessfulMessageOpen: boolean;
 }
 
 export type IAppHeaderProps = IAppHeaderOwnProps & IAppHeaderStateProps & IAppHeaderDispatchProps;
@@ -47,8 +49,17 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
         this.state = {
             isUserMenuOpen: false,
             isSignedOutMessageOpen: false,
+            isSaveSuccessfulMessageOpen: false,
         };
         this.userMenuButtonRef = React.createRef();
+    }
+
+    public componentDidUpdate(prevProps: IAppHeaderProps) {
+        const { hasPendingWrites: hasPendingWritesPrev } = prevProps;
+        const { hasPendingWrites: hasPendingWritesCurrent } = this.props;
+        if (hasPendingWritesPrev && !hasPendingWritesCurrent) {
+            this.openSaveSuccessfulMessage();
+        }
     }
 
     public render() {
@@ -68,6 +79,7 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
                     {!isLoggedIn && this.renderSignIn()}
                     {this.renderSignedOutMessage()}
                     {this.renderPendingWritesMessage()}
+                    {this.renderSaveSuccessfulMessage()}
                 </MuiThemeProvider>
             </div>
         );
@@ -159,11 +171,25 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
     private renderPendingWritesMessage = () => {
         const { hasPendingWrites } = this.props;
         return (
-            <Snackbar anchorOrigin={{ horizontal: "right" as "right", vertical: "top" }} open={hasPendingWrites}>
+            <Snackbar anchorOrigin={{ horizontal: "right", vertical: "top" }} open={hasPendingWrites}>
                 <SnackbarContent
                     message={<span>Mentés... (ha nem vagy online, csatlakozz)</span>}
-                    style={{ backgroundColor: amber[700] }}
+                    style={{ backgroundColor: amber[200] }}
                 />
+            </Snackbar>
+        );
+    };
+
+    private renderSaveSuccessfulMessage = () => {
+        const { isSaveSuccessfulMessageOpen } = this.state;
+        return (
+            <Snackbar
+                autoHideDuration={3000}
+                anchorOrigin={{ horizontal: "right", vertical: "top" }}
+                open={isSaveSuccessfulMessageOpen}
+                onClose={this.closeSaveSuccessfulMessage}
+            >
+                <SnackbarContent message={<span>A mentés sikeres volt</span>} style={{ backgroundColor: green[200] }} />
             </Snackbar>
         );
     };
@@ -192,6 +218,14 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
 
     private closeSignedOutMessage = () => {
         this.setState({ isSignedOutMessageOpen: false });
+    };
+
+    private openSaveSuccessfulMessage = () => {
+        this.setState({ isSaveSuccessfulMessageOpen: true });
+    };
+
+    private closeSaveSuccessfulMessage = () => {
+        this.setState({ isSaveSuccessfulMessageOpen: false });
     };
 
     private handleSignInClick = () => {
