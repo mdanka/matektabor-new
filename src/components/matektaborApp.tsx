@@ -9,10 +9,9 @@ import { BarkochbaScreen, BarkochbaManageScreen, BarkochbaExportScreen } from ".
 import { StaticContent } from "./staticContent";
 import { ScrollToTop } from "./common";
 import DocumentTitle = require("react-document-title");
+import { LoginProtector } from "./loginProtector";
 
-export interface IMatektaborAppState {}
-
-export class MatektaborApp extends React.Component<{}, IMatektaborAppState> {
+export class MatektaborApp extends React.Component<{}, {}> {
     public render() {
         return (
             <DocumentTitle title={NavUtils.getNavUrlSimpleTitle[Page.Home]}>
@@ -105,11 +104,13 @@ export class MatektaborApp extends React.Component<{}, IMatektaborAppState> {
     private renderBarkochba = (_locationInfo: RouteComponentProps<any>) => {
         return (
             <DocumentTitle title={NavUtils.getNavUrlSimpleTitle[Page.Barkochba]}>
-                <div>
-                    <AppHeader />
-                    <BarkochbaScreen />
-                    <AppFooter />
-                </div>
+                <LoginProtector>
+                    <div>
+                        <AppHeader />
+                        <BarkochbaScreen />
+                        <AppFooter />
+                    </div>
+                </LoginProtector>
             </DocumentTitle>
         );
     };
@@ -122,7 +123,9 @@ export class MatektaborApp extends React.Component<{}, IMatektaborAppState> {
         const { campId } = match.params;
         return (
             <DocumentTitle title={NavUtils.getNavUrlSimpleTitle[Page.BarkochbaExport]}>
-                <BarkochbaExportScreen campId={campId} />
+                <LoginProtector>
+                    <BarkochbaExportScreen campId={campId} />
+                </LoginProtector>
             </DocumentTitle>
         );
     };
@@ -130,11 +133,13 @@ export class MatektaborApp extends React.Component<{}, IMatektaborAppState> {
     private renderBarkochbaManage = (_locationInfo: RouteComponentProps<any>) => {
         return (
             <DocumentTitle title={NavUtils.getNavUrlSimpleTitle[Page.BarkochbaManage]}>
-                <div>
-                    <AppHeader />
-                    <BarkochbaManageScreen />
-                    <AppFooter />
-                </div>
+                <LoginProtector>
+                    <div>
+                        <AppHeader />
+                        <BarkochbaManageScreen />
+                        <AppFooter />
+                    </div>
+                </LoginProtector>
             </DocumentTitle>
         );
     };
