@@ -63,6 +63,8 @@ class UnstyledAutoCompleteSelector extends React.Component<IAutoCompleteSelector
                     InputLabelProps: {
                         shrink: true,
                     },
+                    label,
+                    disabled,
                 }}
                 options={options}
                 components={components}
@@ -73,7 +75,6 @@ class UnstyledAutoCompleteSelector extends React.Component<IAutoCompleteSelector
                 isDisabled={disabled}
                 isValidNewOption={isValidNewOption}
                 isClearable={isClearable}
-                label={label}
                 onCreateOption={onCreateOption}
             />
         ) : (
@@ -85,6 +86,8 @@ class UnstyledAutoCompleteSelector extends React.Component<IAutoCompleteSelector
                     InputLabelProps: {
                         shrink: true,
                     },
+                    label,
+                    disabled,
                 }}
                 options={options}
                 components={components}
@@ -94,7 +97,6 @@ class UnstyledAutoCompleteSelector extends React.Component<IAutoCompleteSelector
                 isMulti={isMulti}
                 isDisabled={disabled}
                 isClearable={isClearable}
-                label={label}
             />
         );
     }

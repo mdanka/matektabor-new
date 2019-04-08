@@ -15,7 +15,7 @@ import {
 } from "../../store";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
-import { Typography, TextField, Button, Paper } from "@material-ui/core";
+import { Typography, TextField, Button, Paper, FormControl, InputLabel, FormHelperText } from "@material-ui/core";
 import { getGlobalServices } from "../../services";
 import { IPersonApi, ICampApi, ISelectOption, ICamp } from "../../commons";
 import { AutoCompleteSelector } from "./autoCompleteSelector";
@@ -59,13 +59,19 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
         return (
             <Paper className="barkochba-manage-panel">
                 <Typography variant="h5">Új gyerek</Typography>
-                <TextField
-                    value={newPersonName}
-                    onChange={this.getTextFieldUpdater("newPersonName")}
-                    className="barkochba-manage-input"
-                    label="Név"
-                    placeholder="Tóth János"
-                />
+                <FormControl>
+                    <InputLabel shrink htmlFor="barkochba-manage-new-person-name">
+                        Név
+                    </InputLabel>
+                    <TextField
+                        value={newPersonName}
+                        onChange={this.getTextFieldUpdater("newPersonName")}
+                        className="barkochba-manage-input"
+                        placeholder="Tóth János"
+                        label="Név"
+                        id="barkochba-manage-new-person-name"
+                    />
+                </FormControl>
                 {this.renderGroupSelector("newPersonGroup", newPersonGroup)}
                 <Button variant="contained" color="primary" onClick={this.handleNewPersonAdd}>
                     Létrehozás
@@ -81,15 +87,22 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
             <Paper className="barkochba-manage-panel">
                 <Typography variant="h5">Új tábor</Typography>
                 {this.renderGroupSelector("newCampGroup", newCampGroup)}
-                <TextField
-                    value={newCampNumber}
-                    onChange={this.getTextFieldUpdater("newCampNumber")}
-                    className="barkochba-manage-input"
-                    label="Szám"
-                    placeholder="3"
-                    type="number"
-                    error={this.isNewCampNumberError(newCampNumber)}
-                />
+                <FormControl>
+                    <InputLabel shrink htmlFor="barkochba-manage-new-camp-number">
+                        Sorszám
+                    </InputLabel>
+                    <TextField
+                        value={newCampNumber}
+                        onChange={this.getTextFieldUpdater("newCampNumber")}
+                        className="barkochba-manage-input"
+                        label="Sorszám"
+                        placeholder="3"
+                        type="number"
+                        error={this.isNewCampNumberError(newCampNumber)}
+                        id="barkochba-manage-new-camp-number"
+                    />
+                    <FormHelperText>Pl. "3", mint a "Beluga/3"-ban</FormHelperText>
+                </FormControl>
                 <Button variant="contained" color="primary" onClick={this.handleNewCampAdd}>
                     Létrehozás
                 </Button>
@@ -172,18 +185,24 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
     private renderGroupSelector = (fieldName: keyof IBarkochbaManageState, value: string) => {
         const { allGroupsAsOptions } = this.props;
         return (
-            <AutoCompleteSelector
-                className="barkochba-manage-input"
-                options={allGroupsAsOptions}
-                value={stringToSelectOption(value)}
-                onChange={this.getAutoCompleteFieldUpdater(fieldName)}
-                onCreateOption={this.getAutoCompleteNewValueUpdater(fieldName)}
-                label="Csoport"
-                placeholder="Beluga"
-                creatable={true}
-                isValidNewOption={(value: string) => value !== ""}
-                isClearable={true}
-            />
+            <FormControl>
+                <InputLabel shrink htmlFor="barkochba-manage-new-person-name">
+                    Csoport
+                </InputLabel>
+                <AutoCompleteSelector
+                    className="barkochba-manage-input"
+                    options={allGroupsAsOptions}
+                    value={stringToSelectOption(value)}
+                    onChange={this.getAutoCompleteFieldUpdater(fieldName)}
+                    onCreateOption={this.getAutoCompleteNewValueUpdater(fieldName)}
+                    placeholder="Beluga"
+                    creatable={true}
+                    isValidNewOption={(value: string) => value !== ""}
+                    isClearable={true}
+                    label="Csoport"
+                />
+                <FormHelperText>Pl. "Beluga"</FormHelperText>
+            </FormControl>
         );
     };
 
