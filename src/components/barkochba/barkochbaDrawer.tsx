@@ -1,15 +1,8 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import {
-    IAppState,
-    selectStoriesOrderedByNumber,
-    SetCurrentStoryId,
-    selectCurrentStoryId,
-    selectCurrentListeningPersonIds,
-} from "../../store";
+import { IAppState, selectBarkochbaDrawerIsOpen, SetBarkochbaDrawerIsOpen } from "../../store";
 import { Dispatch } from "redux";
 import { List, ListItemText, ListItem, Divider, ListItemIcon, Link } from "@material-ui/core";
-import { IStory } from "../../commons";
 import EditIcon from "@material-ui/icons/Edit";
 import TableChartIcon from "@material-ui/icons/TableChart";
 import { Link as RouterLink } from "react-router-dom";
@@ -25,13 +18,11 @@ const BarkochbaManageLink = (props: any) => <RouterLink to={NavUtils.getNavUrl[P
 export interface IBarkochbaDrawerOwnProps {}
 
 export interface IBarkochbaDrawerStateProps {
-    stories: IStory[];
-    currentStoryId: string | undefined;
-    currentListeningPersonIds: string[];
+    isOpen: boolean;
 }
 
 export interface IBarkochbaDrawerDispatchProps {
-    selectStory: (id: string | undefined) => void;
+    setIsOpen: (isOpen: boolean) => void;
 }
 
 export type IBarkochbaDrawerProps = IBarkochbaDrawerOwnProps &
@@ -73,15 +64,14 @@ export class UnconnectedBarkochbaDrawer extends React.Component<IBarkochbaDrawer
 
 function mapStateToProps(state: IAppState, _ownProps: IBarkochbaDrawerOwnProps): IBarkochbaDrawerStateProps {
     return {
-        stories: selectStoriesOrderedByNumber(state),
-        currentStoryId: selectCurrentStoryId(state),
-        currentListeningPersonIds: selectCurrentListeningPersonIds(state),
+        isOpen: selectBarkochbaDrawerIsOpen(state),
     };
 }
 
 function mapDispatchToProps(dispatch: Dispatch, _ownProps: IBarkochbaDrawerOwnProps): IBarkochbaDrawerDispatchProps {
     return {
-        selectStory: (currentStoryId: string | undefined) => dispatch(SetCurrentStoryId.create({ currentStoryId })),
+        setIsOpen: (barkochbaDrawerIsOpen: boolean) =>
+            dispatch(SetBarkochbaDrawerIsOpen.create({ barkochbaDrawerIsOpen })),
     };
 }
 

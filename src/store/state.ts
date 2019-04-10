@@ -10,6 +10,7 @@ export interface IAppState {
     currentListeningCampRoom: ICampRoomState;
     hasPendingWrites: boolean;
     barkochbaManageState: IBarkochbaManageState;
+    barkochbaDrawerIsOpen: boolean;
 }
 
 export type IPersonsState = IMapState<IPersonApi>;

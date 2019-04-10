@@ -23,6 +23,7 @@ const initialState: IAppState = {
         roomsSelectionCampId: undefined,
         roomsSelectionRoomName: undefined,
     },
+    barkochbaDrawerIsOpen: false,
 };
 
 export function createAppStore() {

@@ -1,5 +1,13 @@
 import * as React from "react";
-import { Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from "@material-ui/core";
+import {
+    Typography,
+    ExpansionPanel,
+    ExpansionPanelSummary,
+    ExpansionPanelDetails,
+    Hidden,
+    IconButton,
+    Drawer,
+} from "@material-ui/core";
 import { PersonsSelector } from "./personsSelector";
 import { ISelectOption } from "../../commons";
 import {
@@ -7,6 +15,8 @@ import {
     selectCurrentListeningPersonsAsSelectOptions,
     selectPersonsAsSelectOptions,
     SetCurrentListeningPersonIds,
+    selectBarkochbaDrawerIsOpen,
+    SetBarkochbaDrawerIsOpen,
 } from "../../store";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
@@ -14,16 +24,19 @@ import { StoryPanel } from "./storyPanel";
 import { ListeningCampRoomSelector } from "./listeningCampRoomSelector";
 import { BarkochbaDrawer } from "./barkochbaDrawer";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import MenuIcon from "@material-ui/icons/Menu";
 
 export interface IBarkochbaScreenOwnProps {}
 
 export interface IBarkochbaScreenStateProps {
     currentListeningPersonsAsSelectOptions: ISelectOption[];
     personsAsSelectOptions: ISelectOption[];
+    barkochbaDrawerIsOpen: boolean;
 }
 
 export interface IBarkochbaScreenDispatchProps {
     setCurrentListeningPersonIds: (ids: string[]) => void;
+    setDrawerIsOpen: (isOpen: boolean) => void;
 }
 
 export type IBarkochbaScreenProps = IBarkochbaScreenOwnProps &
@@ -32,13 +45,32 @@ export type IBarkochbaScreenProps = IBarkochbaScreenOwnProps &
 
 class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, {}> {
     public render() {
-        const { currentListeningPersonsAsSelectOptions, personsAsSelectOptions } = this.props;
+        const { barkochbaDrawerIsOpen, currentListeningPersonsAsSelectOptions, personsAsSelectOptions } = this.props;
         return (
             <div className="barkochba-screen">
-                <div className="barkochba-screen-drawer">
+                <Hidden className="barkochba-screen-drawer-container" xsDown implementation="css">
                     <BarkochbaDrawer />
-                </div>
+                </Hidden>
+                <Hidden className="barkochba-screen-mobile-drawer-container" smUp implementation="css">
+                    <Drawer
+                        className="barkochba-screen-mobile-drawer"
+                        //   container={this.props.container}
+                        variant="temporary"
+                        open={barkochbaDrawerIsOpen}
+                        onClose={this.handleDrawerToggle}
+                        PaperProps={{
+                            className: "barkochba-screen-mobile-drawer-paper",
+                        }}
+                    >
+                        <BarkochbaDrawer />
+                    </Drawer>
+                </Hidden>
                 <div className="barkochba-screen-content-area">
+                    <Hidden className="barkochba-screen-drawer-toggle" smUp implementation="css">
+                        <IconButton color="inherit" aria-label="Open drawer" onClick={this.handleDrawerToggle}>
+                            <MenuIcon />
+                        </IconButton>
+                    </Hidden>
                     <div className="barkochba-screen-person-selector">
                         <ExpansionPanel>
                             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
@@ -72,12 +104,18 @@ class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, 
         const personIds = values.map(value => value.value);
         setCurrentListeningPersonIds(personIds);
     };
+
+    private handleDrawerToggle = () => {
+        const { barkochbaDrawerIsOpen, setDrawerIsOpen } = this.props;
+        setDrawerIsOpen(!barkochbaDrawerIsOpen);
+    };
 }
 
 function mapStateToProps(state: IAppState, _ownProps: IBarkochbaScreenOwnProps): IBarkochbaScreenStateProps {
     return {
         currentListeningPersonsAsSelectOptions: selectCurrentListeningPersonsAsSelectOptions(state),
         personsAsSelectOptions: selectPersonsAsSelectOptions(state),
+        barkochbaDrawerIsOpen: selectBarkochbaDrawerIsOpen(state),
     };
 }
 
@@ -85,6 +123,8 @@ function mapDispatchToProps(dispatch: Dispatch, _ownProps: IBarkochbaScreenOwnPr
     return {
         setCurrentListeningPersonIds: (ids: string[]) =>
             dispatch(SetCurrentListeningPersonIds.create({ currentListeningPersonIds: ids })),
+        setDrawerIsOpen: (barkochbaDrawerIsOpen: boolean) =>
+            dispatch(SetBarkochbaDrawerIsOpen.create({ barkochbaDrawerIsOpen })),
     };
 }
 
