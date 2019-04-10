@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Typography, Tooltip } from "@material-ui/core";
+import { Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from "@material-ui/core";
 import { PersonsSelector } from "./personsSelector";
 import { ISelectOption } from "../../commons";
 import {
@@ -13,7 +13,7 @@ import { connect } from "react-redux";
 import { StoryPanel } from "./storyPanel";
 import { ListeningCampRoomSelector } from "./listeningCampRoomSelector";
 import { BarkochbaDrawer } from "./barkochbaDrawer";
-import InfoIcon from "@material-ui/icons/Info";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 export interface IBarkochbaScreenOwnProps {}
 
@@ -40,23 +40,24 @@ class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, 
                 </div>
                 <div className="barkochba-screen-content-area">
                     <div className="barkochba-screen-person-selector">
-                        <Typography variant="h6" paragraph={true}>
-                            Nekik mesélek:{" "}
-                            <Tooltip
-                                title="Válaszd ki a tábort és a szobát, vagy írd be azon gyerekek neveit, akiknek mesélni
-                                szeretnél. Ezután a listában színesek lesznek azok a barkochbatörténetek, amelyeket
-                                valamelyik bejelölt gyerek már hallotta."
-                                placement="right"
-                            >
-                                <InfoIcon fontSize="small" className="barkochba-screen-person-selector-info-button" />
-                            </Tooltip>
-                        </Typography>
-                        <ListeningCampRoomSelector />
-                        <PersonsSelector
-                            allPersons={personsAsSelectOptions}
-                            selectedPersons={currentListeningPersonsAsSelectOptions}
-                            onChange={this.handleCurrentListeningPersonsChange}
-                        />
+                        <ExpansionPanel>
+                            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                                <Typography variant="subtitle1">Nekik mesélek</Typography>
+                            </ExpansionPanelSummary>
+                            <ExpansionPanelDetails className="story-panel-people-who-know">
+                                <Typography variant="body1" paragraph={true}>
+                                    Válaszd ki a tábort és a szobát, vagy írd be azon gyerekek neveit, akiknek mesélni
+                                    szeretnél. Ezután a listában színesek lesznek azok a barkochbatörténetek, amelyeket
+                                    valamelyik bejelölt gyerek már hallotta.
+                                </Typography>
+                                <ListeningCampRoomSelector />
+                                <PersonsSelector
+                                    allPersons={personsAsSelectOptions}
+                                    selectedPersons={currentListeningPersonsAsSelectOptions}
+                                    onChange={this.handleCurrentListeningPersonsChange}
+                                />
+                            </ExpansionPanelDetails>
+                        </ExpansionPanel>{" "}
                     </div>
                     <div className="barkochba-screen-panel">
                         <StoryPanel />
