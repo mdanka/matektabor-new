@@ -28,7 +28,7 @@ export type IBarkochbaDrawerProps = IBarkochbaDrawerOwnProps &
 export class UnconnectedBarkochbaDrawer extends React.Component<IBarkochbaDrawerProps, {}> {
     public render() {
         return (
-            <div>
+            <div className="barkochba-drawer">
                 <div className="barkochba-drawer-navigation">
                     <List>
                         <Link variant="body1" component={BarkochbaExportLink}>
