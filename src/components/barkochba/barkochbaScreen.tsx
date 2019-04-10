@@ -1,5 +1,4 @@
 import * as React from "react";
-import { StoryBrowser } from "./storyBrowser";
 import { Typography, Link } from "@material-ui/core";
 import { PersonsSelector } from "./personsSelector";
 import { ISelectOption } from "../../commons";
@@ -77,13 +76,8 @@ class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, 
                             />
                         </div>
                     </div>
-                    <div className="barkochba-screen-row-main">
-                        <div className="barkochba-screen-browser">
-                            <StoryBrowser />
-                        </div>
-                        <div className="barkochba-screen-panel">
-                            <StoryPanel />
-                        </div>
+                    <div className="barkochba-screen-panel">
+                        <StoryPanel />
                     </div>
                 </div>
             </div>
