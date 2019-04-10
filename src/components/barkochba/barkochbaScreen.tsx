@@ -15,6 +15,7 @@ import { StoryPanel } from "./storyPanel";
 import { ListeningCampRoomSelector } from "./listeningCampRoomSelector";
 import { NavUtils, Page } from "../../utils";
 import { Link as RouterLink } from "react-router-dom";
+import { BarkochbaDrawer } from "./barkochbaDrawer";
 
 export interface IBarkochbaScreenOwnProps {}
 
@@ -42,42 +43,47 @@ class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, 
         const { currentListeningPersonsAsSelectOptions, personsAsSelectOptions } = this.props;
         return (
             <div className="barkochba-screen">
-                <div className="barkochba-screen-row-header">
-                    <div className="barkochba-screen-info">
-                        <Typography variant="h6" paragraph={true}>
-                            Nekik mesélek:
-                        </Typography>
-                        <Typography variant="body1" paragraph={true}>
-                            Válaszd ki a tábort és a szobát, vagy írd be azon gyerekek neveit, akiknek mesélni
-                            szeretnél. Ezután a listában színesek lesznek azok a barkochbatörténetek, amiket valamelyik
-                            gyerek már hallotta.
-                        </Typography>
-                        <Typography variant="body1" paragraph={true}>
-                            <Link variant="body1" component={BarkochbaExportLink}>
-                                Áttekintő táblázatok az egyes táborokhoz
-                            </Link>
-                        </Typography>
-                        <Typography variant="body1" paragraph={true}>
-                            <Link variant="body1" component={BarkochbaManageLink}>
-                                Táborok szerkesztése
-                            </Link>
-                        </Typography>
-                    </div>
-                    <div className="barkochba-screen-person-selector">
-                        <ListeningCampRoomSelector />
-                        <PersonsSelector
-                            allPersons={personsAsSelectOptions}
-                            selectedPersons={currentListeningPersonsAsSelectOptions}
-                            onChange={this.handleCurrentListeningPersonsChange}
-                        />
-                    </div>
+                <div className="barkochba-screen-drawer">
+                    <BarkochbaDrawer />
                 </div>
-                <div className="barkochba-screen-row-main">
-                    <div className="barkochba-screen-browser">
-                        <StoryBrowser />
+                <div className="barkochba-screen-content-area">
+                    <div className="barkochba-screen-row-header">
+                        <div className="barkochba-screen-info">
+                            <Typography variant="h6" paragraph={true}>
+                                Nekik mesélek:
+                            </Typography>
+                            <Typography variant="body1" paragraph={true}>
+                                Válaszd ki a tábort és a szobát, vagy írd be azon gyerekek neveit, akiknek mesélni
+                                szeretnél. Ezután a listában színesek lesznek azok a barkochbatörténetek, amiket
+                                valamelyik gyerek már hallotta.
+                            </Typography>
+                            <Typography variant="body1" paragraph={true}>
+                                <Link variant="body1" component={BarkochbaExportLink}>
+                                    Áttekintő táblázatok az egyes táborokhoz
+                                </Link>
+                            </Typography>
+                            <Typography variant="body1" paragraph={true}>
+                                <Link variant="body1" component={BarkochbaManageLink}>
+                                    Táborok szerkesztése
+                                </Link>
+                            </Typography>
+                        </div>
+                        <div className="barkochba-screen-person-selector">
+                            <ListeningCampRoomSelector />
+                            <PersonsSelector
+                                allPersons={personsAsSelectOptions}
+                                selectedPersons={currentListeningPersonsAsSelectOptions}
+                                onChange={this.handleCurrentListeningPersonsChange}
+                            />
+                        </div>
                     </div>
-                    <div className="barkochba-screen-panel">
-                        <StoryPanel />
+                    <div className="barkochba-screen-row-main">
+                        <div className="barkochba-screen-browser">
+                            <StoryBrowser />
+                        </div>
+                        <div className="barkochba-screen-panel">
+                            <StoryPanel />
+                        </div>
                     </div>
                 </div>
             </div>
