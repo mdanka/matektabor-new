@@ -5,8 +5,8 @@ import {
     ExpansionPanelSummary,
     ExpansionPanelDetails,
     Hidden,
-    IconButton,
     Drawer,
+    Button,
 } from "@material-ui/core";
 import { PersonsSelector } from "./personsSelector";
 import { ISelectOption } from "../../commons";
@@ -67,9 +67,14 @@ class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, 
                 </Hidden>
                 <div className="barkochba-screen-content-area">
                     <Hidden className="barkochba-screen-drawer-toggle" smUp implementation="css">
-                        <IconButton color="inherit" aria-label="Open drawer" onClick={this.handleDrawerToggle}>
+                        {/* <IconButton color="inherit" aria-label="Open drawer" onClick={this.handleDrawerToggle}>
                             <MenuIcon />
-                        </IconButton>
+                        </IconButton> */}
+
+                        <Button className="barkochba-screen-drawer-toggle-button" variant="outlined" onClick={this.handleDrawerToggle}>
+                            <MenuIcon className="barkochba-screen-drawer-toggle-button-icon" />
+                            Navigáció és barkochbatörténetek
+                        </Button>
                     </Hidden>
                     <div className="barkochba-screen-person-selector">
                         <ExpansionPanel>
