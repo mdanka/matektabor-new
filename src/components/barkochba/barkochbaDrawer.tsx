@@ -14,6 +14,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import TableChartIcon from "@material-ui/icons/TableChart";
 import { Link as RouterLink } from "react-router-dom";
 import { NavUtils, Page } from "../../utils";
+import { StoryBrowser } from "./storyBrowser";
 
 const BarkochbaExportLink = (props: any) => (
     <RouterLink to={NavUtils.getNavUrl[Page.BarkochbaExport](undefined)} {...props} />
@@ -41,26 +42,30 @@ export class UnconnectedBarkochbaDrawer extends React.Component<IBarkochbaDrawer
     public render() {
         return (
             <div>
-                <List>
-                    <Link variant="body1" component={BarkochbaExportLink}>
-                        <ListItem button className="barkochba-drawer-list-item">
-                            <ListItemIcon>
-                                <TableChartIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Áttekintő táblázatok" />
-                        </ListItem>
-                    </Link>
-                    <Link variant="body1" component={BarkochbaManageLink}>
-                        <ListItem button className="barkochba-drawer-list-item">
-                            <ListItemIcon>
-                                <EditIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Táborok szerkesztése" />
-                        </ListItem>
-                    </Link>
-                </List>
-                <Divider />
-                Stories
+                <div className="barkochba-drawer-navigation">
+                    <List>
+                        <Link variant="body1" component={BarkochbaExportLink}>
+                            <ListItem button className="barkochba-drawer-list-item">
+                                <ListItemIcon>
+                                    <TableChartIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Áttekintő táblázatok" />
+                            </ListItem>
+                        </Link>
+                        <Link variant="body1" component={BarkochbaManageLink}>
+                            <ListItem button className="barkochba-drawer-list-item">
+                                <ListItemIcon>
+                                    <EditIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Táborok szerkesztése" />
+                            </ListItem>
+                        </Link>
+                    </List>
+                    <Divider />
+                </div>
+                <div className="barkochba-drawer-story-browser">
+                    <StoryBrowser />
+                </div>
             </div>
         );
     }
