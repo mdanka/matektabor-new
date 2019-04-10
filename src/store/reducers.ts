@@ -9,6 +9,7 @@ import {
     SetCurrentListeningCampRoom,
     SetHasPendingWrites,
     SetBarkochbaManageState,
+    SetBarkochbaDrawerIsOpen,
 } from "./actions";
 import { IAppState, IBarkochbaManageState } from "./state";
 
@@ -56,6 +57,11 @@ export const appReducer = TypedReducer.builder<IAppState>()
     .withHandler(SetBarkochbaManageState.TYPE, (state, payload) => {
         return setWith(state, {
             barkochbaManageState: setWith(state.barkochbaManageState, payload) as IBarkochbaManageState,
+        });
+    })
+    .withHandler(SetBarkochbaDrawerIsOpen.TYPE, (state, payload) => {
+        return setWith(state, {
+            barkochbaDrawerIsOpen: payload.barkochbaDrawerIsOpen,
         });
     })
     .build();

@@ -37,3 +37,7 @@ export const SetHasPendingWrites = TypedAction.define("MATEKTABOR//SET_HAS_PENDI
 export const SetBarkochbaManageState = TypedAction.define("MATEKTABOR//SET_BARKOCHBA_MANAGE_STATE")<
     Partial<IBarkochbaManageState>
 >();
+
+export const SetBarkochbaDrawerIsOpen = TypedAction.define("MATEKTABOR//SET_BARKOCHBA_DRAWER_IS_OPEN")<{
+    barkochbaDrawerIsOpen: boolean;
+}>();

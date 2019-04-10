@@ -242,6 +242,8 @@ export const selectCampRoomPeopleAsOptions = createCachedSelector(
     },
 )((_state: IAppState, campId: string, roomName: string) => `${campId}:${roomName}`);
 
+export const selectBarkochbaDrawerIsOpen = (state: IAppState) => state.barkochbaDrawerIsOpen;
+
 const mapPersonIdsToSelectOptions = (personIds: string[], personsMap: IPersonsState): ISelectOption[] => {
     return ((personIds
         .map(personId => {

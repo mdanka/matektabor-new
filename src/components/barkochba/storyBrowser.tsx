@@ -6,6 +6,7 @@ import {
     SetCurrentStoryId,
     selectCurrentStoryId,
     selectCurrentListeningPersonIds,
+    SetBarkochbaDrawerIsOpen,
 } from "../../store";
 import { Dispatch } from "redux";
 import { List, ListItemText, ListItem, Chip, Tooltip } from "@material-ui/core";
@@ -22,6 +23,7 @@ export interface IStoryBrowserStateProps {
 
 export interface IStoryBrowserDispatchProps {
     selectStory: (id: string | undefined) => void;
+    closeDrawer: () => void;
 }
 
 export type IStoryBrowserProps = IStoryBrowserOwnProps & IStoryBrowserStateProps & IStoryBrowserDispatchProps;
@@ -67,7 +69,7 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
                 key={id}
                 selected={id === currentStoryId}
                 button
-                divider={true}
+                divider={false}
                 onClick={this.getStorySelectionHandler(id)}
             >
                 <ListItemText primary={primaryLabel} secondary={secondaryLabel} />
@@ -76,8 +78,11 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
     };
 
     private getStorySelectionHandler = (id: string) => {
-        const { selectStory } = this.props;
-        return () => selectStory(id);
+        const { selectStory, closeDrawer } = this.props;
+        return () => {
+            selectStory(id);
+            closeDrawer();
+        };
     };
 }
 
@@ -92,6 +97,7 @@ function mapStateToProps(state: IAppState, _ownProps: IStoryBrowserOwnProps): IS
 function mapDispatchToProps(dispatch: Dispatch, _ownProps: IStoryBrowserOwnProps): IStoryBrowserDispatchProps {
     return {
         selectStory: (currentStoryId: string | undefined) => dispatch(SetCurrentStoryId.create({ currentStoryId })),
+        closeDrawer: () => dispatch(SetBarkochbaDrawerIsOpen.create({ barkochbaDrawerIsOpen: false })),
     };
 }
 
