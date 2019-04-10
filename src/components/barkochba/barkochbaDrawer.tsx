@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { IAppState } from "../../store";
+import { IAppState, selectBarkochbaDrawerIsOpen, SetBarkochbaDrawerIsOpen } from "../../store";
 import { Dispatch } from "redux";
 import { List, ListItemText, ListItem, Divider, ListItemIcon, Link } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
@@ -17,9 +17,13 @@ const BarkochbaManageLink = (props: any) => <RouterLink to={NavUtils.getNavUrl[P
 
 export interface IBarkochbaDrawerOwnProps {}
 
-export interface IBarkochbaDrawerStateProps {}
+export interface IBarkochbaDrawerStateProps {
+    isOpen: boolean;
+}
 
-export interface IBarkochbaDrawerDispatchProps {}
+export interface IBarkochbaDrawerDispatchProps {
+    setIsOpen: (isOpen: boolean) => void;
+}
 
 export type IBarkochbaDrawerProps = IBarkochbaDrawerOwnProps &
     IBarkochbaDrawerStateProps &
@@ -58,12 +62,17 @@ export class UnconnectedBarkochbaDrawer extends React.Component<IBarkochbaDrawer
     }
 }
 
-function mapStateToProps(_state: IAppState, _ownProps: IBarkochbaDrawerOwnProps): IBarkochbaDrawerStateProps {
-    return {};
+function mapStateToProps(state: IAppState, _ownProps: IBarkochbaDrawerOwnProps): IBarkochbaDrawerStateProps {
+    return {
+        isOpen: selectBarkochbaDrawerIsOpen(state),
+    };
 }
 
-function mapDispatchToProps(_dispatch: Dispatch, _ownProps: IBarkochbaDrawerOwnProps): IBarkochbaDrawerDispatchProps {
-    return {};
+function mapDispatchToProps(dispatch: Dispatch, _ownProps: IBarkochbaDrawerOwnProps): IBarkochbaDrawerDispatchProps {
+    return {
+        setIsOpen: (barkochbaDrawerIsOpen: boolean) =>
+            dispatch(SetBarkochbaDrawerIsOpen.create({ barkochbaDrawerIsOpen })),
+    };
 }
 
 export const BarkochbaDrawer = connect(
