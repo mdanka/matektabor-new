@@ -67,7 +67,7 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
                 key={id}
                 selected={id === currentStoryId}
                 button
-                divider={true}
+                divider={false}
                 onClick={this.getStorySelectionHandler(id)}
             >
                 <ListItemText primary={primaryLabel} secondary={secondaryLabel} />
