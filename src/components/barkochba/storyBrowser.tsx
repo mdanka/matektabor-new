@@ -17,6 +17,7 @@ import StarIcon from "@material-ui/icons/Star";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import PersonIcon from "@material-ui/icons/Person";
 import StarRateIcon from "@material-ui/icons/StarRate";
+import { getGlobalServices } from "../../services";
 
 export interface IStoryBrowserOwnProps {}
 
@@ -46,7 +47,7 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
 
     private renderStory = (story: IStory) => {
         const { currentStoryId, currentListeningPersonIds, currentUserId } = this.props;
-        const { id, title, number, personsWhoKnow, usersWhoStarred } = story;
+        const { id: storyId, title, number, personsWhoKnow, usersWhoStarred } = story;
         const usersWhoStarredList = usersWhoStarred === undefined ? [] : usersWhoStarred;
         const personsWhoKnowSet = new Set(personsWhoKnow);
         const listeningPersonsWhoKnow = currentListeningPersonIds.filter(listeningPersonId =>
@@ -73,11 +74,11 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
         return (
             <ListItem
                 className={classes}
-                key={id}
-                selected={id === currentStoryId}
+                key={storyId}
+                selected={storyId === currentStoryId}
                 button
                 divider={false}
-                onClick={this.getStorySelectionHandler(id)}
+                onClick={this.getStorySelectionHandler(storyId)}
             >
                 <ListItemText primary={primaryLabel} secondary={secondaryLabel} />
                 <Tooltip title="Ennyien hallották már" placement="bottom">
@@ -101,7 +102,7 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
                         label={numberWhoStarred.toString()}
                     />
                 </Tooltip>
-                <IconButton onClick={this.handleStarClick}>
+                <IconButton onClick={this.getStarClickHandler(storyId, !isStarredForCurrentUser)}>
                     {isStarredForCurrentUser ? <StarIcon /> : <StarBorderIcon />}
                 </IconButton>
             </ListItem>
@@ -116,9 +117,15 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
         };
     };
 
-    private handleStarClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    private getStarClickHandler = (storyId: string, shouldBeStarred: boolean) => (
+        event: React.MouseEvent<HTMLDivElement>,
+    ) => {
         event.stopPropagation();
-        event.preventDefault();
+        const globalServices = getGlobalServices();
+        if (globalServices === undefined) {
+            return;
+        }
+        globalServices.dataService.updateStoryStarred(storyId, shouldBeStarred);
     };
 }
 
