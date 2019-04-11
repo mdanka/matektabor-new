@@ -5,6 +5,13 @@ import { IStory, IPerson, ISelectOption, IWithId, ICamp } from "../commons";
 
 export const selectCurrentUser = (state: IAppState) => state.currentUser;
 
+export const selectCurrentUserId = createSelector(
+    selectCurrentUser,
+    (user): string | undefined => {
+        return user === undefined ? undefined : user.uid;
+    },
+);
+
 export const selectStories = (state: IAppState) => state.stories;
 
 export const selectStoriesList = createSelector(
