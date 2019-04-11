@@ -18,7 +18,8 @@ service cloud.firestore {
 
     match /stories/{document=**} {
       allow read: if isSignedIn() && isViewer();
-      allow update: if isSignedIn() && isViewer() && areSetsEqual(request.writeFields, ["personsWhoKnow"]);
+      // TODO(mdanka): currently can rewrite all starred users - use Functions to only allow updating for the current user
+      allow update: if isSignedIn() && isViewer() && (areSetsEqual(request.writeFields, ["personsWhoKnow"]) || areSetsEqual(request.writeFields, ["usersWhoStarred"]));
       allow create, delete: if false;
     }
 
