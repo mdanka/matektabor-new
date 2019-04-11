@@ -28,9 +28,14 @@ export interface IStoryApi {
     number: number;
 
     /**
-     * List of user IDs of people who know this story.
+     * List of person IDs of people who know this story.
      */
     personsWhoKnow: string[];
+
+    /**
+     * List of user IDs of users who starred this story.
+     */
+    usersWhoStarred: string[] | undefined;
 }
 
 export type IPerson = IPersonApi & IWithId;

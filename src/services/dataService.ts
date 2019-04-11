@@ -111,6 +111,25 @@ export class DataService {
             );
     };
 
+    public updateStoryStarred = (storyId: string, isStarred: boolean) => {
+        const currentUser = this.firebaseAuthService.authGetCurrentUser();
+        if (currentUser == null) {
+            return;
+        }
+        const userId = currentUser.uid;
+        return this.firestore
+            .collection(DataService.COLLECTION_STORIES)
+            .doc(storyId)
+            .update(
+                isStarred
+                    ? { usersWhoStarred: firebase.firestore.FieldValue.arrayUnion(userId) }
+                    : { usersWhoStarred: firebase.firestore.FieldValue.arrayRemove(userId) },
+            )
+            .catch((reason: any) =>
+                console.error(`[DataService] Failed to update story with user starring selection. ${reason}`),
+            );
+    };
+
     public createPerson = (newPerson: IPersonApi) => {
         return this.firestore.collection(DataService.COLLECTION_PERSONS).add(newPerson);
     };

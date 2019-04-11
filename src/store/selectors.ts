@@ -5,6 +5,13 @@ import { IStory, IPerson, ISelectOption, IWithId, ICamp } from "../commons";
 
 export const selectCurrentUser = (state: IAppState) => state.currentUser;
 
+export const selectCurrentUserId = createSelector(
+    selectCurrentUser,
+    (user): string | undefined => {
+        return user === undefined ? undefined : user.uid;
+    },
+);
+
 export const selectStories = (state: IAppState) => state.stories;
 
 export const selectStoriesList = createSelector(
@@ -17,21 +24,28 @@ export const selectStoriesList = createSelector(
 export const selectStoriesOrderedByNumber = createSelector(
     selectStoriesList,
     (stories: IStory[]) => {
-        return stories.sort((a: IStory, b: IStory) => {
-            if (a.number === undefined && b.number === undefined) {
-                return 0;
-            } else if (a.number === undefined) {
-                return 1; // no number goes to the end of the list
-            } else if (b.number === undefined) {
-                return -1;
-            } else if (a.number > b.number) {
-                return 1;
-            } else if (a.number < b.number) {
-                return -11;
-            } else {
-                return 0;
-            }
+        return stories.sort(storyByNumberOrderer);
+    },
+);
+
+export const selectStarredStories = createSelector(
+    selectCurrentUserId,
+    selectStoriesList,
+    (userId: string | undefined, stories: IStory[]): IStory[] => {
+        if (userId === undefined) {
+            return [];
+        }
+        return stories.filter(story => {
+            const { usersWhoStarred } = story;
+            return usersWhoStarred !== undefined && usersWhoStarred.indexOf(userId) !== -1;
         });
+    },
+);
+
+export const selectStarredStoriesOrderedByNumber = createSelector(
+    selectStarredStories,
+    (stories: IStory[]) => {
+        return stories.sort(storyByNumberOrderer);
     },
 );
 
@@ -243,6 +257,22 @@ export const selectCampRoomPeopleAsOptions = createCachedSelector(
 )((_state: IAppState, campId: string, roomName: string) => `${campId}:${roomName}`);
 
 export const selectBarkochbaDrawerIsOpen = (state: IAppState) => state.barkochbaDrawerIsOpen;
+
+const storyByNumberOrderer = (a: IStory, b: IStory) => {
+    if (a.number === undefined && b.number === undefined) {
+        return 0;
+    } else if (a.number === undefined) {
+        return 1; // no number goes to the end of the list
+    } else if (b.number === undefined) {
+        return -1;
+    } else if (a.number > b.number) {
+        return 1;
+    } else if (a.number < b.number) {
+        return -11;
+    } else {
+        return 0;
+    }
+};
 
 const mapPersonIdsToSelectOptions = (personIds: string[], personsMap: IPersonsState): ISelectOption[] => {
     return ((personIds
