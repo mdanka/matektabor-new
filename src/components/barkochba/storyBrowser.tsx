@@ -8,9 +8,20 @@ import {
     selectCurrentListeningPersonIds,
     SetBarkochbaDrawerIsOpen,
     selectCurrentUserId,
+    selectStarredStoriesOrderedByNumber,
 } from "../../store";
 import { Dispatch } from "redux";
-import { List, ListItemText, ListItem, Chip, Tooltip, Avatar, IconButton } from "@material-ui/core";
+import {
+    List,
+    ListItemText,
+    ListItem,
+    Chip,
+    Tooltip,
+    Avatar,
+    IconButton,
+    Divider,
+    ListSubheader,
+} from "@material-ui/core";
 import { IStory } from "../../commons";
 import * as classNames from "classnames";
 import StarIcon from "@material-ui/icons/Star";
@@ -23,6 +34,7 @@ export interface IStoryBrowserOwnProps {}
 
 export interface IStoryBrowserStateProps {
     stories: IStory[];
+    starredStories: IStory[];
     currentStoryId: string | undefined;
     currentListeningPersonIds: string[];
     currentUserId: string | undefined;
@@ -37,10 +49,21 @@ export type IStoryBrowserProps = IStoryBrowserOwnProps & IStoryBrowserStateProps
 
 export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps, {}> {
     public render() {
-        const { stories } = this.props;
+        const { stories, starredStories } = this.props;
+        const areThereStarredStories = starredStories.length !== 0;
         return (
             <div className="story-browser">
-                <List>{stories.map(this.renderStory)}</List>
+                {areThereStarredStories && (
+                    <div>
+                        <List subheader={<ListSubheader disableSticky={true}>Kedvencek</ListSubheader>}>
+                            {starredStories.map(this.renderStory)}
+                        </List>
+                        <Divider />
+                    </div>
+                )}
+                <List subheader={<ListSubheader disableSticky={true}>Összes barkochbatörténet</ListSubheader>}>
+                    {stories.map(this.renderStory)}
+                </List>
             </div>
         );
     }
@@ -132,6 +155,7 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
 function mapStateToProps(state: IAppState, _ownProps: IStoryBrowserOwnProps): IStoryBrowserStateProps {
     return {
         stories: selectStoriesOrderedByNumber(state),
+        starredStories: selectStarredStoriesOrderedByNumber(state),
         currentStoryId: selectCurrentStoryId(state),
         currentListeningPersonIds: selectCurrentListeningPersonIds(state),
         currentUserId: selectCurrentUserId(state),
