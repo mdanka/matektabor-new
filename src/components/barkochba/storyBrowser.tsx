@@ -7,11 +7,16 @@ import {
     selectCurrentStoryId,
     selectCurrentListeningPersonIds,
     SetBarkochbaDrawerIsOpen,
+    selectCurrentUserId,
 } from "../../store";
 import { Dispatch } from "redux";
-import { List, ListItemText, ListItem, Chip, Tooltip } from "@material-ui/core";
+import { List, ListItemText, ListItem, Chip, Tooltip, Avatar, IconButton } from "@material-ui/core";
 import { IStory } from "../../commons";
 import * as classNames from "classnames";
+import StarIcon from "@material-ui/icons/Star";
+import StarBorderIcon from "@material-ui/icons/StarBorder";
+import PersonIcon from "@material-ui/icons/Person";
+import StarRateIcon from "@material-ui/icons/StarRate";
 
 export interface IStoryBrowserOwnProps {}
 
@@ -19,6 +24,7 @@ export interface IStoryBrowserStateProps {
     stories: IStory[];
     currentStoryId: string | undefined;
     currentListeningPersonIds: string[];
+    currentUserId: string | undefined;
 }
 
 export interface IStoryBrowserDispatchProps {
@@ -39,13 +45,17 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
     }
 
     private renderStory = (story: IStory) => {
-        const { currentStoryId, currentListeningPersonIds } = this.props;
-        const { id, title, number, personsWhoKnow } = story;
+        const { currentStoryId, currentListeningPersonIds, currentUserId } = this.props;
+        const { id, title, number, personsWhoKnow, usersWhoStarred } = story;
+        const usersWhoStarredList = usersWhoStarred === undefined ? [] : usersWhoStarred;
         const personsWhoKnowSet = new Set(personsWhoKnow);
         const listeningPersonsWhoKnow = currentListeningPersonIds.filter(listeningPersonId =>
             personsWhoKnowSet.has(listeningPersonId),
         );
         const numberWhoKnow = listeningPersonsWhoKnow.length;
+        const numberWhoStarred = usersWhoStarredList.length;
+        const isStarredForCurrentUser =
+            currentUserId !== undefined && usersWhoStarredList.indexOf(currentUserId) !== -1;
         const secondaryLabel = numberWhoKnow === 0 ? undefined : `${numberWhoKnow} gyerek ismeri`;
         const classes = classNames({
             "story-list-item-known-by-1": numberWhoKnow === 1,
@@ -58,9 +68,6 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
                 <span className="story-list-item-label-title">
                     {number} - {title}
                 </span>
-                <Tooltip title="Ennyien hallották már" placement="right">
-                    <Chip className="story-list-item-label-heard-number" label={personsWhoKnow.length.toString()} />
-                </Tooltip>
             </div>
         );
         return (
@@ -73,6 +80,30 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
                 onClick={this.getStorySelectionHandler(id)}
             >
                 <ListItemText primary={primaryLabel} secondary={secondaryLabel} />
+                <Tooltip title="Ennyien hallották már" placement="bottom">
+                    <Chip
+                        className="story-list-item-label-heard-number"
+                        avatar={
+                            <Avatar>
+                                <PersonIcon />
+                            </Avatar>
+                        }
+                        label={personsWhoKnow.length.toString()}
+                    />
+                </Tooltip>
+                <Tooltip title="Ennyien kedvelik" placement="bottom">
+                    <Chip
+                        avatar={
+                            <Avatar>
+                                <StarRateIcon />
+                            </Avatar>
+                        }
+                        label={numberWhoStarred.toString()}
+                    />
+                </Tooltip>
+                <IconButton onClick={this.handleStarClick}>
+                    {isStarredForCurrentUser ? <StarIcon /> : <StarBorderIcon />}
+                </IconButton>
             </ListItem>
         );
     };
@@ -84,6 +115,11 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
             closeDrawer();
         };
     };
+
+    private handleStarClick = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.stopPropagation();
+        event.preventDefault();
+    };
 }
 
 function mapStateToProps(state: IAppState, _ownProps: IStoryBrowserOwnProps): IStoryBrowserStateProps {
@@ -91,6 +127,7 @@ function mapStateToProps(state: IAppState, _ownProps: IStoryBrowserOwnProps): IS
         stories: selectStoriesOrderedByNumber(state),
         currentStoryId: selectCurrentStoryId(state),
         currentListeningPersonIds: selectCurrentListeningPersonIds(state),
+        currentUserId: selectCurrentUserId(state),
     };
 }
 
