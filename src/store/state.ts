@@ -11,7 +11,10 @@ export interface IAppState {
     hasPendingWrites: boolean;
     barkochbaManageState: IBarkochbaManageState;
     barkochbaDrawerIsOpen: boolean;
+    barkochbaOrdering: IBarkochbaOrdering;
 }
+
+export type IBarkochbaOrdering = "storyNumber" | "knowNumber" | "starNumber";
 
 export type IPersonsState = IMapState<IPersonApi>;
 

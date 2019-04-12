@@ -2,13 +2,13 @@ import * as React from "react";
 import { connect } from "react-redux";
 import {
     IAppState,
-    selectStoriesOrderedByNumber,
+    selectStoriesOrdered,
     SetCurrentStoryId,
     selectCurrentStoryId,
     selectCurrentListeningPersonIds,
     SetBarkochbaDrawerIsOpen,
     selectCurrentUserId,
-    selectStarredStoriesOrderedByNumber,
+    selectStarredStoriesOrdered,
 } from "../../store";
 import { Dispatch } from "redux";
 import {
@@ -154,8 +154,8 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
 
 function mapStateToProps(state: IAppState, _ownProps: IStoryBrowserOwnProps): IStoryBrowserStateProps {
     return {
-        stories: selectStoriesOrderedByNumber(state),
-        starredStories: selectStarredStoriesOrderedByNumber(state),
+        stories: selectStoriesOrdered(state),
+        starredStories: selectStarredStoriesOrdered(state),
         currentStoryId: selectCurrentStoryId(state),
         currentListeningPersonIds: selectCurrentListeningPersonIds(state),
         currentUserId: selectCurrentUserId(state),

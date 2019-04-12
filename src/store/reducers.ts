@@ -12,6 +12,7 @@ import {
     SetBarkochbaDrawerIsOpen,
 } from "./actions";
 import { IAppState, IBarkochbaManageState } from "./state";
+import { SetBarkochbaOrdering } from "./actions";
 
 export const appReducer = TypedReducer.builder<IAppState>()
     .withHandler(SetCurrentUser.TYPE, (state, payload) => {
@@ -62,6 +63,11 @@ export const appReducer = TypedReducer.builder<IAppState>()
     .withHandler(SetBarkochbaDrawerIsOpen.TYPE, (state, payload) => {
         return setWith(state, {
             barkochbaDrawerIsOpen: payload.barkochbaDrawerIsOpen,
+        });
+    })
+    .withHandler(SetBarkochbaOrdering.TYPE, (state, payload) => {
+        return setWith(state, {
+            barkochbaOrdering: payload.barkochbaOrdering,
         });
     })
     .build();

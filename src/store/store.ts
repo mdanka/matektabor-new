@@ -24,6 +24,7 @@ const initialState: IAppState = {
         roomsSelectionRoomName: undefined,
     },
     barkochbaDrawerIsOpen: false,
+    barkochbaOrdering: "storyNumber",
 };
 
 export function createAppStore() {
