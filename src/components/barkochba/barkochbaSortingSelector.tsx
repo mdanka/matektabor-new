@@ -25,14 +25,11 @@ export class UnconnectedBarkochbaSortingSelector extends React.Component<IBarkoc
     public render() {
         const { ordering } = this.props;
         return (
-            <div className="barkochba-sorting-selector">
-                <span className="barkochba-sorting-selector-label">Rendezés:</span>
-                <Select className="barkochba-sorting-selector-selector" value={ordering} onChange={this.handleChange}>
-                    <MenuItem value={"storyNumber"}>Sorszám szerint</MenuItem>
-                    <MenuItem value={"knowNumber"}>Aszerint, hogy hányan hallották</MenuItem>
-                    <MenuItem value={"starNumber"}>Kedvelések száma szerint</MenuItem>
-                </Select>
-            </div>
+            <Select className="barkochba-sorting-selector" value={ordering} onChange={this.handleChange}>
+                <MenuItem value={"storyNumber"}>Sorszám</MenuItem>
+                <MenuItem value={"knowNumber"}>Hányan hallották</MenuItem>
+                <MenuItem value={"starNumber"}>Kedvelések száma</MenuItem>
+            </Select>
         );
     }
 
