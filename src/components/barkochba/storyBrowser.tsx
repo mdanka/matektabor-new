@@ -54,8 +54,11 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
         const areThereStarredStories = starredStories.length !== 0;
         return (
             <div className="story-browser">
-                <BarkochbaSortingSelector />
-                <Divider />
+                <List>
+                    <ListItem>
+                        <BarkochbaSortingSelector />
+                    </ListItem>
+                </List>
                 {areThereStarredStories && (
                     <div>
                         <List subheader={<ListSubheader disableSticky={true}>Kedvencek</ListSubheader>}>
