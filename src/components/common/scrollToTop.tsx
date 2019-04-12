@@ -4,7 +4,7 @@ import { withRouter } from "react-router-dom";
 
 export interface IScrollToTopProps extends RouteComponentProps<any> {}
 
-class ScrollToTopWithoutProps extends React.PureComponent<IScrollToTopProps, {}> {
+class ScrollToTopWithoutProps extends React.Component<IScrollToTopProps, {}> {
     public componentDidUpdate(prevProps: IScrollToTopProps) {
         if (this.props.location !== prevProps.location) {
             window.scrollTo(0, 0);

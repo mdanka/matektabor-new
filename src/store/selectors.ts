@@ -33,7 +33,7 @@ export const selectStoriesOrdered = createSelector(
                 : ordering === "knowNumber"
                 ? storyByKnowOrderer
                 : storyByStarOrderer;
-        return stories.sort(sorter);
+        return stories.sort(sorter).slice(0);
     },
 );
 
