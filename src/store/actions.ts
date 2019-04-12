@@ -1,6 +1,13 @@
 import { TypedAction } from "redoodle";
 import { IUser } from "../commons";
-import { IPersonsState, ICampsState, IStoriesState, ICampRoomState, IBarkochbaManageState } from "./state";
+import {
+    IPersonsState,
+    ICampsState,
+    IStoriesState,
+    ICampRoomState,
+    IBarkochbaManageState,
+    IBarkochbaOrdering,
+} from "./state";
 
 export const SetCurrentUser = TypedAction.define("MATEKTABOR//SET_CURRENT_USER")<{
     currentUser: IUser | undefined;
@@ -40,4 +47,8 @@ export const SetBarkochbaManageState = TypedAction.define("MATEKTABOR//SET_BARKO
 
 export const SetBarkochbaDrawerIsOpen = TypedAction.define("MATEKTABOR//SET_BARKOCHBA_DRAWER_IS_OPEN")<{
     barkochbaDrawerIsOpen: boolean;
+}>();
+
+export const SetBarkochbaOrdering = TypedAction.define("MATEKTABOR//SET_BARKOCHBA_ORDERING")<{
+    barkochbaOrdering: IBarkochbaOrdering;
 }>();

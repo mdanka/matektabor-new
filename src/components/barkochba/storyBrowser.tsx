@@ -2,13 +2,13 @@ import * as React from "react";
 import { connect } from "react-redux";
 import {
     IAppState,
-    selectStoriesOrderedByNumber,
+    selectStoriesOrdered,
     SetCurrentStoryId,
     selectCurrentStoryId,
     selectCurrentListeningPersonIds,
     SetBarkochbaDrawerIsOpen,
     selectCurrentUserId,
-    selectStarredStoriesOrderedByNumber,
+    selectStarredStoriesOrdered,
 } from "../../store";
 import { Dispatch } from "redux";
 import {
@@ -29,6 +29,7 @@ import StarBorderIcon from "@material-ui/icons/StarBorder";
 import PersonIcon from "@material-ui/icons/Person";
 import StarRateIcon from "@material-ui/icons/StarRate";
 import { getGlobalServices } from "../../services";
+import { BarkochbaSortingSelector } from "./barkochbaSortingSelector";
 
 export interface IStoryBrowserOwnProps {}
 
@@ -53,6 +54,11 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
         const areThereStarredStories = starredStories.length !== 0;
         return (
             <div className="story-browser">
+                <List subheader={<ListSubheader disableSticky={true}>Rendezés</ListSubheader>}>
+                    <ListItem>
+                        <BarkochbaSortingSelector />
+                    </ListItem>
+                </List>
                 {areThereStarredStories && (
                     <div>
                         <List subheader={<ListSubheader disableSticky={true}>Kedvencek</ListSubheader>}>
@@ -154,8 +160,8 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
 
 function mapStateToProps(state: IAppState, _ownProps: IStoryBrowserOwnProps): IStoryBrowserStateProps {
     return {
-        stories: selectStoriesOrderedByNumber(state),
-        starredStories: selectStarredStoriesOrderedByNumber(state),
+        stories: selectStoriesOrdered(state),
+        starredStories: selectStarredStoriesOrdered(state),
         currentStoryId: selectCurrentStoryId(state),
         currentListeningPersonIds: selectCurrentListeningPersonIds(state),
         currentUserId: selectCurrentUserId(state),
