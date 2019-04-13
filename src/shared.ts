@@ -17,3 +17,5 @@ export interface ISetStarredForUserRequest {
     storyId: string;
     isStarred: boolean;
 }
+
+export type IGetIsUserViewerResponse = boolean;
