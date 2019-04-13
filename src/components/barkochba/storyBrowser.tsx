@@ -154,7 +154,8 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
         if (globalServices === undefined) {
             return;
         }
-        globalServices.dataService.updateStoryStarred(storyId, shouldBeStarred);
+        // globalServices.dataService.updateStoryStarred(storyId, shouldBeStarred);
+        globalServices.functionsService.setStarredForUser({ storyId, isStarred: shouldBeStarred });
     };
 }
 
