@@ -11,9 +11,9 @@ export class FunctionsService {
         return response.data as IGetIsUserViewerResponse;
     };
 
-    public setStarredForUser = async (request: ISetStarredForUserRequest): Promise<{}> => {
+    public setStarredForUser = async (request: ISetStarredForUserRequest): Promise<void> => {
         const setStarredForUserFunction = this.functions.httpsCallable("setStarredForUser");
         await setStarredForUserFunction(request);
-        return {};
+        return;
     };
 }
