@@ -1,1 +1,1 @@
-./node_modules/.bin/firebase serve --only hosting
+./node_modules/.bin/firebase serve --only hosting,functions
