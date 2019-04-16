@@ -85,7 +85,7 @@ class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, 
                         </Button>
                     </Hidden>
                     <div className="barkochba-screen-person-selector">
-                        <ExpansionPanel>
+                        <ExpansionPanel defaultExpanded={true}>
                             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                                 <Typography variant="subtitle1">{personSelectorTitle}</Typography>
                             </ExpansionPanelSummary>
