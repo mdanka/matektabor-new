@@ -1,6 +1,6 @@
 import * as firebase from "firebase/app";
 import "firebase/functions";
-import { ISetStarredForUserRequest, IGetIsUserViewerResponse } from "../shared";
+import { ISetStarredForUserRequest, IGetIsUserViewerResponse } from "../../functions/src/shared";
 
 export class FunctionsService {
     public constructor(private functions: firebase.functions.Functions) {}
