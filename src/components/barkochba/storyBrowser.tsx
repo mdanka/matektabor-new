@@ -82,12 +82,15 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
         const listeningPersonsWhoKnow = currentListeningPersonIds.filter(listeningPersonId =>
             personsWhoKnowSet.has(listeningPersonId),
         );
+        const numberWhoListening = currentListeningPersonIds.length;
         const numberWhoKnow = listeningPersonsWhoKnow.length;
         const numberWhoStarred = usersWhoStarredList.length;
         const isStarredForCurrentUser =
             currentUserId !== undefined && usersWhoStarredList.indexOf(currentUserId) !== -1;
         const secondaryLabel = numberWhoKnow === 0 ? undefined : `${numberWhoKnow} gyerek ismeri`;
-        const classes = classNames({
+        const classes = classNames("story-list-item", {
+            "story-list-item-known-by": numberWhoListening !== 0,
+            "story-list-item-known-by-0": numberWhoListening !== 0 && numberWhoKnow === 0,
             "story-list-item-known-by-1": numberWhoKnow === 1,
             "story-list-item-known-by-2": numberWhoKnow === 2,
             "story-list-item-known-by-3": numberWhoKnow >= 3,
