@@ -46,6 +46,10 @@ export type IBarkochbaScreenProps = IBarkochbaScreenOwnProps &
 class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, {}> {
     public render() {
         const { barkochbaDrawerIsOpen, currentListeningPersonsAsSelectOptions, personsAsSelectOptions } = this.props;
+        const selectedPeopleNumber = currentListeningPersonsAsSelectOptions.length;
+        const personSelectorTitle = `Nekik mesélek${
+            selectedPeopleNumber === 0 ? "" : ` (${selectedPeopleNumber} gyerek)`
+        }`;
         return (
             <div className="barkochba-screen">
                 <Hidden className="barkochba-screen-drawer-container" xsDown implementation="css">
@@ -71,7 +75,11 @@ class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, 
                             <MenuIcon />
                         </IconButton> */}
 
-                        <Button className="barkochba-screen-drawer-toggle-button" variant="outlined" onClick={this.handleDrawerToggle}>
+                        <Button
+                            className="barkochba-screen-drawer-toggle-button"
+                            variant="outlined"
+                            onClick={this.handleDrawerToggle}
+                        >
                             <MenuIcon className="barkochba-screen-drawer-toggle-button-icon" />
                             Navigáció és barkochbatörténetek
                         </Button>
@@ -79,7 +87,7 @@ class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, 
                     <div className="barkochba-screen-person-selector">
                         <ExpansionPanel>
                             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                                <Typography variant="subtitle1">Nekik mesélek</Typography>
+                                <Typography variant="subtitle1">{personSelectorTitle}</Typography>
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails className="story-panel-people-who-know">
                                 <Typography variant="body1" paragraph={true}>
