@@ -71,6 +71,7 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, ISt
         }
         const { personsToAdd } = this.state;
         const someoneListeningKnowsIt = currentListeningPersonsWhoKnowStoryAsSelectOptions.length > 0;
+        const isPlusralListeningAndKnowing = currentListeningPersonsWhoKnowStoryAsSelectOptions.length > 1;
         const { title, description, solution, number } = story;
         return (
             <div>
@@ -107,7 +108,10 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, ISt
                     <ExpansionPanelDetails className="story-panel-people-who-know">
                         {someoneListeningKnowsIt && (
                             <Typography variant="body1" paragraph={true}>
-                                <b>Ők ismerik a mostani hallgatóságból:</b>{" "}
+                                <b>
+                                    Ő{isPlusralListeningAndKnowing ? "k" : ""} ismeri
+                                    {isPlusralListeningAndKnowing ? "k" : ""} a mostani hallgatóságból:
+                                </b>{" "}
                                 {currentListeningPersonsWhoKnowStoryAsSelectOptions
                                     .map(option => option.label)
                                     .join(", ")}
@@ -131,7 +135,8 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, ISt
                             </Button>
                         </div>
                         <Typography variant="body1" paragraph={true}>
-                            <b>Mindenki, aki ismeri:</b> {personsWhoKnowAsSelectOptions.map(option => option.label).join(", ")}
+                            <b>Mindenki, aki ismeri:</b>{" "}
+                            {personsWhoKnowAsSelectOptions.map(option => option.label).join(", ")}
                         </Typography>
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
