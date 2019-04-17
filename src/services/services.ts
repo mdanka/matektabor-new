@@ -51,8 +51,17 @@ function createSecretBackupDataCode() {
             return;
         }
         const data = await GLOBAL_SERVICES.functionsService.backupData();
-        // tslint:disable-next-line:no-console
-        console.log(data);
-        return data;
+        const dateString = new Date().toISOString();
+        downloadAsFile(`matektabor-backup-${dateString}.json`, JSON.stringify(data));
     };
+}
+
+function downloadAsFile(filename: string, text: string) {
+    const element = document.createElement("a");
+    element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(text));
+    element.setAttribute("download", filename);
+    element.style.display = "none";
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
 }
