@@ -6,7 +6,6 @@ dist
 .npmrc
 .vscode/
 .firebase/
-functions/
 
 tags*
 
