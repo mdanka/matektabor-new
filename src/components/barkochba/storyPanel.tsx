@@ -3,9 +3,10 @@ import { connect } from "react-redux";
 import {
     IAppState,
     selectCurrentStory,
-    selectCurrentStoryPersonsAsSelectOptions,
     selectPersonsAsSelectOptions,
     selectCurrentListeningPersonIds,
+    selectCurrentListeningPersonsWhoKnowStoryAsSelectOptions,
+    selectCurrentStoryPersonsAsSelectOptions,
 } from "../../store";
 import { Dispatch } from "redux";
 import {
@@ -26,16 +27,28 @@ export interface IStoryPanelOwnProps {}
 
 export interface IStoryPanelStateProps {
     story: IStory | undefined;
-    personsWhoKnowAsSelectOptions: ISelectOption[];
     personsAsSelectOptions: ISelectOption[];
+    personsWhoKnowAsSelectOptions: ISelectOption[];
     currentListeningPersonIds: string[];
+    currentListeningPersonsWhoKnowStoryAsSelectOptions: ISelectOption[];
 }
 
 export interface IStoryPanelDispatchProps {}
 
 export type IStoryPanelProps = IStoryPanelOwnProps & IStoryPanelStateProps & IStoryPanelDispatchProps;
 
-export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, {}> {
+export interface IStoryPanelLocalState {
+    personsToAdd: ISelectOption[];
+}
+
+export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, IStoryPanelLocalState> {
+    public constructor(props: IStoryPanelProps) {
+        super(props);
+        this.state = {
+            personsToAdd: [],
+        } as IStoryPanelLocalState;
+    }
+
     public render() {
         const { story } = this.props;
         return (
@@ -46,10 +59,19 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, {}>
     }
 
     private renderStory = () => {
-        const { story, personsWhoKnowAsSelectOptions, personsAsSelectOptions, currentListeningPersonIds } = this.props;
+        const {
+            story,
+            personsAsSelectOptions,
+            personsWhoKnowAsSelectOptions,
+            currentListeningPersonIds,
+            currentListeningPersonsWhoKnowStoryAsSelectOptions,
+        } = this.props;
         if (story === undefined) {
             return null;
         }
+        const { personsToAdd } = this.state;
+        const someoneListeningKnowsIt = currentListeningPersonsWhoKnowStoryAsSelectOptions.length > 0;
+        const isPlusralListeningAndKnowing = currentListeningPersonsWhoKnowStoryAsSelectOptions.length > 1;
         const { title, description, solution, number } = story;
         return (
             <div>
@@ -61,7 +83,7 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, {}>
                         onClick={this.handleDoneClicked}
                         disabled={currentListeningPersonIds.length === 0}
                     >
-                        <Icon className="story-panel-done-button-icon">done</Icon>
+                        <Icon className="story-panel-button-icon">done</Icon>
                         Elmeséltem
                     </Button>
                 </p>
@@ -84,11 +106,38 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, {}>
                         <Typography variant="subtitle1">Kik ismerik?</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails className="story-panel-people-who-know">
-                        <PersonsSelector
-                            allPersons={personsAsSelectOptions}
-                            selectedPersons={personsWhoKnowAsSelectOptions}
-                            onChange={this.handlePersonsWhoKnowChange}
-                        />
+                        {someoneListeningKnowsIt && (
+                            <Typography variant="body1" paragraph={true}>
+                                <b>
+                                    Ő{isPlusralListeningAndKnowing ? "k" : ""} ismeri
+                                    {isPlusralListeningAndKnowing ? "k" : ""} a mostani hallgatóságból:
+                                </b>{" "}
+                                {currentListeningPersonsWhoKnowStoryAsSelectOptions
+                                    .map(option => option.label)
+                                    .join(", ")}
+                            </Typography>
+                        )}
+                        <div className="story-panel-people-who-know-add">
+                            <PersonsSelector
+                                className="story-panel-people-who-know-add-selector"
+                                allPersons={personsAsSelectOptions}
+                                selectedPersons={personsToAdd}
+                                onChange={this.handlePersonsWhoKnowChange}
+                            />
+                            <Button
+                                className="story-panel-people-who-know-add-button"
+                                variant="contained"
+                                onClick={this.handleAddClicked}
+                                disabled={personsToAdd.length === 0}
+                            >
+                                <Icon className="story-panel-button-icon">add</Icon>
+                                Hozzáadom
+                            </Button>
+                        </div>
+                        <Typography variant="body1" paragraph={true}>
+                            <b>Mindenki, aki ismeri:</b>{" "}
+                            {personsWhoKnowAsSelectOptions.map(option => option.label).join(", ")}
+                        </Typography>
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
             </div>
@@ -104,14 +153,19 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, {}>
     };
 
     private handlePersonsWhoKnowChange = (values: ISelectOption[]) => {
+        this.setState({ personsToAdd: values });
+    };
+
+    private handleAddClicked = async () => {
         const globalServices = getGlobalServices();
         const { story } = this.props;
         if (globalServices === undefined || story === undefined) {
             return;
         }
         const { id: storyId } = story;
-        const peopleIds = values.map(value => value.value);
-        globalServices.dataService.updatePersonsWhoKnowStory(storyId, peopleIds);
+        const { personsToAdd } = this.state;
+        await globalServices.dataService.addPersonsWhoKnowStory(storyId, personsToAdd.map(person => person.value));
+        this.setState({ personsToAdd: [] });
     };
 
     private handleDoneClicked = () => {
@@ -120,18 +174,20 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, {}>
         if (globalServices === undefined || story === undefined) {
             return;
         }
-        const { id: storyId, personsWhoKnow } = story;
-        const allPersonsWhoKnowIt = Array.from(new Set([...personsWhoKnow, ...currentListeningPersonIds]));
-        globalServices.dataService.updatePersonsWhoKnowStory(storyId, allPersonsWhoKnowIt);
+        const { id: storyId } = story;
+        globalServices.dataService.addPersonsWhoKnowStory(storyId, currentListeningPersonIds);
     };
 }
 
 function mapStateToProps(state: IAppState, _ownProps: IStoryPanelOwnProps): IStoryPanelStateProps {
     return {
         story: selectCurrentStory(state),
-        personsWhoKnowAsSelectOptions: selectCurrentStoryPersonsAsSelectOptions(state),
         personsAsSelectOptions: selectPersonsAsSelectOptions(state),
+        personsWhoKnowAsSelectOptions: selectCurrentStoryPersonsAsSelectOptions(state),
         currentListeningPersonIds: selectCurrentListeningPersonIds(state),
+        currentListeningPersonsWhoKnowStoryAsSelectOptions: selectCurrentListeningPersonsWhoKnowStoryAsSelectOptions(
+            state,
+        ),
     };
 }
 

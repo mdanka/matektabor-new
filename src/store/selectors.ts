@@ -161,14 +161,21 @@ export const selectCurrentStory = createSelector(
     },
 );
 
-export const selectCurrentStoryPersonsAsSelectOptions = createSelector(
+export const selectCurrentStoryPersonIds = createSelector(
     selectCurrentStory,
-    selectPersons,
-    (story: IStory | undefined, personsMap: IPersonsState): ISelectOption[] => {
+    (story: IStory | undefined): string[] => {
         if (story === undefined) {
             return [];
         }
         const { personsWhoKnow } = story;
+        return personsWhoKnow;
+    },
+);
+
+export const selectCurrentStoryPersonsAsSelectOptions = createSelector(
+    selectCurrentStoryPersonIds,
+    selectPersons,
+    (personsWhoKnow: string[], personsMap: IPersonsState): ISelectOption[] => {
         return mapPersonIdsToSelectOptions(personsWhoKnow, personsMap);
     },
 );
@@ -180,6 +187,19 @@ export const selectCurrentListeningPersonsAsSelectOptions = createSelector(
     selectPersons,
     (currentListeningPersonIds: string[], personsMap: IPersonsState): ISelectOption[] => {
         return mapPersonIdsToSelectOptions(currentListeningPersonIds, personsMap);
+    },
+);
+
+export const selectCurrentListeningPersonsWhoKnowStoryAsSelectOptions = createSelector(
+    selectCurrentStoryPersonIds,
+    selectCurrentListeningPersonIds,
+    selectPersons,
+    (personsWhoKnow: string[], currentListeningPersonIds: string[], personsMap: IPersonsState): ISelectOption[] => {
+        const personsWhoKnowSet = new Set(personsWhoKnow);
+        const currentListeningPersonIdsWhoKnow = currentListeningPersonIds.filter(personId =>
+            personsWhoKnowSet.has(personId),
+        );
+        return mapPersonIdsToSelectOptions(currentListeningPersonIdsWhoKnow, personsMap);
     },
 );
 

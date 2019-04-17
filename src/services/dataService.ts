@@ -98,11 +98,11 @@ export class DataService {
             .catch((reason: any) => console.error(`[DataService] Failed to get all ${collection} IDs. ${reason}`));
     };
 
-    public updatePersonsWhoKnowStory = (storyId: string, peopleIds: string[]) => {
+    public addPersonsWhoKnowStory = (storyId: string, peopleIds: string[]) => {
         return this.firestore
             .collection(CollectionId.Stories)
             .doc(storyId)
-            .update({ personsWhoKnow: peopleIds })
+            .update({ personsWhoKnow: firebase.firestore.FieldValue.arrayUnion(...peopleIds) })
             .catch((reason: any) =>
                 console.error(`[DataService] Failed to update story with persons who know it. ${reason}`),
             );
