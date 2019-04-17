@@ -54,7 +54,7 @@ const getUserDataAndCheckIsViewer = async (context: functions.https.CallableCont
 }
 
 const getCollection = async (collectionId: string) => {
-    const querySnapshot = await admin.firestore().collection(CollectionId.Stories).get();
+    const querySnapshot = await admin.firestore().collection(collectionId).get();
     const docs: {[id: string]: any} = {};
     querySnapshot.forEach(doc => {
         docs[doc.id] = doc.data();
