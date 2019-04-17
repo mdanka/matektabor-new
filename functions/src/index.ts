@@ -88,7 +88,7 @@ export const addNewPeopleWhoHeardStory = functions.https.onCall(async (data: IAd
 
 export const backupData = functions.https.onCall(async (data, context) => {
     await getUserDataAndCheckIsViewer(context);
-    const collectionIds = Object.keys(CollectionId).map(id => CollectionId[id as any]);
+    const collectionIds = [CollectionId.Stories, CollectionId.Camps, CollectionId.Persons];
     const collections = await Promise.all(collectionIds.map(getCollection));
     const allDocs: {[id: string]: any} = {};
     collectionIds.forEach((collectionId, index) => {

@@ -41,10 +41,23 @@ export function getGlobalServices() {
 
 export function initializeAndGetClientSideServices(store: Store<IAppState>) {
     GLOBAL_SERVICES = getServices(store);
+    createSecretBackupDataCode();
     return GLOBAL_SERVICES;
 }
 
 export function initializeAndGetServerSideServices() {
     GLOBAL_SERVICES = getServices(undefined);
     return GLOBAL_SERVICES;
+}
+
+function createSecretBackupDataCode() {
+    (document as any).backupData = async () => {
+        if (GLOBAL_SERVICES === undefined) {
+            return;
+        }
+        const data = await GLOBAL_SERVICES.functionsService.backupData();
+        // tslint:disable-next-line:no-console
+        console.log(data);
+        return data;
+    };
 }

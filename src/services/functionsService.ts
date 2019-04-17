@@ -26,4 +26,10 @@ export class FunctionsService {
         await addNewPeopleWhoHeardStoryFunction(request);
         return;
     };
+
+    public backupData = async (): Promise<object> => {
+        const backupDataFunction = this.functions.httpsCallable("backupData");
+        const result = await backupDataFunction();
+        return result.data;
+    };
 }
