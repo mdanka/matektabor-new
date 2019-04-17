@@ -52,7 +52,7 @@ function createSecretBackupDataCode() {
         }
         const data = await GLOBAL_SERVICES.functionsService.backupData();
         const dateString = new Date().toISOString();
-        downloadAsFile(`matektabor-backup-${dateString}.json`, JSON.stringify(data));
+        downloadAsFile(`matektabor-backup-${dateString}.json`, data);
     };
 }
 

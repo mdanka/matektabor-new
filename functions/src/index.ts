@@ -94,5 +94,5 @@ export const backupData = functions.https.onCall(async (data, context) => {
     collectionIds.forEach((collectionId, index) => {
         allDocs[collectionId] = collections[index];
     });
-    return allDocs;
+    return JSON.stringify(allDocs);
 });

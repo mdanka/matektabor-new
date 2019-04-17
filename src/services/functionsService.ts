@@ -27,7 +27,7 @@ export class FunctionsService {
         return;
     };
 
-    public backupData = async (): Promise<object> => {
+    public backupData = async (): Promise<string> => {
         const backupDataFunction = this.functions.httpsCallable("backupData");
         const result = await backupDataFunction();
         return result.data;
