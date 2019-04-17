@@ -45,11 +45,6 @@ export function initializeAndGetClientSideServices(store: Store<IAppState>) {
     return GLOBAL_SERVICES;
 }
 
-export function initializeAndGetServerSideServices() {
-    GLOBAL_SERVICES = getServices(undefined);
-    return GLOBAL_SERVICES;
-}
-
 function createSecretBackupDataCode() {
     (document as any).backupData = async () => {
         if (GLOBAL_SERVICES === undefined) {
