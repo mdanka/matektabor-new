@@ -53,6 +53,15 @@ const getUserDataAndCheckIsViewer = async (context: functions.https.CallableCont
     return userData;
 }
 
+const getCollection = async (collectionId: string) => {
+    const querySnapshot = await admin.firestore().collection(CollectionId.Stories).get();
+    const docs: {[id: string]: any} = {};
+    querySnapshot.forEach(doc => {
+        docs[doc.id] = doc.data();
+    });
+    return docs;
+}
+
 export const getUserRoles = functions.https.onCall(async (data, context): Promise<IGetUserRolesResponse> => {
     const { roles } = await getUserDataAndCheckIsLoggedIn(context);
     return roles;
@@ -75,4 +84,15 @@ export const addNewPeopleWhoHeardStory = functions.https.onCall(async (data: IAd
         personsWhoKnow: admin.firestore.FieldValue.arrayUnion(...personIds),
     });
     return {};
+});
+
+export const backupData = functions.https.onCall(async (data, context) => {
+    await getUserDataAndCheckIsViewer(context);
+    const collectionIds = Object.keys(CollectionId).map(id => CollectionId[id as any]);
+    const collections = await Promise.all(collectionIds.map(getCollection));
+    const allDocs: {[id: string]: any} = {};
+    collectionIds.forEach((collectionId, index) => {
+        allDocs[collectionId] = collections[index];
+    });
+    return allDocs;
 });
