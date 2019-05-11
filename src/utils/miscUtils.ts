@@ -1,1 +1,1 @@
-export const CONTACT_HREF = "mailto:ago-taborvezetok@googlegroups.com?subject=Matektábor app";
+export const CONTACT_HREF = "mailto:ago-taborvezetok[AT]googlegroups[DOT]com?subject=Matektábor app";
