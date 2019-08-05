@@ -5,7 +5,7 @@ import {
     ExpansionPanelSummary,
     ExpansionPanelDetails,
     Hidden,
-    Drawer,
+    SwipeableDrawer,
     Button,
 } from "@material-ui/core";
 import { PersonsSelector } from "./personsSelector";
@@ -56,18 +56,19 @@ class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, 
                     <BarkochbaDrawer />
                 </Hidden>
                 <Hidden className="barkochba-screen-mobile-drawer-container" smUp implementation="css">
-                    <Drawer
+                    <SwipeableDrawer
                         className="barkochba-screen-mobile-drawer"
                         //   container={this.props.container}
                         variant="temporary"
                         open={barkochbaDrawerIsOpen}
-                        onClose={this.handleDrawerToggle}
+                        onOpen={this.handleDrawerOpen}
+                        onClose={this.handleDrawerClose}
                         PaperProps={{
                             className: "barkochba-screen-mobile-drawer-paper",
                         }}
                     >
                         <BarkochbaDrawer />
-                    </Drawer>
+                    </SwipeableDrawer>
                 </Hidden>
                 <div className="barkochba-screen-content-area">
                     <Hidden className="barkochba-screen-drawer-toggle" smUp implementation="css">
@@ -116,6 +117,16 @@ class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, 
         const { setCurrentListeningPersonIds } = this.props;
         const personIds = values.map(value => value.value);
         setCurrentListeningPersonIds(personIds);
+    };
+
+    private handleDrawerOpen = () => {
+        const { setDrawerIsOpen } = this.props;
+        setDrawerIsOpen(true);
+    };
+
+    private handleDrawerClose = () => {
+        const { setDrawerIsOpen } = this.props;
+        setDrawerIsOpen(false);
     };
 
     private handleDrawerToggle = () => {
