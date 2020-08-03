@@ -90,24 +90,24 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, ISt
                 <Typography variant="h5" paragraph={true}>
                     {number} - {title}
                 </Typography>
-                <Typography variant="body1" paragraph={true}>
+                <Typography variant="body2" paragraph={true}>
                     {description}
                 </Typography>
-                <ExpansionPanel>
+                <ExpansionPanel elevation={2}>
                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                         <Typography variant="subtitle1">Megoldás</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
-                        <Typography variant="body1">{solution}</Typography>
+                        <Typography variant="body2">{solution}</Typography>
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
-                <ExpansionPanel>
+                <ExpansionPanel elevation={2}>
                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                         <Typography variant="subtitle1">Kik ismerik?</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails className="story-panel-people-who-know">
                         {someoneListeningKnowsIt && (
-                            <Typography variant="body1" paragraph={true}>
+                            <Typography variant="body2" paragraph={true}>
                                 <b>
                                     Ő{isPlusralListeningAndKnowing ? "k" : ""} ismeri
                                     {isPlusralListeningAndKnowing ? "k" : ""} a mostani hallgatóságból:
@@ -134,7 +134,7 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, ISt
                                 Hozzáadom
                             </Button>
                         </div>
-                        <Typography variant="body1" paragraph={true}>
+                        <Typography variant="body2" paragraph={true}>
                             <b>Mindenki, aki ismeri:</b>{" "}
                             {personsWhoKnowAsSelectOptions.map(option => option.label).join(", ")}
                         </Typography>
@@ -146,7 +146,7 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, ISt
 
     private renderPlaceholder = () => {
         return (
-            <Typography className="story-panel-empty-state" variant="display1" paragraph={true} align="center">
+            <Typography className="story-panel-empty-state" variant="h4" paragraph={true} align="center">
                 Válassz egy barkochbatörténetet!
             </Typography>
         );
