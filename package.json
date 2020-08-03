@@ -5,7 +5,7 @@
     "main": "index.js",
     "author": "Miklos Danka",
     "engines": {
-        "node": "8"
+        "node": "10"
     },
     "scripts": {
         "build": "npm-run-all clean -s createBuildDir -s bundle",
