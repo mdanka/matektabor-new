@@ -119,7 +119,7 @@ const styles = (theme: any) => ({
         overflow: "hidden",
     },
     chip: {
-        margin: `${theme.spacing.unit / 2}px ${theme.spacing.unit / 4}px`,
+        margin: `${theme.spacing(0.5)}px ${theme.spacing(0.25)}px`,
     },
     chipFocused: {
         backgroundColor: emphasize(
@@ -128,7 +128,7 @@ const styles = (theme: any) => ({
         ),
     },
     noOptionsMessage: {
-        padding: `${theme.spacing.unit}px ${theme.spacing.unit * 2}px`,
+        padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
     },
     singleValue: {
         fontSize: 16,
@@ -141,12 +141,12 @@ const styles = (theme: any) => ({
     paper: {
         position: "absolute",
         zIndex: 1,
-        marginTop: theme.spacing.unit,
+        marginTop: theme.spacing(1),
         left: 0,
         right: 0,
     },
     divider: {
-        height: theme.spacing.unit * 2,
+        height: theme.spacing(2),
     },
 });
 
@@ -232,7 +232,7 @@ function MultiValue(props: any) {
 
 function Menu(props: any) {
     return (
-        <Paper square className={props.selectProps.classes.paper} {...props.innerProps}>
+        <Paper square elevation={2} className={props.selectProps.classes.paper} {...props.innerProps}>
             {props.children}
         </Paper>
     );

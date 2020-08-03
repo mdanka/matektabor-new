@@ -29,7 +29,7 @@ export class UnconnectedLoginProtector extends React.Component<ILoginProtectorPr
             <div>
                 <AppHeader />
                 <div className="login-protector-not-logged-in">
-                    <Typography variant="display1" align="center">
+                    <Typography variant="h4" align="center">
                         A lap használatához be kell jelentkezned.
                     </Typography>
                 </div>

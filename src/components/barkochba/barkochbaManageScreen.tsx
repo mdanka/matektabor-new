@@ -57,7 +57,7 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
         const { manageState } = this.props;
         const { newPersonName, newPersonGroup } = manageState;
         return (
-            <Paper className="barkochba-manage-panel">
+            <Paper className="barkochba-manage-panel" elevation={2}>
                 <Typography variant="h5">Új gyerek</Typography>
                 <FormControl>
                     <InputLabel shrink htmlFor="barkochba-manage-new-person-name">
@@ -84,7 +84,7 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
         const { manageState } = this.props;
         const { newCampGroup, newCampNumber } = manageState;
         return (
-            <Paper className="barkochba-manage-panel">
+            <Paper className="barkochba-manage-panel" elevation={2}>
                 <Typography variant="h5">Új tábor</Typography>
                 {this.renderGroupSelector("newCampGroup", newCampGroup)}
                 <FormControl>
@@ -126,7 +126,7 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                 ? undefined
                 : { value: roomsSelectionRoomName, label: roomsSelectionRoomName };
         return (
-            <Paper className="barkochba-manage-panel">
+            <Paper className="barkochba-manage-panel" elevation={2}>
                 <Typography variant="h5">Szobabeosztás</Typography>
                 <Typography className="barkochba-manage-subtitle" variant="subtitle1">
                     Melyik tábor?
