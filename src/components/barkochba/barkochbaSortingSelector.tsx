@@ -33,7 +33,7 @@ export class UnconnectedBarkochbaSortingSelector extends React.Component<IBarkoc
         );
     }
 
-    private handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    private handleChange = (event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
         const { setOrdering } = this.props;
         setOrdering(event.target.value as IBarkochbaOrdering);
     };

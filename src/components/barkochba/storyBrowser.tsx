@@ -150,7 +150,7 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
     };
 
     private getStarClickHandler = (storyId: string, shouldBeStarred: boolean) => (
-        event: React.MouseEvent<HTMLDivElement>,
+        event: React.MouseEvent<HTMLButtonElement>,
     ) => {
         event.stopPropagation();
         const globalServices = getGlobalServices();

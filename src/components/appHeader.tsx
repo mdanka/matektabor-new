@@ -15,7 +15,7 @@ import {
     MenuItem,
     ListItemText,
     Snackbar,
-    MuiThemeProvider,
+    ThemeProvider,
     SnackbarContent,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
@@ -67,7 +67,7 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
         const isLoggedIn = currentUser !== undefined;
         return (
             <div className="app-header">
-                <MuiThemeProvider theme={DARK_THEME}>
+                <ThemeProvider theme={DARK_THEME}>
                     <span className="app-title">
                         <Link className="inherit-color" to={NavUtils.getNavUrl[Page.Home]()}>
                             Matektábor
@@ -80,7 +80,7 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
                     {this.renderSignedOutMessage()}
                     {this.renderPendingWritesMessage()}
                     {this.renderSaveSuccessfulMessage()}
-                </MuiThemeProvider>
+                </ThemeProvider>
             </div>
         );
     }
