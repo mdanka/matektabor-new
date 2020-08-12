@@ -52,46 +52,52 @@ class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, 
         }`;
         return (
             <div className="barkochba-screen">
-                <Hidden className="barkochba-screen-drawer-container" xsDown implementation="css">
-                    <BarkochbaDrawer />
-                </Hidden>
-                <Hidden className="barkochba-screen-mobile-drawer-container" smUp implementation="css">
-                    <SwipeableDrawer
-                        className="barkochba-screen-mobile-drawer"
-                        //   container={this.props.container}
-                        variant="temporary"
-                        open={barkochbaDrawerIsOpen}
-                        onOpen={this.handleDrawerOpen}
-                        onClose={this.handleDrawerClose}
-                        PaperProps={{
-                            className: "barkochba-screen-mobile-drawer-paper",
-                        }}
-                    >
+                <Hidden xsDown implementation="css">
+                    <div className="barkochba-screen-drawer-container">
                         <BarkochbaDrawer />
-                    </SwipeableDrawer>
+                    </div>
+                </Hidden>
+                <Hidden smUp implementation="css">
+                    <div className="barkochba-screen-mobile-drawer-container">
+                        <SwipeableDrawer
+                            className="barkochba-screen-mobile-drawer"
+                            //   container={this.props.container}
+                            variant="temporary"
+                            open={barkochbaDrawerIsOpen}
+                            onOpen={this.handleDrawerOpen}
+                            onClose={this.handleDrawerClose}
+                            PaperProps={{
+                                className: "barkochba-screen-mobile-drawer-paper",
+                            }}
+                        >
+                            <BarkochbaDrawer />
+                        </SwipeableDrawer>
+                    </div>
                 </Hidden>
                 <div className="barkochba-screen-content-area">
-                    <Hidden className="barkochba-screen-drawer-toggle" smUp implementation="css">
-                        {/* <IconButton color="inherit" aria-label="Open drawer" onClick={this.handleDrawerToggle}>
-                            <MenuIcon />
-                        </IconButton> */}
+                    <Hidden smUp implementation="css">
+                        <div className="barkochba-screen-drawer-toggle">
+                            {/* <IconButton color="inherit" aria-label="Open drawer" onClick={this.handleDrawerToggle}>
+                                <MenuIcon />
+                            </IconButton> */}
 
-                        <Button
-                            className="barkochba-screen-drawer-toggle-button"
-                            variant="outlined"
-                            onClick={this.handleDrawerToggle}
-                        >
-                            <MenuIcon className="barkochba-screen-drawer-toggle-button-icon" />
-                            Navigáció és barkochbatörténetek
-                        </Button>
+                            <Button
+                                className="barkochba-screen-drawer-toggle-button"
+                                variant="outlined"
+                                onClick={this.handleDrawerToggle}
+                            >
+                                <MenuIcon className="barkochba-screen-drawer-toggle-button-icon" />
+                                Navigáció és barkochbatörténetek
+                            </Button>
+                        </div>
                     </Hidden>
                     <div className="barkochba-screen-person-selector">
-                        <ExpansionPanel defaultExpanded={true}>
+                        <ExpansionPanel elevation={2} defaultExpanded={true}>
                             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                                 <Typography variant="subtitle1">{personSelectorTitle}</Typography>
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails className="story-panel-people-who-know">
-                                <Typography variant="body1" paragraph={true}>
+                                <Typography variant="body2" paragraph={true}>
                                     Válaszd ki a tábort és a szobát, vagy írd be azon gyerekek neveit, akiknek mesélni
                                     szeretnél. Ezután a listában színesek lesznek azok a barkochbatörténetek, amelyeket
                                     valamelyik bejelölt gyerek már hallotta.

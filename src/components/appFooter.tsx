@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { IAppState } from "../store";
 import { Dispatch } from "redux";
-import { MuiThemeProvider } from "@material-ui/core";
+import { ThemeProvider } from "@material-ui/core";
 import { DARK_THEME, CONTACT_HREF } from "../utils";
 
 export interface IAppFooterOwnProps {}
@@ -19,13 +19,13 @@ export class UnconnectedAppFooter extends React.Component<IAppFooterProps, IAppF
     public render() {
         return (
             <div className="app-footer">
-                <MuiThemeProvider theme={DARK_THEME}>
+                <ThemeProvider theme={DARK_THEME}>
                     <span className="app-footer-item">
                         <a className="underline inherit-color" href={CONTACT_HREF}>
                             Kérdésed van? Írj emailt!
                         </a>
                     </span>
-                </MuiThemeProvider>
+                </ThemeProvider>
             </div>
         );
     }
