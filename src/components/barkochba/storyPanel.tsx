@@ -146,7 +146,13 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, ISt
 
     private renderPlaceholder = () => {
         return (
-            <Typography className="story-panel-empty-state" variant="h4" paragraph={true} align="center">
+            <Typography
+                className="story-panel-empty-state"
+                variant="h4"
+                paragraph={true}
+                align="center"
+                color="textSecondary"
+            >
                 Válassz egy barkochbatörténetet!
             </Typography>
         );
