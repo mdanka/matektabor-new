@@ -19,7 +19,7 @@ import { Typography, TextField, Button, Paper, FormControl, InputLabel, FormHelp
 import { getGlobalServices } from "../../services";
 import { IPersonApi, ICampApi, ISelectOption, ICamp } from "../../commons";
 import { PersonsSelector } from "./personsSelector";
-import Autocomplete, { createFilterOptions, AutocompleteChangeReason } from "@material-ui/lab/Autocomplete";
+import Autocomplete, { createFilterOptions } from "@material-ui/lab/Autocomplete";
 
 export interface IBarkochbaManageScreenOwnProps {}
 
@@ -312,7 +312,6 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
         }
         const { dataService } = globalServices;
         dataService.createRoom(selectedCamp, newRoomName);
-        this.handleRoomChange(undefined, { value: newRoomName, label: newRoomName });
     };
 
     private handleCampChange = (_event: React.ChangeEvent<{}>, value: ISelectOption | null) => {
@@ -321,14 +320,10 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
         update({ roomsSelectionCampId: newCampId });
     };
 
-    private handleRoomChange = (
-        _event: React.ChangeEvent<{}> | undefined,
-        value: ISelectOption | null,
-        reason?: AutocompleteChangeReason,
-    ) => {
-        if (reason === "create-option" && value !== null) {
+    private handleRoomChange = (_event: React.ChangeEvent<{}>, value: ISelectOption | null) => {
+        const { availableRoomsAsOptions } = this.props;
+        if (value !== null && !availableRoomsAsOptions.includes(value)) {
             this.handleNewRoomAdd(value.value);
-            return;
         }
         const { update } = this.props;
         const newRoomName = value == null ? undefined : value.value;
