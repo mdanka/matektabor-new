@@ -14,7 +14,6 @@ import {
     selectCurrentListeningCampRoomNameAsSelectOption,
     selectCurrentListeningCampRoomCamp,
 } from "../../store/selectors";
-import { ValueType } from "react-select/lib/types";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { TextField } from "@material-ui/core";
 
@@ -91,7 +90,7 @@ class UnconnectedListeningCampRoomSelector extends React.Component<IListeningCam
     };
 
     private handleValueChange = (
-        value: ValueType<ISelectOption>,
+        value: ISelectOption | null,
         setter: (value: ISelectOption | null) => void,
     ) => {
         if (value == null) {

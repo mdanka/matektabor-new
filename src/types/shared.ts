@@ -1,5 +1,3 @@
-// TODO(mdanka): take this content from src/types/shared.ts
-
 export interface ISetStoryStarredForUserRequest {
     storyId: string;
     isStarred: boolean;

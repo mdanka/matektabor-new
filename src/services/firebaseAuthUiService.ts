@@ -1,8 +1,8 @@
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import { SetCurrentUser, IAppState } from "../store";
-import { NavUtils, Page } from "../utils";
 import { Store } from "redoodle";
+import { Page, getNavUrl } from "../utils/navUtils";
 
 const firebaseui = require("firebaseui");
 
@@ -10,7 +10,7 @@ export class FirebaseAuthUiService {
     private firebaseAuthUi: any;
 
     private defaultFirebaseAuthUiConfig = {
-        signInSuccessUrl: NavUtils.getNavUrl[Page.Home](),
+        signInSuccessUrl: getNavUrl[Page.Home](),
         signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID],
         tosUrl: "/terms-of-service",
         privacyPolicyUrl: "/privacy-policy",

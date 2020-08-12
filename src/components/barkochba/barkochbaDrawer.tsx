@@ -6,14 +6,14 @@ import { List, ListItemText, ListItem, Divider, ListItemIcon, Link } from "@mate
 import EditIcon from "@material-ui/icons/Edit";
 import TableChartIcon from "@material-ui/icons/TableChart";
 import { Link as RouterLink } from "react-router-dom";
-import { NavUtils, Page } from "../../utils";
 import { StoryBrowser } from "./storyBrowser";
+import { getNavUrl, Page } from "../../utils/navUtils";
 
 const BarkochbaExportLink = (props: any) => (
-    <RouterLink to={NavUtils.getNavUrl[Page.BarkochbaExport](undefined)} {...props} />
+    <RouterLink to={getNavUrl[Page.BarkochbaExport](undefined)} {...props} />
 );
 
-const BarkochbaManageLink = (props: any) => <RouterLink to={NavUtils.getNavUrl[Page.BarkochbaManage]()} {...props} />;
+const BarkochbaManageLink = (props: any) => <RouterLink to={getNavUrl[Page.BarkochbaManage]()} {...props} />;
 
 export interface IBarkochbaDrawerOwnProps {}
 

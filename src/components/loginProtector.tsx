@@ -36,7 +36,7 @@ export class UnconnectedLoginProtector extends React.Component<ILoginProtectorPr
                 <AppFooter />
             </div>
         );
-        // return <Redirect to={NavUtils.getNavUrl[Page.SignIn](window.location.pathname)} />;
+        // return <Redirect to={getNavUrl[Page.SignIn](window.location.pathname)} />;
     };
 }
 

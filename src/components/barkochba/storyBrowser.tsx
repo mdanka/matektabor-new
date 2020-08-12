@@ -23,7 +23,7 @@ import {
     ListSubheader,
 } from "@material-ui/core";
 import { IStory } from "../../commons";
-import * as classNames from "classnames";
+import classNames from "classnames";
 import StarIcon from "@material-ui/icons/Star";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import PersonIcon from "@material-ui/icons/Person";

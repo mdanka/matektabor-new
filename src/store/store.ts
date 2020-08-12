@@ -1,4 +1,4 @@
-import { loggingMiddleware, createStore, StoreEnhancer } from "redoodle";
+import { StoreEnhancer, createStore, loggingMiddleware } from "redoodle";
 import { applyMiddleware } from "redux";
 import { appReducer } from "./reducers";
 import { IAppState } from "./state";
@@ -28,7 +28,6 @@ const initialState: IAppState = {
 };
 
 export function createAppStore() {
-    const middlewareEnhancer = applyMiddleware(loggingMiddleware()) as StoreEnhancer;
-    const store = createStore<IAppState>(appReducer, initialState, middlewareEnhancer);
-    return store;
+    const middlewareEnhancer = applyMiddleware(loggingMiddleware()) as unknown as StoreEnhancer;
+    return createStore<IAppState>(appReducer, initialState, middlewareEnhancer);
 }
