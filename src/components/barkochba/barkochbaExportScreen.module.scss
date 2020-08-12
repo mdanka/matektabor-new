@@ -1,28 +1,28 @@
-.barkochba-export {
+.barkochbaExport {
     font-family: 'Times New Roman', Times, serif;
 
-    .barkochba-export-title {
+    .barkochbaExportTitle {
         font-size: 14pt;
         margin: 6pt;
         text-align: center;
         width: 100%;
     }
 
-    table {
+    :global(table) {
         border: solid 1px black;
         border-collapse: collapse;
         width: 100%;
 
-        tr {
-            td {
+        :global(tr) {
+            :global(td) {
                 border: solid 1px black;
 
-                &.barkochba-export-col-left {
+                &.barkochbaExportColLeft {
                     font-size: 12pt;
                     margin: 0;
                 }
 
-                &.barkochba-export-col-right {
+                &.barkochbaExportColRight {
                     font-size: 10pt;
                     margin: 0;
                 }

@@ -5,6 +5,7 @@ import { Typography } from "@material-ui/core";
 import { selectCurrentUser, IAppState } from "../store";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+import css from "./loginProtector.module.scss";
 
 export interface ILoginProtectorOwnProps {
     children: React.ReactChildren | React.ReactChild;
@@ -28,7 +29,7 @@ export class UnconnectedLoginProtector extends React.Component<ILoginProtectorPr
         return (
             <div>
                 <AppHeader />
-                <div className="login-protector-not-logged-in">
+                <div className={css.loginProtectorNotLoggedIn}>
                     <Typography variant="h4" align="center" color="textSecondary">
                         A lap használatához be kell jelentkezned.
                     </Typography>
@@ -36,7 +37,6 @@ export class UnconnectedLoginProtector extends React.Component<ILoginProtectorPr
                 <AppFooter />
             </div>
         );
-        // return <Redirect to={NavUtils.getNavUrl[Page.SignIn](window.location.pathname)} />;
     };
 }
 

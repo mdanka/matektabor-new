@@ -6,14 +6,15 @@ import { List, ListItemText, ListItem, Divider, ListItemIcon, Link } from "@mate
 import EditIcon from "@material-ui/icons/Edit";
 import TableChartIcon from "@material-ui/icons/TableChart";
 import { Link as RouterLink } from "react-router-dom";
-import { NavUtils, Page } from "../../utils";
 import { StoryBrowser } from "./storyBrowser";
+import { getNavUrl, Page } from "../../utils/navUtils";
+import css from "./barkochbaDrawer.module.scss";
 
 const BarkochbaExportLink = (props: any) => (
-    <RouterLink to={NavUtils.getNavUrl[Page.BarkochbaExport](undefined)} {...props} />
+    <RouterLink to={getNavUrl[Page.BarkochbaExport](undefined)} {...props} />
 );
 
-const BarkochbaManageLink = (props: any) => <RouterLink to={NavUtils.getNavUrl[Page.BarkochbaManage]()} {...props} />;
+const BarkochbaManageLink = (props: any) => <RouterLink to={getNavUrl[Page.BarkochbaManage]()} {...props} />;
 
 export interface IBarkochbaDrawerOwnProps {}
 
@@ -28,11 +29,11 @@ export type IBarkochbaDrawerProps = IBarkochbaDrawerOwnProps &
 export class UnconnectedBarkochbaDrawer extends React.Component<IBarkochbaDrawerProps, {}> {
     public render() {
         return (
-            <div className="barkochba-drawer">
-                <div className="barkochba-drawer-navigation">
+            <div className={css.barkochbaDrawer}>
+                <div className={css.barkochbaDrawerNavigation}>
                     <List>
                         <Link variant="body1" color="inherit" component={BarkochbaExportLink}>
-                            <ListItem button className="barkochba-drawer-list-item">
+                            <ListItem button className={css.barkochbaDrawerListItem}>
                                 <ListItemIcon>
                                     <TableChartIcon />
                                 </ListItemIcon>
@@ -40,7 +41,7 @@ export class UnconnectedBarkochbaDrawer extends React.Component<IBarkochbaDrawer
                             </ListItem>
                         </Link>
                         <Link variant="body1" color="inherit" component={BarkochbaManageLink}>
-                            <ListItem button className="barkochba-drawer-list-item">
+                            <ListItem button className={css.barkochbaDrawerListItem}>
                                 <ListItemIcon>
                                     <EditIcon />
                                 </ListItemIcon>
@@ -50,7 +51,7 @@ export class UnconnectedBarkochbaDrawer extends React.Component<IBarkochbaDrawer
                     </List>
                     <Divider />
                 </div>
-                <div className="barkochba-drawer-story-browser">
+                <div className={css.barkochbaDrawerStoryBrowser}>
                     <StoryBrowser />
                 </div>
             </div>

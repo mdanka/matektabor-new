@@ -14,9 +14,9 @@ import {
     selectCurrentListeningCampRoomNameAsSelectOption,
     selectCurrentListeningCampRoomCamp,
 } from "../../store/selectors";
-import { ValueType } from "react-select/lib/types";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { TextField } from "@material-ui/core";
+import css from "./listeningCampRoomSelector.module.scss";
 
 export interface IListeningCampRoomSelectorOwnProps {}
 
@@ -41,7 +41,7 @@ class UnconnectedListeningCampRoomSelector extends React.Component<IListeningCam
     public render() {
         const { selectedCamp } = this.props;
         return (
-            <div className="listening-camp-room-selector">
+            <div className={css.listeningCampRoomSelector}>
                 {this.renderCampSelector()}
                 {selectedCamp !== null && this.renderRoomSelector()}
             </div>
@@ -51,7 +51,7 @@ class UnconnectedListeningCampRoomSelector extends React.Component<IListeningCam
     private renderCampSelector = () => {
         const { allCamps, selectedCamp } = this.props;
         return (
-            <div className="listening-camp-room-selector-camp">
+            <div className={css.listeningCampRoomSelectorCamp}>
                 <Autocomplete
                     options={allCamps}
                     value={selectedCamp}
@@ -66,7 +66,7 @@ class UnconnectedListeningCampRoomSelector extends React.Component<IListeningCam
     private renderRoomSelector = () => {
         const { allRooms, selectedRoom } = this.props;
         return (
-            <div className="listening-camp-room-selector-room">
+            <div className={css.listeningCampRoomSelectorRoom}>
                 <Autocomplete
                     options={allRooms}
                     value={selectedRoom}
@@ -91,7 +91,7 @@ class UnconnectedListeningCampRoomSelector extends React.Component<IListeningCam
     };
 
     private handleValueChange = (
-        value: ValueType<ISelectOption>,
+        value: ISelectOption | null,
         setter: (value: ISelectOption | null) => void,
     ) => {
         if (value == null) {

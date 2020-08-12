@@ -23,13 +23,14 @@ import {
     ListSubheader,
 } from "@material-ui/core";
 import { IStory } from "../../commons";
-import * as classNames from "classnames";
+import classNames from "classnames";
 import StarIcon from "@material-ui/icons/Star";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import PersonIcon from "@material-ui/icons/Person";
 import StarRateIcon from "@material-ui/icons/StarRate";
 import { getGlobalServices } from "../../services";
 import { BarkochbaSortingSelector } from "./barkochbaSortingSelector";
+import css from "./storyBrowser.module.scss";
 
 export interface IStoryBrowserOwnProps {}
 
@@ -53,7 +54,7 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
         const { stories, starredStories } = this.props;
         const areThereStarredStories = starredStories.length !== 0;
         return (
-            <div className="story-browser">
+            <div className={css.storyBrowser}>
                 <List subheader={<ListSubheader disableSticky={true}>Rendezés</ListSubheader>}>
                     <ListItem>
                         <BarkochbaSortingSelector />
@@ -88,17 +89,16 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
         const isStarredForCurrentUser =
             currentUserId !== undefined && usersWhoStarredList.indexOf(currentUserId) !== -1;
         const secondaryLabel = numberWhoKnow === 0 ? undefined : `${numberWhoKnow} gyerek ismeri`;
-        const classes = classNames("story-list-item", {
-            "story-list-item-known-by": numberWhoListening !== 0,
-            "story-list-item-known-by-0": numberWhoListening !== 0 && numberWhoKnow === 0,
-            "story-list-item-known-by-1": numberWhoKnow === 1,
-            "story-list-item-known-by-2": numberWhoKnow === 2,
-            "story-list-item-known-by-3": numberWhoKnow >= 3,
+        const classes = classNames(css.item, {
+            [css.itemKnownBy]: numberWhoListening !== 0,
+            [css.itemKnownBy0]: numberWhoListening !== 0 && numberWhoKnow === 0,
+            [css.itemKnownBy1]: numberWhoKnow === 1,
+            [css.itemKnownBy2]: numberWhoKnow === 2,
+            [css.itemKnownBy3]: numberWhoKnow >= 3,
         });
-        // <Chip label="Basic Chip" className={classes.chip} />
         const primaryLabel = (
-            <div className="story-list-item-primary-label">
-                <span className="story-list-item-label-title">
+            <div className={css.itemPrimaryLabel}>
+                <span className={css.itemLabelTitle}>
                     {number} - {title}
                 </span>
             </div>
@@ -115,7 +115,7 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
                 <ListItemText primary={primaryLabel} secondary={secondaryLabel} />
                 <Tooltip title="Ennyien hallották már" placement="bottom">
                     <Chip
-                        className="story-list-item-label-heard-number"
+                        className={css.itemLabelHeardNumber}
                         avatar={
                             <Avatar>
                                 <PersonIcon />

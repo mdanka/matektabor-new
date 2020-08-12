@@ -25,6 +25,7 @@ import { ListeningCampRoomSelector } from "./listeningCampRoomSelector";
 import { BarkochbaDrawer } from "./barkochbaDrawer";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import MenuIcon from "@material-ui/icons/Menu";
+import css from "./barkochbaScreen.module.scss";
 
 export interface IBarkochbaScreenOwnProps {}
 
@@ -51,52 +52,47 @@ class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, 
             selectedPeopleNumber === 0 ? "" : ` (${selectedPeopleNumber} gyerek)`
         }`;
         return (
-            <div className="barkochba-screen">
+            <div className={css.barkochbaScreen}>
                 <Hidden xsDown implementation="css">
-                    <div className="barkochba-screen-drawer-container">
+                    <div className={css.barkochbaScreenDrawerContainer}>
                         <BarkochbaDrawer />
                     </div>
                 </Hidden>
                 <Hidden smUp implementation="css">
-                    <div className="barkochba-screen-mobile-drawer-container">
+                    <div className={css.barkochbaScreenMobileDrawerContainer}>
                         <SwipeableDrawer
-                            className="barkochba-screen-mobile-drawer"
-                            //   container={this.props.container}
+                            className={css.barkochbaScreenMobileDrawer}
                             variant="temporary"
                             open={barkochbaDrawerIsOpen}
                             onOpen={this.handleDrawerOpen}
                             onClose={this.handleDrawerClose}
                             PaperProps={{
-                                className: "barkochba-screen-mobile-drawer-paper",
+                                className: css.barkochbaScreenMobileDrawerPaper,
                             }}
                         >
                             <BarkochbaDrawer />
                         </SwipeableDrawer>
                     </div>
                 </Hidden>
-                <div className="barkochba-screen-content-area">
+                <div className={css.barkochbaScreenContentArea}>
                     <Hidden smUp implementation="css">
-                        <div className="barkochba-screen-drawer-toggle">
-                            {/* <IconButton color="inherit" aria-label="Open drawer" onClick={this.handleDrawerToggle}>
-                                <MenuIcon />
-                            </IconButton> */}
-
+                        <div className={css.barkochbaScreenDrawerToggle}>
                             <Button
-                                className="barkochba-screen-drawer-toggle-button"
+                                className={css.barkochbaScreenDrawerToggleButton}
                                 variant="outlined"
                                 onClick={this.handleDrawerToggle}
                             >
-                                <MenuIcon className="barkochba-screen-drawer-toggle-button-icon" />
+                                <MenuIcon className={css.barkochbaScreenDrawerToggleButtonIcon} />
                                 Navigáció és barkochbatörténetek
                             </Button>
                         </div>
                     </Hidden>
-                    <div className="barkochba-screen-person-selector">
+                    <div className={css.barkochbaScreenPersonSelector}>
                         <ExpansionPanel elevation={2} defaultExpanded={true}>
                             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                                 <Typography variant="subtitle1">{personSelectorTitle}</Typography>
                             </ExpansionPanelSummary>
-                            <ExpansionPanelDetails className="story-panel-people-who-know">
+                            <ExpansionPanelDetails className={css.personSelectorContent}>
                                 <Typography variant="body2" paragraph={true}>
                                     Válaszd ki a tábort és a szobát, vagy írd be azon gyerekek neveit, akiknek mesélni
                                     szeretnél. Ezután a listában színesek lesznek azok a barkochbatörténetek, amelyeket
@@ -111,7 +107,7 @@ class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, 
                             </ExpansionPanelDetails>
                         </ExpansionPanel>{" "}
                     </div>
-                    <div className="barkochba-screen-panel">
+                    <div className={css.barkochbaScreenPanel}>
                         <StoryPanel />
                     </div>
                 </div>

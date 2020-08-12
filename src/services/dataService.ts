@@ -1,7 +1,7 @@
 import * as firebase from "firebase/app";
 import { SetStories, IAppState, SetPersons, SetCamps, SetHasPendingWrites } from "../store";
 import { IStoryApi, IPersonApi, ICampApi, ICamp } from "../commons";
-import { CollectionId } from "../../functions/src/shared";
+import { CollectionId } from "../types/shared";
 import { Store } from "redoodle";
 import { FirebaseAuthService } from "./firebaseAuthService";
 

@@ -1,33 +1,33 @@
-div.story-list-item-known-by {
+div.itemKnownBy {
     border-left: 10px solid;
 }
 
-div.story-list-item-known-by-0 {
+div.itemKnownBy0 {
     border-color: #aeea00;
     border-color: rgba(0, 0, 0, 0.0);
     border-color: #81d4fa;
     background-color: #e1f5fe;
 }
 
-div.story-list-item-known-by-1 {
+div.itemKnownBy1 {
     border-color: #fff176;
     background-color: #fffde7;
 }
 
-div.story-list-item-known-by-2 {
+div.itemKnownBy2 {
     border-color: #fb8c00;
     background-color: #fff3e0;
 }
 
-div.story-list-item-known-by-3 {
+div.itemKnownBy3 {
     border-color: #e53935;
     background-color: #ffebee;
 }
 
-.story-list-item-primary-label {
+.itemPrimaryLabel {
     display: flex;
 }
 
-.story-list-item-label-title {
+.itemLabelTitle {
     flex-grow: 1;
 }
