@@ -78,14 +78,14 @@ class UnconnectedListeningCampRoomSelector extends React.Component<IListeningCam
         );
     };
 
-    private handleCampChange = (_event: React.ChangeEvent<{}>, value: unknown) => {
+    private handleCampChange = (_event: React.ChangeEvent<{}>, value: ISelectOption | null) => {
         const { setSelectedCamp } = this.props;
-        this.handleValueChange(value as ISelectOption | null, setSelectedCamp);
+        this.handleValueChange(value, setSelectedCamp);
     };
 
-    private handleRoomChange = (_event: React.ChangeEvent<{}>, value: unknown) => {
+    private handleRoomChange = (_event: React.ChangeEvent<{}>, value: ISelectOption | null) => {
         const { setSelectedRoom, selectedCampData } = this.props;
-        this.handleValueChange(value as ISelectOption | null, (selectedRoom: ISelectOption | null) =>
+        this.handleValueChange(value, (selectedRoom: ISelectOption | null) =>
             selectedCampData === null ? null : setSelectedRoom(selectedCampData, selectedRoom),
         );
     };

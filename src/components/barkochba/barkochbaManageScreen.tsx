@@ -21,6 +21,7 @@ import { IPersonApi, ICampApi, ISelectOption, ICamp } from "../../commons";
 import { AutoCompleteSelector } from "./autoCompleteSelector";
 import { PersonsSelector } from "./personsSelector";
 import { ValueType } from "react-select/lib/types";
+import Autocomplete, { createFilterOptions, AutocompleteChangeReason } from "@material-ui/lab/Autocomplete";
 
 export interface IBarkochbaManageScreenOwnProps {}
 
@@ -120,10 +121,10 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
             allPersonsAsOptions,
         } = this.props;
         const { roomsSelectionRoomName } = manageState;
-        const currentCampOption = selectedCamp === undefined ? undefined : campToSelectOption(selectedCamp);
+        const currentCampOption = selectedCamp === undefined ? null : campToSelectOption(selectedCamp);
         const currentRoomOption =
             roomsSelectionRoomName === undefined
-                ? undefined
+                ? null
                 : { value: roomsSelectionRoomName, label: roomsSelectionRoomName };
         return (
             <Paper className="barkochba-manage-panel" elevation={2}>
@@ -132,15 +133,17 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                     Melyik tábor?
                 </Typography>
                 <div>
-                    <AutoCompleteSelector
+                    <Autocomplete
                         options={availableCampsAsOptions}
                         value={currentCampOption}
                         onChange={this.handleCampChange}
-                        placeholder="Válassz tábort"
-                        isClearable={true}
+                        renderInput={params => (
+                            <TextField {...params} label="Tábor" placeholder="Válassz tábort" variant="outlined" />
+                        )}
+                        getOptionLabel={(option: ISelectOption) => option.label}
                     />
                 </div>
-                {currentCampOption !== undefined && (
+                {currentCampOption !== null && (
                     <div>
                         <Typography className="barkochba-manage-subtitle" variant="subtitle1">
                             Melyik szoba?
@@ -149,21 +152,37 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                             Új szoba létrehozásához csak gépeld be a szoba nevét.
                         </Typography>
                         <div>
-                            <AutoCompleteSelector
+                            <Autocomplete
                                 options={availableRoomsAsOptions}
                                 value={currentRoomOption}
                                 onChange={this.handleRoomChange}
-                                placeholder="Válassz szobát"
                                 disabled={currentCampOption === undefined}
-                                creatable={true}
-                                isValidNewOption={(value: string) => value !== ""}
-                                onCreateOption={this.handleNewRoomAdd}
-                                isClearable={true}
+                                filterOptions={(options, params) => {
+                                    const filter = createFilterOptions<ISelectOption>();
+                                    const filtered = filter(options, params);
+                                    // Suggest the creation of a new value
+                                    if (params.inputValue !== "") {
+                                        filtered.push({
+                                            value: params.inputValue,
+                                            label: `Új: "${params.inputValue}"`,
+                                        });
+                                    }
+                                    return filtered;
+                                }}
+                                renderInput={params => (
+                                    <TextField
+                                        {...params}
+                                        label="Szoba"
+                                        placeholder="Válassz szobát"
+                                        variant="outlined"
+                                    />
+                                )}
+                                getOptionLabel={(option: ISelectOption) => option.label}
                             />
                         </div>
                     </div>
                 )}
-                {currentCampOption !== undefined && currentRoomOption !== undefined && (
+                {currentCampOption !== null && currentRoomOption !== null && (
                     <div>
                         <Typography className="barkochba-manage-subtitle" variant="subtitle1">
                             A szoba lakói
@@ -288,18 +307,26 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
         }
         const { dataService } = globalServices;
         dataService.createRoom(selectedCamp, newRoomName);
-        this.handleRoomChange({ value: newRoomName, label: newRoomName });
+        this.handleRoomChange(undefined, { value: newRoomName, label: newRoomName });
     };
 
-    private handleCampChange = (value: ValueType<ISelectOption>) => {
+    private handleCampChange = (_event: React.ChangeEvent<{}>, value: ISelectOption | null) => {
         const { update } = this.props;
-        const newCampId = value == null ? undefined : (value as ISelectOption).value;
+        const newCampId = value == null ? undefined : value.value;
         update({ roomsSelectionCampId: newCampId });
     };
 
-    private handleRoomChange = (value: ValueType<ISelectOption>) => {
+    private handleRoomChange = (
+        _event: React.ChangeEvent<{}> | undefined,
+        value: ISelectOption | null,
+        reason?: AutocompleteChangeReason,
+    ) => {
+        if (reason === "create-option" && value !== null) {
+            this.handleNewRoomAdd(value.value);
+            return;
+        }
         const { update } = this.props;
-        const newRoomName = value == null ? undefined : (value as ISelectOption).value;
+        const newRoomName = value == null ? undefined : value.value;
         update({ roomsSelectionRoomName: newRoomName });
     };
 
