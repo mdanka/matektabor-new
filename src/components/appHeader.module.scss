@@ -14,8 +14,6 @@
     align-items: center;
     
     .appTitle {
-        color: $appPrimary;
-
         font-size: 18px;
         flex-grow: 1;
     }
@@ -35,10 +33,6 @@
         :global(.material-icons) {
             font-size: 16px;
         }
-    }
-
-    .appHeaderSignInButton {
-        color: $appPrimary;
     }
 
     .appHeaderAvatarButton {

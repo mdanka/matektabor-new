@@ -3,10 +3,11 @@ import { connect } from "react-redux";
 import { IAppState, selectCurrentUser, selectHasPendingWrites } from "../store";
 import { Dispatch } from "redux";
 import { RouteComponentProps } from "react-router";
-import { Link, withRouter } from "react-router-dom";
+import { Link as RouterLink, withRouter } from "react-router-dom";
 import { getGlobalServices } from "../services";
 import {
     Button,
+    Link,
     Icon,
     Avatar,
     IconButton,
@@ -42,6 +43,10 @@ export interface IAppHeaderLocalState {
 
 export type IAppHeaderProps = IAppHeaderOwnProps & IAppHeaderStateProps & IAppHeaderDispatchProps;
 
+const HomeLink = (props: any) => (
+    <RouterLink to={getNavUrl[Page.Home]()} {...props} />
+);
+
 export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppHeaderLocalState> {
     private userMenuButtonRef: React.RefObject<HTMLElement>;
 
@@ -70,9 +75,9 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
             <div className={css.appHeader}>
                 <MuiThemeProvider theme={DARK_THEME}>
                     <span className={css.appTitle}>
-                        <Link className={css.inheritColor} to={getNavUrl[Page.Home]()}>
-                            Matektábor
-                        </Link>
+                    <Link component={HomeLink}>
+                        Matektábor
+                    </Link>
                     </span>
                     {this.renderContactButton()}
                     {isLoggedIn && this.renderUser()}
@@ -145,7 +150,7 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
 
     private renderSignIn = () => {
         return (
-            <Button size="small" className={css.appHeaderSignInButton} onClick={this.handleSignInClick}>
+            <Button variant="contained" color="primary" size="small" className={css.appHeaderSignInButton} onClick={this.handleSignInClick}>
                 Bejelentkezés
             </Button>
         );
