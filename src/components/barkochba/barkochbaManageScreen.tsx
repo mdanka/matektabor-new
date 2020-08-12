@@ -18,9 +18,7 @@ import { connect } from "react-redux";
 import { Typography, TextField, Button, Paper, FormControl, InputLabel, FormHelperText } from "@material-ui/core";
 import { getGlobalServices } from "../../services";
 import { IPersonApi, ICampApi, ISelectOption, ICamp } from "../../commons";
-import { AutoCompleteSelector } from "./autoCompleteSelector";
 import { PersonsSelector } from "./personsSelector";
-import { ValueType } from "react-select/lib/types";
 import Autocomplete, { createFilterOptions, AutocompleteChangeReason } from "@material-ui/lab/Autocomplete";
 
 export interface IBarkochbaManageScreenOwnProps {}
@@ -208,17 +206,27 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                 <InputLabel shrink htmlFor="barkochba-manage-new-person-name">
                     Csoport
                 </InputLabel>
-                <AutoCompleteSelector
+                <Autocomplete
                     className="barkochba-manage-input"
                     options={allGroupsAsOptions}
                     value={stringToSelectOption(value)}
                     onChange={this.getAutoCompleteFieldUpdater(fieldName)}
-                    onCreateOption={this.getAutoCompleteNewValueUpdater(fieldName)}
-                    placeholder="Beluga"
-                    creatable={true}
-                    isValidNewOption={(value: string) => value !== ""}
-                    isClearable={true}
-                    label="Csoport"
+                    filterOptions={(options, params) => {
+                        const filter = createFilterOptions<ISelectOption>();
+                        const filtered = filter(options, params);
+                        // Suggest the creation of a new value
+                        if (params.inputValue !== "") {
+                            filtered.push({
+                                value: params.inputValue,
+                                label: `Új: "${params.inputValue}"`,
+                            });
+                        }
+                        return filtered;
+                    }}
+                    renderInput={params => (
+                        <TextField {...params} label="Csoport" placeholder="Pl. Beluga" variant="standard" />
+                    )}
+                    getOptionLabel={(option: ISelectOption) => option.label}
                 />
                 <FormHelperText>Pl. "Beluga"</FormHelperText>
             </FormControl>
@@ -234,15 +242,12 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
     };
 
     private getAutoCompleteFieldUpdater = (fieldName: keyof IBarkochbaManageState) => (
-        value: ValueType<ISelectOption>,
+        _event: React.ChangeEvent<{}>,
+        value: ISelectOption | null,
     ) => {
         const { update } = this.props;
         const newValue = value == null ? undefined : (value as ISelectOption).value;
         update({ [fieldName]: newValue });
-    };
-
-    private getAutoCompleteNewValueUpdater = (fieldName: keyof IBarkochbaManageState) => (value: string) => {
-        this.getAutoCompleteFieldUpdater(fieldName)({ value, label: value });
     };
 
     private handleNewPersonAdd = () => {
