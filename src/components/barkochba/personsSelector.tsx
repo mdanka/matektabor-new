@@ -23,7 +23,7 @@ export class PersonsSelector extends React.Component<IPersonsSelectorProps, {}> 
                 onChange={this.handlePersonsWhoKnowChange}
                 disabled={disabled}
                 renderInput={params => (
-                    <TextField {...params} label="Gyerekek" placeholder="Keress egy gyerek nevére" variant="standard" />
+                    <TextField {...params} placeholder="Keress egy gyerek nevére" variant="standard" />
                 )}
                 getOptionLabel={(option: ISelectOption) => option.label}
             />
