@@ -1,4 +1,5 @@
 import * as React from "react";
+import css from "./staticContent.module.scss";
 
 export interface IStaticContentProps {
     type: "terms of service" | "privacy policy";
@@ -8,7 +9,7 @@ export class StaticContent extends React.Component<IStaticContentProps, {}> {
     public render() {
         const { type } = this.props;
         return (
-            <div className="static-content">
+            <div className={css.staticContent}>
                 {type === "terms of service" ? this.renderTermsOfService() : null}
                 {type === "privacy policy" ? this.renderPrivacyPolicy() : null}
             </div>

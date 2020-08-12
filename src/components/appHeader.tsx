@@ -3,11 +3,11 @@ import { connect } from "react-redux";
 import { IAppState, selectCurrentUser, selectHasPendingWrites } from "../store";
 import { Dispatch } from "redux";
 import { RouteComponentProps } from "react-router";
-import { Link, withRouter } from "react-router-dom";
+import { Link as RouterLink, withRouter } from "react-router-dom";
 import { getGlobalServices } from "../services";
-import { Page, NavUtils } from "../utils";
 import {
     Button,
+    Link,
     Icon,
     Avatar,
     IconButton,
@@ -15,14 +15,16 @@ import {
     MenuItem,
     ListItemText,
     Snackbar,
-    ThemeProvider,
+    MuiThemeProvider,
     SnackbarContent,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { IUser } from "../commons";
 import { DARK_THEME, CONTACT_HREF } from "../utils";
+import { singInAndReturn, getNavUrl, Page } from "../utils/navUtils";
 import amber from "@material-ui/core/colors/amber";
 import { green } from "@material-ui/core/colors";
+import css from "./appHeader.module.scss";
 
 export interface IAppHeaderOwnProps extends RouteComponentProps<any> {}
 
@@ -40,6 +42,10 @@ export interface IAppHeaderLocalState {
 }
 
 export type IAppHeaderProps = IAppHeaderOwnProps & IAppHeaderStateProps & IAppHeaderDispatchProps;
+
+const HomeLink = (props: any) => (
+    <RouterLink to={getNavUrl[Page.Home]()} {...props} />
+);
 
 export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppHeaderLocalState> {
     private userMenuButtonRef: React.RefObject<HTMLElement>;
@@ -66,12 +72,12 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
         const { currentUser } = this.props;
         const isLoggedIn = currentUser !== undefined;
         return (
-            <div className="app-header">
-                <ThemeProvider theme={DARK_THEME}>
-                    <span className="app-title">
-                        <Link className="inherit-color" to={NavUtils.getNavUrl[Page.Home]()}>
-                            Matektábor
-                        </Link>
+            <div className={css.appHeader}>
+                <MuiThemeProvider theme={DARK_THEME}>
+                    <span className={css.appTitle}>
+                    <Link component={HomeLink}>
+                        Matektábor
+                    </Link>
                     </span>
                     {this.renderContactButton()}
                     {isLoggedIn && this.renderUser()}
@@ -80,14 +86,14 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
                     {this.renderSignedOutMessage()}
                     {this.renderPendingWritesMessage()}
                     {this.renderSaveSuccessfulMessage()}
-                </ThemeProvider>
+                </MuiThemeProvider>
             </div>
         );
     }
 
     private renderContactButton = () => {
         return (
-            <IconButton className="app-header-contact-button" href={CONTACT_HREF} disableRipple={true}>
+            <IconButton className={css.appHeaderContactButton} href={CONTACT_HREF} disableRipple={true}>
                 <Icon>email</Icon>
             </IconButton>
         );
@@ -105,7 +111,7 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
         );
         return (
             <IconButton
-                className="app-header-avatar-button"
+                className={css.appHeaderAvatarButton}
                 onClick={this.toggleUserMenu}
                 disableRipple={true}
                 buttonRef={this.userMenuButtonRef}
@@ -116,7 +122,7 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
     };
 
     private renderAvatar = (photoUrl: string | undefined, displayName?: string) => {
-        const classes = "app-header-avatar-image";
+        const classes = css.appHeaderAvatarImage;
         if (photoUrl !== undefined) {
             return <Avatar className={classes} src={photoUrl} />;
         }
@@ -144,7 +150,7 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
 
     private renderSignIn = () => {
         return (
-            <Button size="small" className="app-header-sign-in-button" onClick={this.handleSignInClick}>
+            <Button variant="contained" color="primary" size="small" className={css.appHeaderSignInButton} onClick={this.handleSignInClick}>
                 Bejelentkezés
             </Button>
         );
@@ -229,7 +235,7 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
     };
 
     private handleSignInClick = () => {
-        NavUtils.singInAndReturn(this.props);
+        singInAndReturn(this.props);
     };
 }
 

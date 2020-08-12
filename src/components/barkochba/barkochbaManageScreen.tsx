@@ -20,6 +20,7 @@ import { getGlobalServices } from "../../services";
 import { IPersonApi, ICampApi, ISelectOption, ICamp } from "../../commons";
 import { PersonsSelector } from "./personsSelector";
 import Autocomplete, { createFilterOptions } from "@material-ui/lab/Autocomplete";
+import css from "./barkochbaManageScreen.module.scss";
 
 export interface IBarkochbaManageScreenOwnProps {}
 
@@ -56,7 +57,7 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
         const { manageState } = this.props;
         const { newPersonName, newPersonGroup } = manageState;
         return (
-            <Paper className="barkochba-manage-panel" elevation={2}>
+            <Paper className={css.barkochbaManagePanel} elevation={2}>
                 <Typography variant="h5">Új gyerek</Typography>
                 <FormControl>
                     <InputLabel shrink htmlFor="barkochba-manage-new-person-name">
@@ -65,7 +66,7 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                     <TextField
                         value={newPersonName}
                         onChange={this.getTextFieldUpdater("newPersonName")}
-                        className="barkochba-manage-input"
+                        className={css.barkochbaManageInput}
                         placeholder="Tóth János"
                         label="Név"
                         id="barkochba-manage-new-person-name"
@@ -83,7 +84,7 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
         const { manageState } = this.props;
         const { newCampGroup, newCampNumber } = manageState;
         return (
-            <Paper className="barkochba-manage-panel" elevation={2}>
+            <Paper className={css.barkochbaManagePanel} elevation={2}>
                 <Typography variant="h5">Új tábor</Typography>
                 {this.renderGroupSelector("newCampGroup", newCampGroup)}
                 <FormControl>
@@ -93,7 +94,7 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                     <TextField
                         value={newCampNumber}
                         onChange={this.getTextFieldUpdater("newCampNumber")}
-                        className="barkochba-manage-input"
+                        className={css.barkochbaManageInput}
                         label="Sorszám"
                         placeholder="3"
                         type="number"
@@ -125,9 +126,9 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                 ? null
                 : { value: roomsSelectionRoomName, label: roomsSelectionRoomName };
         return (
-            <Paper className="barkochba-manage-panel" elevation={2}>
+            <Paper className={css.barkochbaManagePanel} elevation={2}>
                 <Typography variant="h5">Szobabeosztás</Typography>
-                <Typography className="barkochba-manage-subtitle" variant="subtitle1">
+                <Typography className={css.barkochbaManageSubtitle} variant="subtitle1">
                     Melyik tábor?
                 </Typography>
                 <div>
@@ -143,7 +144,7 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                 </div>
                 {currentCampOption !== null && (
                     <div>
-                        <Typography className="barkochba-manage-subtitle" variant="subtitle1">
+                        <Typography className={css.barkochbaManageSubtitle} variant="subtitle1">
                             Melyik szoba?
                         </Typography>
                         <Typography variant="subtitle2">
@@ -182,7 +183,7 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                 )}
                 {currentCampOption !== null && currentRoomOption !== null && (
                     <div>
-                        <Typography className="barkochba-manage-subtitle" variant="subtitle1">
+                        <Typography className={css.barkochbaManageSubtitle} variant="subtitle1">
                             A szoba lakói
                         </Typography>
                         <div>
@@ -207,7 +208,7 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                     Csoport
                 </InputLabel>
                 <Autocomplete
-                    className="barkochba-manage-input"
+                    className={css.barkochbaManageInput}
                     options={allGroupsAsOptions}
                     value={stringToSelectOption(value)}
                     onChange={this.getAutoCompleteFieldUpdater(fieldName)}

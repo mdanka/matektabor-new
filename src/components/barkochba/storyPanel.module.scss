@@ -1,32 +1,32 @@
-div.story-panel-people-who-know {
+div.peopleWhoKnow {
     display: block;
 }
 
-.story-panel-done-button {
+.doneButton {
     float: right;
 }
 
-.story-panel-button-icon {
+.buttonIcon {
     font-size: 20px;
     margin-right: 5px;
 }
 
-.story-panel-empty-state {
+.emptyState {
     padding: 20px;
 }
 
-.story-panel-people-who-know-add {
+.peopleWhoKnowAdd {
     display: flex;
     flex-direction: row;
     margin-bottom: 20px
 }
 
-.story-panel-people-who-know-add-selector {
+.peopleWhoKnowAddSelector {
     flex-grow: 1;
     margin-right: 20px;
 }
 
-.story-panel-people-who-know-add-button {
+.peopleWhoKnowAddButton {
     align-self: flex-start;
     flex-shrink: 0;
 }

@@ -1,25 +1,25 @@
-import "es6-shim";
-import * as React from "react";
+import React from 'react';
 import { Provider } from "react-redux";
+import { Store } from "redux";
 import { MatektaborApp } from "./components";
-import { IAppState } from "./store";
-import { Store } from "redoodle";
-import { ThemeProvider } from "@material-ui/core";
+import { MuiThemeProvider, StylesProvider } from "@material-ui/core";
 import { LIGHT_THEME } from "./utils";
+// import './App.css';
 
 export interface IAppProps {
-    store: Store<IAppState>;
+  store: Store<any>;
 }
 
-export class App extends React.Component<IAppProps, {}> {
-    public render() {
-        const { store } = this.props;
-        return (
-            <Provider store={store}>
-                <ThemeProvider theme={LIGHT_THEME}>
+function App({ store }: IAppProps) {
+    return (
+        <Provider store={store as Store<any>}>
+            <MuiThemeProvider theme={LIGHT_THEME}>
+                <StylesProvider injectFirst>
                     <MatektaborApp />
-                </ThemeProvider>
-            </Provider>
-        );
-    }
+                </StylesProvider>
+            </MuiThemeProvider>
+        </Provider>
+    );
 }
+
+export default App;

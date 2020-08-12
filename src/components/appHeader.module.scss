@@ -1,53 +1,48 @@
 @import "~normalize.css";
 @import "~firebaseui/dist/firebaseui.css";
-@import "../variables.less";
+@import "../variables.scss";
 
-.app-header {
+.appHeader {
     height: 60px;
 
     color: white;
-    background-color: @darkBackground;
+    background-color: $darkBackground;
 
     padding: 10px 20px 10px 20px;
 
     display: flex;
     align-items: center;
     
-    .app-title {
-        color: @appPrimary;
-
+    .appTitle {
         font-size: 18px;
         flex-grow: 1;
+        font-weight: bold;
     }
 
-    .app-header-create-button {
-        .material-icons {
+    .appHeaderCreateButton {
+        :global(.material-icons) {
             font-size: 13px;
         }
     }
 
-    .app-header-contact-button {
+    .appHeaderContactButton {
         width: 36px;
         height: 36px;
 
         color: white;
 
-        .material-icons {
+        :global(.material-icons) {
             font-size: 16px;
         }
     }
 
-    .app-header-sign-in-button {
-        color: @appPrimary;
-    }
-
-    .app-header-avatar-button {
+    .appHeaderAvatarButton {
         margin-left: 10px;
         width: 36px;
         height: 36px;
     }
 
-    .app-header-avatar-image {
+    .appHeaderAvatarImage {
         width: 30px;
         height: 30px;
     }

@@ -4,9 +4,10 @@ import { IAppState, IPersonsState, selectStoriesOrderedByNumber, selectPersons }
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { selectCamp, selectCampsListOrderedByNameAndNumber } from "../../store/selectors";
-import { List, ListItem, ListItemText } from "@material-ui/core";
-import { NavUtils, Page } from "../../utils";
-import { Link } from "react-router-dom";
+import { Link, List, ListItem, ListItemText } from "@material-ui/core";
+import { Link as RouterLink } from "react-router-dom";
+import { Page, getNavUrl } from "../../utils/navUtils";
+import css from "./barkochbaExportScreen.module.scss";
 
 export interface IBarkochbaExportScreenOwnProps {
     campId: string | undefined;
@@ -25,6 +26,10 @@ export type IBarkochbaExportScreenProps = IBarkochbaExportScreenOwnProps &
     IBarkochbaExportScreenStateProps &
     IBarkochbaExportScreenDispatchProps;
 
+const getExportLinkComponent = (id: string) => (props: any) => (
+    <RouterLink to={getNavUrl[Page.BarkochbaExport](id)} {...props} />
+);
+
 class UnconnectedBarkochbaExportScreen extends React.Component<IBarkochbaExportScreenProps, {}> {
     public render() {
         const { campId } = this.props;
@@ -39,7 +44,7 @@ class UnconnectedBarkochbaExportScreen extends React.Component<IBarkochbaExportS
     private renderCampItem = (camp: ICamp) => {
         const { id, group, number } = camp;
         return (
-            <Link key={id} to={NavUtils.getNavUrl[Page.BarkochbaExport](id)}>
+            <Link key={id} color="textPrimary" component={getExportLinkComponent(id)}>
                 <ListItem button divider={true}>
                     <ListItemText primary={`${group}/${number}`} />
                 </ListItem>
@@ -54,8 +59,8 @@ class UnconnectedBarkochbaExportScreen extends React.Component<IBarkochbaExportS
         }
         const { group, number } = camp;
         return (
-            <div className="barkochba-export">
-                <div className="barkochba-export-title">
+            <div className={css.barkochbaExport}>
+                <div className={css.barkochbaExportTitle}>
                     {group}/{number} barkochbatörténet ismeretek
                 </div>
                 <table>
@@ -88,10 +93,10 @@ class UnconnectedBarkochbaExportScreen extends React.Component<IBarkochbaExportS
         });
         return (
             <tr key={storyId}>
-                <td className="barkochba-export-col-left">
+                <td className={css.barkochbaExportColLeft}>
                     {number} - {title}
                 </td>
-                <td className="barkochba-export-col-right">
+                <td className={css.barkochbaExportColRight}>
                     {Object.keys(roomToPeople).map(roomName => this.renderPeopleRow(roomName, roomToPeople[roomName]))}
                 </td>
             </tr>
