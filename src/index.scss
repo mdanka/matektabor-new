@@ -1,11 +1,16 @@
 @import "~normalize.css";
 @import "~firebaseui/dist/firebaseui.css";
-@import "./components/index.less";
 
-@import (css) url('https://fonts.googleapis.com/css?family=Inconsolata:400,700&subset=latin-ext');
+@import url('https://fonts.googleapis.com/css?family=Inconsolata:400,700&subset=latin-ext');
 
 html {
     box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 *, *:before, *:after {

@@ -10,14 +10,15 @@ import { ScrollToTop } from "./common";
 import { LoginProtector } from "./loginProtector";
 import DocumentTitle from "react-document-title";
 import { getNavUrlSimpleTitle, getNavUrlTemplate, getNavUrl, getNavUrlQueryParams, getNavUrlMatch, Page } from "../utils/navUtils";
+import css from "./matektaborApp.module.scss";
 
 export class MatektaborApp extends React.Component<{}, {}> {
     public render() {
         return (
             <DocumentTitle title={getNavUrlSimpleTitle[Page.Home]}>
                 <ScrollToTop>
-                    <div className="matektabor-app">
-                        <div className="app-content">
+                    <div className={css.matektaborApp}>
+                        <div className={css.appContent}>
                             <Switch>
                                 <Route exact path={getNavUrlTemplate[Page.Home]} render={this.renderHome} />
                                 <Route path={getNavUrlTemplate[Page.SignIn]} render={this.renderRouteAuth} />

@@ -1,46 +1,50 @@
-.barkochba-screen {
+.barkochbaScreen {
     display: flex;
     flex-direction: row;
     width: 100%;
 }
 
-.barkochba-screen-content-area {
+.barkochbaScreenContentArea {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     max-width: 100%;
 }
 
-.barkochba-screen-drawer-toggle {
+.barkochbaScreenDrawerToggle {
     padding: 20px 20px 0 20px;
 }
 
-.barkochba-screen-drawer-toggle-button {
+.barkochbaScreenDrawerToggleButton {
     width: 100%;
 }
 
-.barkochba-screen-drawer-toggle-button-icon {
+.barkochbaScreenDrawerToggleButtonIcon {
     margin-right: 10px;
 }
 
-.barkochba-screen-person-selector {
+.barkochbaScreenPersonSelector {
     padding: 20px;
 }
 
-.barkochba-screen-panel {
+.barkochbaScreenPanel {
     max-height: 70vh;
     overflow: auto;
     padding: 0 20px 20px 20px;
 }
 
+.personSelectorContent {
+    display: block;
+}
+
 // DRAWER
 
-.barkochba-screen-drawer-container {
+.barkochbaScreenDrawerContainer {
     max-height: 90vh;
     height: 100%
 }
 
-.barkochba-screen-mobile-drawer-paper {
+.barkochbaScreenMobileDrawerPaper {
     width: 80vw;
     height: 100%;
 }

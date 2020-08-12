@@ -1,12 +1,12 @@
 @import "~normalize.css";
 @import "~firebaseui/dist/firebaseui.css";
-@import "../variables.less";
+@import "../variables.scss";
 
-.app-footer {
+.appFooter {
     height: 80px;
 
     color: white;
-    background-color: @darkBackground;
+    background-color: $darkBackground;
 
     padding: 10px 20px 10px 20px;
 
@@ -14,15 +14,7 @@
     align-items: center;
     justify-content: center;
     
-    .app-footer-app-title {
-        color: @appPrimary;
-    }
-
-    .app-footer-separator {
-        padding: 0 20px;
-    }
-
-    .app-footer-item {
+    .appFooterItem {
         display: inline-block;
     }
 }

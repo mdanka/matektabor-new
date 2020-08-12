@@ -7,6 +7,7 @@ import { selectCamp, selectCampsListOrderedByNameAndNumber } from "../../store/s
 import { List, ListItem, ListItemText } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { Page, getNavUrl } from "../../utils/navUtils";
+import css from "./barkochbaExportScreen.module.scss";
 
 export interface IBarkochbaExportScreenOwnProps {
     campId: string | undefined;
@@ -54,8 +55,8 @@ class UnconnectedBarkochbaExportScreen extends React.Component<IBarkochbaExportS
         }
         const { group, number } = camp;
         return (
-            <div className="barkochba-export">
-                <div className="barkochba-export-title">
+            <div className={css.barkochbaExport}>
+                <div className={css.barkochbaExportTitle}>
                     {group}/{number} barkochbatörténet ismeretek
                 </div>
                 <table>
@@ -88,10 +89,10 @@ class UnconnectedBarkochbaExportScreen extends React.Component<IBarkochbaExportS
         });
         return (
             <tr key={storyId}>
-                <td className="barkochba-export-col-left">
+                <td className={css.barkochbaExportColLeft}>
                     {number} - {title}
                 </td>
-                <td className="barkochba-export-col-right">
+                <td className={css.barkochbaExportColRight}>
                     {Object.keys(roomToPeople).map(roomName => this.renderPeopleRow(roomName, roomToPeople[roomName]))}
                 </td>
             </tr>

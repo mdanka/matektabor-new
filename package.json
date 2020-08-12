@@ -4,7 +4,7 @@
   "private": true,
   "engines": {
     "node": "10"
-},
+  },
   "dependencies": {
     "@material-ui/core": "^4.0.0",
     "@material-ui/icons": "^4.0.0",
@@ -13,6 +13,7 @@
     "firebase": "^5.4.1",
     "firebase-admin": "^6.1.0",
     "firebaseui": "^3.5.2",
+    "node-sass": "^4.14.1",
     "normalize.css": "^5.0.0",
     "query-string": "^6.1.0",
     "re-reselect": "^2.1.0",
