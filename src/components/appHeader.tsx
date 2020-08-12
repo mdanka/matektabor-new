@@ -5,7 +5,6 @@ import { Dispatch } from "redux";
 import { RouteComponentProps } from "react-router";
 import { Link, withRouter } from "react-router-dom";
 import { getGlobalServices } from "../services";
-import { Page, NavUtils } from "../utils";
 import {
     Button,
     Icon,
@@ -21,6 +20,7 @@ import {
 import CloseIcon from "@material-ui/icons/Close";
 import { IUser } from "../commons";
 import { DARK_THEME, CONTACT_HREF } from "../utils";
+import { singInAndReturn, getNavUrl, Page } from "../utils/navUtils";
 import amber from "@material-ui/core/colors/amber";
 import { green } from "@material-ui/core/colors";
 
@@ -69,7 +69,7 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
             <div className="app-header">
                 <ThemeProvider theme={DARK_THEME}>
                     <span className="app-title">
-                        <Link className="inherit-color" to={NavUtils.getNavUrl[Page.Home]()}>
+                        <Link className="inherit-color" to={getNavUrl[Page.Home]()}>
                             Matektábor
                         </Link>
                     </span>
@@ -229,7 +229,7 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
     };
 
     private handleSignInClick = () => {
-        NavUtils.singInAndReturn(this.props);
+        singInAndReturn(this.props);
     };
 }
 

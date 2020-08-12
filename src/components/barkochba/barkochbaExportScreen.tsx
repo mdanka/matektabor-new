@@ -5,8 +5,8 @@ import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { selectCamp, selectCampsListOrderedByNameAndNumber } from "../../store/selectors";
 import { List, ListItem, ListItemText } from "@material-ui/core";
-import { NavUtils, Page } from "../../utils";
 import { Link } from "react-router-dom";
+import { Page, getNavUrl } from "../../utils/navUtils";
 
 export interface IBarkochbaExportScreenOwnProps {
     campId: string | undefined;
@@ -39,7 +39,7 @@ class UnconnectedBarkochbaExportScreen extends React.Component<IBarkochbaExportS
     private renderCampItem = (camp: ICamp) => {
         const { id, group, number } = camp;
         return (
-            <Link key={id} to={NavUtils.getNavUrl[Page.BarkochbaExport](id)}>
+            <Link key={id} to={getNavUrl[Page.BarkochbaExport](id)}>
                 <ListItem button divider={true}>
                     <ListItemText primary={`${group}/${number}`} />
                 </ListItem>
