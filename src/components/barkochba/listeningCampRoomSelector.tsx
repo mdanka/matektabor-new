@@ -56,8 +56,7 @@ class UnconnectedListeningCampRoomSelector extends React.Component<IListeningCam
                     options={allCamps}
                     value={selectedCamp}
                     onChange={this.handleCampChange}
-                    placeholder="Válassz tábort"
-                    renderInput={(params) => <TextField {...params} label="Tábor" variant="outlined" />}
+                    renderInput={(params) => <TextField {...params} label="Tábor" placeholder="Válassz tábort" variant="outlined" />}
                     getOptionLabel={(option: ISelectOption) => option.label}
                 />
             </div>
@@ -72,8 +71,7 @@ class UnconnectedListeningCampRoomSelector extends React.Component<IListeningCam
                     options={allRooms}
                     value={selectedRoom}
                     onChange={this.handleRoomChange}
-                    placeholder="Válassz szobát"
-                    renderInput={(params) => <TextField {...params} label="Szoba" variant="outlined" />}
+                    renderInput={(params) => <TextField {...params} label="Szoba" placeholder="Válassz szobát" variant="outlined" />}
                     getOptionLabel={(option: ISelectOption) => option.label}
                 />
             </div>
