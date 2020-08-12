@@ -14,7 +14,6 @@ import {
     selectCurrentListeningCampRoomNameAsSelectOption,
     selectCurrentListeningCampRoomCamp,
 } from "../../store/selectors";
-import { AutoCompleteSelector } from "./autoCompleteSelector";
 import { ValueType } from "react-select/lib/types";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { TextField } from "@material-ui/core";
@@ -69,12 +68,13 @@ class UnconnectedListeningCampRoomSelector extends React.Component<IListeningCam
         const { allRooms, selectedRoom } = this.props;
         return (
             <div className="listening-camp-room-selector-room">
-                <AutoCompleteSelector
+                <Autocomplete
                     options={allRooms}
                     value={selectedRoom}
                     onChange={this.handleRoomChange}
                     placeholder="Válassz szobát"
-                    isClearable={true}
+                    renderInput={(params) => <TextField {...params} label="Szoba" variant="outlined" />}
+                    getOptionLabel={(option: ISelectOption) => option.label}
                 />
             </div>
         );
@@ -85,9 +85,9 @@ class UnconnectedListeningCampRoomSelector extends React.Component<IListeningCam
         this.handleValueChange(value as ISelectOption | null, setSelectedCamp);
     };
 
-    private handleRoomChange = (value: ValueType<ISelectOption>) => {
+    private handleRoomChange = (_event: React.ChangeEvent<{}>, value: unknown) => {
         const { setSelectedRoom, selectedCampData } = this.props;
-        this.handleValueChange(value, (selectedRoom: ISelectOption | null) =>
+        this.handleValueChange(value as ISelectOption | null, (selectedRoom: ISelectOption | null) =>
             selectedCampData === null ? null : setSelectedRoom(selectedCampData, selectedRoom),
         );
     };
