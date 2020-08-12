@@ -136,7 +136,7 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                         value={currentCampOption}
                         onChange={this.handleCampChange}
                         renderInput={params => (
-                            <TextField {...params} label="Tábor" placeholder="Válassz tábort" variant="outlined" />
+                            <TextField {...params} label="Tábor" placeholder="Válassz tábort" variant="standard" />
                         )}
                         getOptionLabel={(option: ISelectOption) => option.label}
                     />
@@ -172,7 +172,7 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                                         {...params}
                                         label="Szoba"
                                         placeholder="Válassz szobát"
-                                        variant="outlined"
+                                        variant="standard"
                                     />
                                 )}
                                 getOptionLabel={(option: ISelectOption) => option.label}
