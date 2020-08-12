@@ -1,13 +1,13 @@
 import * as React from "react";
 import { ISelectOption } from "../../commons";
-import { ActionMeta, ValueType } from "react-select/lib/types";
-import { AutoCompleteSelector } from "./autoCompleteSelector";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import { TextField } from "@material-ui/core";
 
 export interface IPersonsSelectorProps {
     className?: string;
     allPersons: ISelectOption[];
     selectedPersons: ISelectOption[];
-    onChange: (values: ISelectOption[], action: ActionMeta) => void;
+    onChange: (values: ISelectOption[]) => void;
     disabled?: boolean;
 }
 
@@ -15,24 +15,22 @@ export class PersonsSelector extends React.Component<IPersonsSelectorProps, {}> 
     public render() {
         const { allPersons, selectedPersons, disabled, className } = this.props;
         return (
-            <AutoCompleteSelector
+            <Autocomplete
+                multiple
                 className={className}
                 options={allPersons}
                 value={selectedPersons}
                 onChange={this.handlePersonsWhoKnowChange}
-                placeholder="Keress egy gyerek nevére"
-                isMulti
                 disabled={disabled}
+                renderInput={params => (
+                    <TextField {...params} label="Gyerekek" placeholder="Keress egy gyerek nevére" variant="outlined" />
+                )}
+                getOptionLabel={(option: ISelectOption) => option.label}
             />
         );
     }
 
-    private handlePersonsWhoKnowChange = (value: ValueType<ISelectOption>, action: ActionMeta) => {
-        const { onChange } = this.props;
-        if (value == null) {
-            onChange([], action);
-            return;
-        }
-        onChange(value as ISelectOption[], action);
+    private handlePersonsWhoKnowChange = (_event: React.ChangeEvent<{}>, value: ISelectOption[]) => {
+        this.props.onChange(value);
     };
 }
