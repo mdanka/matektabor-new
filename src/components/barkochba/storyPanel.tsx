@@ -22,6 +22,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { IStory, ISelectOption } from "../../commons";
 import { PersonsSelector } from "./personsSelector";
 import { getGlobalServices } from "../../services";
+import css from "./storyPanel.module.scss";
 
 export interface IStoryPanelOwnProps {}
 
@@ -52,7 +53,7 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, ISt
     public render() {
         const { story } = this.props;
         return (
-            <Paper className="story-panel" elevation={0}>
+            <Paper className={css.storyPanel} elevation={0}>
                 {story === undefined ? this.renderPlaceholder() : this.renderStory()}
             </Paper>
         );
@@ -71,19 +72,19 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, ISt
         }
         const { personsToAdd } = this.state;
         const someoneListeningKnowsIt = currentListeningPersonsWhoKnowStoryAsSelectOptions.length > 0;
-        const isPlusralListeningAndKnowing = currentListeningPersonsWhoKnowStoryAsSelectOptions.length > 1;
+        const isPluralListeningAndKnowing = currentListeningPersonsWhoKnowStoryAsSelectOptions.length > 1;
         const { title, description, solution, number } = story;
         return (
             <div>
                 <p>
                     <Button
-                        className="story-panel-done-button"
+                        className={css.doneButton}
                         variant="contained"
                         color="primary"
                         onClick={this.handleDoneClicked}
                         disabled={currentListeningPersonIds.length === 0}
                     >
-                        <Icon className="story-panel-button-icon">done</Icon>
+                        <Icon className={css.buttonIcon}>done</Icon>
                         Elmeséltem
                     </Button>
                 </p>
@@ -105,32 +106,32 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, ISt
                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                         <Typography variant="subtitle1">Kik ismerik?</Typography>
                     </ExpansionPanelSummary>
-                    <ExpansionPanelDetails className="story-panel-people-who-know">
+                    <ExpansionPanelDetails className={css.peopleWhoKnow}>
                         {someoneListeningKnowsIt && (
                             <Typography variant="body2" paragraph={true}>
                                 <b>
-                                    Ő{isPlusralListeningAndKnowing ? "k" : ""} ismeri
-                                    {isPlusralListeningAndKnowing ? "k" : ""} a mostani hallgatóságból:
+                                    Ő{isPluralListeningAndKnowing ? "k" : ""} ismeri
+                                    {isPluralListeningAndKnowing ? "k" : ""} a mostani hallgatóságból:
                                 </b>{" "}
                                 {currentListeningPersonsWhoKnowStoryAsSelectOptions
                                     .map(option => option.label)
                                     .join(", ")}
                             </Typography>
                         )}
-                        <div className="story-panel-people-who-know-add">
+                        <div className={css.peopleWhoKnowAdd}>
                             <PersonsSelector
-                                className="story-panel-people-who-know-add-selector"
+                                className={css.peopleWhoKnowAddSelector}
                                 allPersons={personsAsSelectOptions}
                                 selectedPersons={personsToAdd}
                                 onChange={this.handlePersonsWhoKnowChange}
                             />
                             <Button
-                                className="story-panel-people-who-know-add-button"
+                                className={css.peopleWhoKnowAddButton}
                                 variant="contained"
                                 onClick={this.handleAddClicked}
                                 disabled={personsToAdd.length === 0}
                             >
-                                <Icon className="story-panel-button-icon">add</Icon>
+                                <Icon className={css.buttonIcon}>add</Icon>
                                 Hozzáadom
                             </Button>
                         </div>
@@ -147,7 +148,7 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, ISt
     private renderPlaceholder = () => {
         return (
             <Typography
-                className="story-panel-empty-state"
+                className={css.emptyState}
                 variant="h4"
                 paragraph={true}
                 align="center"

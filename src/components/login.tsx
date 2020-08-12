@@ -1,5 +1,6 @@
 import * as React from "react";
 import { getGlobalServices } from "../services";
+import css from "./loginProtector.module.scss";
 
 export interface ILoginProps {
     redirectUrl: string | undefined;
@@ -26,8 +27,8 @@ export class Login extends React.Component<ILoginProps, {}> {
 
     public render() {
         return (
-            <div className="login-screen">
-                <div className="login-widget" ref={this.ref} />
+            <div className={css.loginScreen}>
+                <div ref={this.ref} />
             </div>
         );
     }

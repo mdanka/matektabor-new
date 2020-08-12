@@ -14,7 +14,7 @@ import {
     MenuItem,
     ListItemText,
     Snackbar,
-    ThemeProvider,
+    MuiThemeProvider,
     SnackbarContent,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
@@ -23,6 +23,7 @@ import { DARK_THEME, CONTACT_HREF } from "../utils";
 import { singInAndReturn, getNavUrl, Page } from "../utils/navUtils";
 import amber from "@material-ui/core/colors/amber";
 import { green } from "@material-ui/core/colors";
+import css from "./appHeader.module.scss";
 
 export interface IAppHeaderOwnProps extends RouteComponentProps<any> {}
 
@@ -66,10 +67,10 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
         const { currentUser } = this.props;
         const isLoggedIn = currentUser !== undefined;
         return (
-            <div className="app-header">
-                <ThemeProvider theme={DARK_THEME}>
-                    <span className="app-title">
-                        <Link className="inherit-color" to={getNavUrl[Page.Home]()}>
+            <div className={css.appHeader}>
+                <MuiThemeProvider theme={DARK_THEME}>
+                    <span className={css.appTitle}>
+                        <Link className={css.inheritColor} to={getNavUrl[Page.Home]()}>
                             Matektábor
                         </Link>
                     </span>
@@ -80,14 +81,14 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
                     {this.renderSignedOutMessage()}
                     {this.renderPendingWritesMessage()}
                     {this.renderSaveSuccessfulMessage()}
-                </ThemeProvider>
+                </MuiThemeProvider>
             </div>
         );
     }
 
     private renderContactButton = () => {
         return (
-            <IconButton className="app-header-contact-button" href={CONTACT_HREF} disableRipple={true}>
+            <IconButton className={css.appHeaderContactButton} href={CONTACT_HREF} disableRipple={true}>
                 <Icon>email</Icon>
             </IconButton>
         );
@@ -105,7 +106,7 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
         );
         return (
             <IconButton
-                className="app-header-avatar-button"
+                className={css.appHeaderAvatarButton}
                 onClick={this.toggleUserMenu}
                 disableRipple={true}
                 buttonRef={this.userMenuButtonRef}
@@ -116,7 +117,7 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
     };
 
     private renderAvatar = (photoUrl: string | undefined, displayName?: string) => {
-        const classes = "app-header-avatar-image";
+        const classes = css.appHeaderAvatarImage;
         if (photoUrl !== undefined) {
             return <Avatar className={classes} src={photoUrl} />;
         }
@@ -144,7 +145,7 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
 
     private renderSignIn = () => {
         return (
-            <Button size="small" className="app-header-sign-in-button" onClick={this.handleSignInClick}>
+            <Button size="small" className={css.appHeaderSignInButton} onClick={this.handleSignInClick}>
                 Bejelentkezés
             </Button>
         );
