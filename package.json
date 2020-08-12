@@ -29,7 +29,6 @@
         "firebase-admin": "^6.1.0",
         "firebaseui": "^3.5.2",
         "immutable": "^3.8.2",
-        "jss": "^9.8.7",
         "normalize.css": "^5.0.0",
         "query-string": "^6.1.0",
         "re-reselect": "^2.1.0",
