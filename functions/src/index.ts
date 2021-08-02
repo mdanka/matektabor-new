@@ -1,6 +1,7 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { ISetStoryStarredForUserRequest, CollectionId, DocId, IUserRoles, IGetUserRolesResponse, IAddNewPeopleWhoHeardStory } from "./shared";
+import * as firestore from "@google-cloud/firestore"; 
+import { ISetStoryStarredForUserRequest, CollectionId, DocId, IUserRoles, IGetUserRolesResponse, IAddNewPeopleWhoHeardStory, PROJECT_ID } from "./shared";
 
 admin.initializeApp(functions.config().firebase);
 
@@ -62,13 +63,13 @@ const getCollection = async (collectionId: string) => {
     return docs;
 }
 
-export const getUserRoles = functions.https.onCall(async (data, context): Promise<IGetUserRolesResponse> => {
+export const getUserRoles = functions.region("europe-west1").https.onCall(async (data, context): Promise<IGetUserRolesResponse> => {
     const { roles } = await getUserDataAndCheckIsLoggedIn(context);
     return roles;
 });
 
 
-export const setStoryStarredForUser = functions.https.onCall(async (data: ISetStoryStarredForUserRequest, context) => {
+export const setStoryStarredForUser = functions.region("europe-west1").https.onCall(async (data: ISetStoryStarredForUserRequest, context) => {
     const { userId } = await getUserDataAndCheckIsViewer(context);
     const { storyId, isStarred } = data;
     await admin.firestore().collection(CollectionId.Stories).doc(storyId).update({
@@ -77,7 +78,7 @@ export const setStoryStarredForUser = functions.https.onCall(async (data: ISetSt
     return {};
 });
 
-export const addNewPeopleWhoHeardStory = functions.https.onCall(async (data: IAddNewPeopleWhoHeardStory, context) => {
+export const addNewPeopleWhoHeardStory = functions.region("europe-west1").https.onCall(async (data: IAddNewPeopleWhoHeardStory, context) => {
     await getUserDataAndCheckIsViewer(context);
     const { storyId, personIds } = data;
     await admin.firestore().collection(CollectionId.Stories).doc(storyId).update({
@@ -86,7 +87,7 @@ export const addNewPeopleWhoHeardStory = functions.https.onCall(async (data: IAd
     return {};
 });
 
-export const backupData = functions.https.onCall(async (data, context) => {
+export const backupData = functions.region("europe-west1").https.onCall(async (data, context) => {
     await getUserDataAndCheckIsViewer(context);
     const collectionIds = [CollectionId.Stories, CollectionId.Camps, CollectionId.Persons];
     const collections = await Promise.all(collectionIds.map(getCollection));
@@ -96,3 +97,30 @@ export const backupData = functions.https.onCall(async (data, context) => {
     });
     return JSON.stringify(allDocs);
 });
+
+export const scheduledFirestoreExport = functions
+    .region("europe-west1")
+    .pubsub
+    .schedule("1 of month 04:00")
+    .timeZone("Europe/Budapest")
+    .onRun(async (_context) => {
+        const client = new firestore.v1.FirestoreAdminClient();
+        const bucket = "gs://barkochba-app.appspot.com";
+        const projectId = process.env.GCP_PROJECT ?? process.env.GCLOUD_PROJECT ?? PROJECT_ID;
+        const databaseName = client.databasePath(projectId, '(default)');
+        try {
+            const responses = await client.exportDocuments({
+                name: databaseName,
+                outputUriPrefix: bucket,
+                // Leave collectionIds empty to export all collections
+                // or set to a list of collection IDs to export,
+                // collectionIds: ['users', 'posts']
+                collectionIds: [],
+            })
+            const response = responses[0];
+            console.log(`Operation Name: ${response['name']}`);
+        } catch (err) {
+            console.error(err);
+            throw new Error('Export operation failed');
+        }
+    });

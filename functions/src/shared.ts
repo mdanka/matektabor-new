@@ -26,3 +26,5 @@ export enum CollectionId {
 export enum DocId {
     Roles = "roles",
 }
+
+export const PROJECT_ID = "barkochba-app";
