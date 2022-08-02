@@ -17,13 +17,13 @@ import {
     Snackbar,
     ThemeProvider,
     SnackbarContent,
-} from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { IUser } from "../commons";
 import { DARK_THEME, CONTACT_HREF } from "../utils";
 import { singInAndReturn, getNavUrl, Page } from "../utils/navUtils";
-import amber from "@material-ui/core/colors/amber";
-import { green } from "@material-ui/core/colors";
+import amber from "@mui/material/colors/amber";
+import { green } from "@mui/material/colors";
 import css from "./appHeader.module.scss";
 
 export interface IAppHeaderOwnProps extends RouteComponentProps<any> {}
@@ -114,7 +114,7 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
                 className={css.appHeaderAvatarButton}
                 onClick={this.toggleUserMenu}
                 disableRipple={true}
-                buttonRef={this.userMenuButtonRef}
+                // buttonRef={this.userMenuButtonRef}
             >
                 {avatar}
             </IconButton>

@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { IAppState } from "../store";
 import { Dispatch } from "redux";
-import { ThemeProvider } from "@material-ui/core";
+import { ThemeProvider } from "@mui/material";
 import { DARK_THEME, CONTACT_HREF } from "../utils";
 import css from "./appFooter.module.scss";
 

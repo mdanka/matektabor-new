@@ -15,11 +15,11 @@ import {
 } from "../../store";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
-import { Typography, TextField, Button, Paper, FormControl, InputLabel, FormHelperText } from "@material-ui/core";
+import { Typography, TextField, Button, Paper, FormControl, InputLabel, FormHelperText } from "@mui/material";
 import { getGlobalServices } from "../../services";
 import { IPersonApi, ICampApi, ISelectOption, ICamp } from "../../commons";
 import { PersonsSelector } from "./personsSelector";
-import Autocomplete, { createFilterOptions } from "@material-ui/lab/Autocomplete";
+import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import css from "./barkochbaManageScreen.module.scss";
 
 export interface IBarkochbaManageScreenOwnProps {}

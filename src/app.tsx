@@ -2,7 +2,8 @@ import React from 'react';
 import { Provider } from "react-redux";
 import { Store } from "redux";
 import { MatektaborApp } from "./components";
-import { ThemeProvider, StylesProvider } from "@material-ui/core";
+import { ThemeProvider } from "@mui/material";
+import { StylesProvider } from "@mui/styles";
 import { LIGHT_THEME } from "./utils";
 // import './App.css';
 

@@ -4,7 +4,7 @@ import { IAppState, IPersonsState, selectStoriesOrderedByNumber, selectPersons }
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { selectCamp, selectCampsListOrderedByNameAndNumber } from "../../store/selectors";
-import { Link, List, ListItem, ListItemText } from "@material-ui/core";
+import { Link, List, ListItem, ListItemText } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import { Page, getNavUrl } from "../../utils/navUtils";
 import css from "./barkochbaExportScreen.module.scss";

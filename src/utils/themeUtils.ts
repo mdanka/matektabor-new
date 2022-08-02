@@ -1,8 +1,8 @@
-import { createMuiTheme } from "@material-ui/core";
+import { createTheme } from '@mui/material/styles';
 
-export const DARK_THEME = createMuiTheme({
+export const DARK_THEME = createTheme({
     palette: {
-        type: "dark",
+        mode: "dark",
         primary: {
             main: "#ffc40d",
         },
@@ -12,9 +12,9 @@ export const DARK_THEME = createMuiTheme({
     },
 });
 
-export const LIGHT_THEME = createMuiTheme({
+export const LIGHT_THEME = createTheme({
     palette: {
-        type: "light",
+        mode: "light",
         primary: {
             main: "#ffc40d",
         },
