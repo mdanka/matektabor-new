@@ -26,7 +26,11 @@ export class UnconnectedBarkochbaSortingSelector extends React.Component<IBarkoc
     public render() {
         const { ordering } = this.props;
         return (
-            <Select className={css.barkochbaSortingSelector} value={ordering} onChange={this.handleChange}>
+            <Select
+                variant="standard"
+                className={css.barkochbaSortingSelector}
+                value={ordering}
+                onChange={this.handleChange}>
                 <MenuItem value={"storyNumber"}>Sorszám</MenuItem>
                 <MenuItem value={"knowNumber"}>Hányan hallották</MenuItem>
                 <MenuItem value={"starNumber"}>Kedvelések száma</MenuItem>
