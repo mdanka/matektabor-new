@@ -106,7 +106,7 @@ export class MatektaborApp extends React.Component<{}, {}> {
         return (
             <DocumentTitle title={getNavUrlSimpleTitle[Page.Barkochba]}>
                 <LoginProtector>
-                    <div>
+                    <div className={css.barkochbaRouteContainer}>
                         <AppHeader />
                         <BarkochbaScreen />
                         <AppFooter />
