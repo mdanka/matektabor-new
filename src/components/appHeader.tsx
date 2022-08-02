@@ -57,7 +57,7 @@ const HomeLink = (props: any) => (
 );
 
 export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppHeaderLocalState> {
-    private userMenuButtonRef: React.RefObject<HTMLElement>;
+    private userMenuButtonRef: React.RefObject<HTMLButtonElement>;
 
     public constructor(props: IAppHeaderProps) {
         super(props);
@@ -128,7 +128,7 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
             <IconButton
                 className={css.appHeaderAvatarButton}
                 onClick={this.toggleUserMenu}
-                // buttonRef={this.userMenuButtonRef}
+                ref={this.userMenuButtonRef}
                 disableRipple={true}
                 size="large">
                 {avatar}
