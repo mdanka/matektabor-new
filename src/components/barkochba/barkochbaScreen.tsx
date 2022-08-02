@@ -53,7 +53,7 @@ class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, 
         }`;
         return (
             <div className={css.barkochbaScreen}>
-                <Hidden xsDown implementation="css">
+                <Hidden smDown implementation="css">
                     <div className={css.barkochbaScreenDrawerContainer}>
                         <BarkochbaDrawer />
                     </div>

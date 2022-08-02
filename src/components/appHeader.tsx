@@ -16,6 +16,8 @@ import {
     ListItemText,
     Snackbar,
     ThemeProvider,
+    Theme,
+    StyledEngineProvider,
     SnackbarContent,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -25,6 +27,13 @@ import { singInAndReturn, getNavUrl, Page } from "../utils/navUtils";
 import amber from "@mui/material/colors/amber";
 import { green } from "@mui/material/colors";
 import css from "./appHeader.module.scss";
+
+
+declare module '@mui/styles/defaultTheme' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
+
 
 export interface IAppHeaderOwnProps extends RouteComponentProps<any> {}
 
@@ -73,27 +82,33 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
         const isLoggedIn = currentUser !== undefined;
         return (
             <div className={css.appHeader}>
-                <ThemeProvider theme={DARK_THEME}>
-                    <span className={css.appTitle}>
-                    <Link component={HomeLink}>
-                        Matektábor
-                    </Link>
-                    </span>
-                    {this.renderContactButton()}
-                    {isLoggedIn && this.renderUser()}
-                    {isLoggedIn && this.renderUserMenu()}
-                    {!isLoggedIn && this.renderSignIn()}
-                    {this.renderSignedOutMessage()}
-                    {this.renderPendingWritesMessage()}
-                    {this.renderSaveSuccessfulMessage()}
-                </ThemeProvider>
+                <StyledEngineProvider injectFirst>
+                    <ThemeProvider theme={DARK_THEME}>
+                        <span className={css.appTitle}>
+                        <Link component={HomeLink}>
+                            Matektábor
+                        </Link>
+                        </span>
+                        {this.renderContactButton()}
+                        {isLoggedIn && this.renderUser()}
+                        {isLoggedIn && this.renderUserMenu()}
+                        {!isLoggedIn && this.renderSignIn()}
+                        {this.renderSignedOutMessage()}
+                        {this.renderPendingWritesMessage()}
+                        {this.renderSaveSuccessfulMessage()}
+                    </ThemeProvider>
+                </StyledEngineProvider>
             </div>
         );
     }
 
     private renderContactButton = () => {
         return (
-            <IconButton className={css.appHeaderContactButton} href={CONTACT_HREF} disableRipple={true}>
+            <IconButton
+                className={css.appHeaderContactButton}
+                href={CONTACT_HREF}
+                disableRipple={true}
+                size="large">
                 <Icon>email</Icon>
             </IconButton>
         );
@@ -113,9 +128,9 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
             <IconButton
                 className={css.appHeaderAvatarButton}
                 onClick={this.toggleUserMenu}
-                disableRipple={true}
                 // buttonRef={this.userMenuButtonRef}
-            >
+                disableRipple={true}
+                size="large">
                 {avatar}
             </IconButton>
         );
@@ -166,7 +181,12 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
                 onClose={this.closeSignedOutMessage}
                 open={isSignedOutMessageOpen}
                 action={[
-                    <IconButton key="close" aria-label="Close" color="inherit" onClick={this.closeSignedOutMessage}>
+                    <IconButton
+                        key="close"
+                        aria-label="Close"
+                        color="inherit"
+                        onClick={this.closeSignedOutMessage}
+                        size="large">
                         <CloseIcon />
                     </IconButton>,
                 ]}

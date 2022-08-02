@@ -134,7 +134,9 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
                         label={numberWhoStarred.toString()}
                     />
                 </Tooltip>
-                <IconButton onClick={this.getStarClickHandler(storyId, !isStarredForCurrentUser)}>
+                <IconButton
+                    onClick={this.getStarClickHandler(storyId, !isStarredForCurrentUser)}
+                    size="large">
                     {isStarredForCurrentUser ? <StarIcon /> : <StarBorderIcon />}
                 </IconButton>
             </ListItem>
