@@ -21,13 +21,13 @@ import {
     IconButton,
     Divider,
     ListSubheader,
-} from "@material-ui/core";
+} from "@mui/material";
 import { IStory } from "../../commons";
 import classNames from "classnames";
-import StarIcon from "@material-ui/icons/Star";
-import StarBorderIcon from "@material-ui/icons/StarBorder";
-import PersonIcon from "@material-ui/icons/Person";
-import StarRateIcon from "@material-ui/icons/StarRate";
+import StarIcon from "@mui/icons-material/Star";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
+import PersonIcon from "@mui/icons-material/Person";
+import StarRateIcon from "@mui/icons-material/StarRate";
 import { getGlobalServices } from "../../services";
 import { BarkochbaSortingSelector } from "./barkochbaSortingSelector";
 import css from "./storyBrowser.module.scss";
@@ -134,7 +134,9 @@ export class UnconnectedStoryBrowser extends React.Component<IStoryBrowserProps,
                         label={numberWhoStarred.toString()}
                     />
                 </Tooltip>
-                <IconButton onClick={this.getStarClickHandler(storyId, !isStarredForCurrentUser)}>
+                <IconButton
+                    onClick={this.getStarClickHandler(storyId, !isStarredForCurrentUser)}
+                    size="large">
                     {isStarredForCurrentUser ? <StarIcon /> : <StarBorderIcon />}
                 </IconButton>
             </ListItem>
