@@ -2,8 +2,17 @@ import React from 'react';
 import { Provider } from "react-redux";
 import { Store } from "redux";
 import { MatektaborApp } from "./components";
-import { MuiThemeProvider, StylesProvider } from "@material-ui/core";
+import { ThemeProvider, Theme, StyledEngineProvider } from "@mui/material";
+import { StylesProvider } from "@mui/styles";
 import { LIGHT_THEME } from "./utils";
+
+
+declare module '@mui/styles/defaultTheme' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
+
+
 // import './App.css';
 
 export interface IAppProps {
@@ -13,11 +22,13 @@ export interface IAppProps {
 function App({ store }: IAppProps) {
     return (
         <Provider store={store as Store<any>}>
-            <MuiThemeProvider theme={LIGHT_THEME}>
-                <StylesProvider injectFirst>
-                    <MatektaborApp />
-                </StylesProvider>
-            </MuiThemeProvider>
+            <StyledEngineProvider injectFirst>
+                <ThemeProvider theme={LIGHT_THEME}>
+                    <StylesProvider injectFirst>
+                        <MatektaborApp />
+                    </StylesProvider>
+                </ThemeProvider>
+            </StyledEngineProvider>
         </Provider>
     );
 }

@@ -14,8 +14,8 @@ import {
     selectCurrentListeningCampRoomNameAsSelectOption,
     selectCurrentListeningCampRoomCamp,
 } from "../../store/selectors";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import { TextField } from "@material-ui/core";
+import Autocomplete from "@mui/material/Autocomplete";
+import { TextField } from "@mui/material";
 import css from "./listeningCampRoomSelector.module.scss";
 
 export interface IListeningCampRoomSelectorOwnProps {}

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { AppHeader } from "./appHeader";
 import { AppFooter } from "./appFooter";
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import { selectCurrentUser, IAppState } from "../store";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";

@@ -4,7 +4,7 @@ import { IAppState, IPersonsState, selectStoriesOrderedByNumber, selectPersons }
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { selectCamp, selectCampsListOrderedByNameAndNumber } from "../../store/selectors";
-import { Link, List, ListItem, ListItemText } from "@material-ui/core";
+import { Link, List, ListItem, ListItemText } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import { Page, getNavUrl } from "../../utils/navUtils";
 import css from "./barkochbaExportScreen.module.scss";
@@ -44,7 +44,11 @@ class UnconnectedBarkochbaExportScreen extends React.Component<IBarkochbaExportS
     private renderCampItem = (camp: ICamp) => {
         const { id, group, number } = camp;
         return (
-            <Link key={id} color="textPrimary" component={getExportLinkComponent(id)}>
+            <Link
+                key={id}
+                color="textPrimary"
+                component={getExportLinkComponent(id)}
+                underline="hover">
                 <ListItem button divider={true}>
                     <ListItemText primary={`${group}/${number}`} />
                 </ListItem>

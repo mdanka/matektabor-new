@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { IAppState } from "../../store";
 import { Dispatch } from "redux";
-import { Select, MenuItem } from "@material-ui/core";
+import { Select, MenuItem, SelectChangeEvent } from "@mui/material";
 import { IBarkochbaOrdering } from "../../store/state";
 import { selectBarkochbaOrdering } from "../../store/selectors";
 import { SetBarkochbaOrdering } from "../../store/actions";
@@ -26,7 +26,11 @@ export class UnconnectedBarkochbaSortingSelector extends React.Component<IBarkoc
     public render() {
         const { ordering } = this.props;
         return (
-            <Select className={css.barkochbaSortingSelector} value={ordering} onChange={this.handleChange}>
+            <Select
+                variant="standard"
+                className={css.barkochbaSortingSelector}
+                value={ordering}
+                onChange={this.handleChange}>
                 <MenuItem value={"storyNumber"}>Sorszám</MenuItem>
                 <MenuItem value={"knowNumber"}>Hányan hallották</MenuItem>
                 <MenuItem value={"starNumber"}>Kedvelések száma</MenuItem>
@@ -34,7 +38,7 @@ export class UnconnectedBarkochbaSortingSelector extends React.Component<IBarkoc
         );
     }
 
-    private handleChange = (event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
+    private handleChange = (event: SelectChangeEvent<"storyNumber" | "knowNumber" | "starNumber">) => {
         const { setOrdering } = this.props;
         setOrdering(event.target.value as IBarkochbaOrdering);
     };

@@ -10,15 +10,15 @@ import {
 } from "../../store";
 import { Dispatch } from "redux";
 import {
-    ExpansionPanel,
-    ExpansionPanelDetails,
-    ExpansionPanelSummary,
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
     Paper,
     Typography,
     Button,
     Icon,
-} from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { IStory, ISelectOption } from "../../commons";
 import { PersonsSelector } from "./personsSelector";
 import { getGlobalServices } from "../../services";
@@ -94,19 +94,19 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, ISt
                 <Typography variant="body2" paragraph={true}>
                     {description}
                 </Typography>
-                <ExpansionPanel elevation={2}>
-                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                <Accordion elevation={2}>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                         <Typography variant="subtitle1">Megoldás</Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
+                    </AccordionSummary>
+                    <AccordionDetails>
                         <Typography variant="body2">{solution}</Typography>
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
-                <ExpansionPanel elevation={2}>
-                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                    </AccordionDetails>
+                </Accordion>
+                <Accordion elevation={2}>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                         <Typography variant="subtitle1">Kik ismerik?</Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails className={css.peopleWhoKnow}>
+                    </AccordionSummary>
+                    <AccordionDetails className={css.peopleWhoKnow}>
                         {someoneListeningKnowsIt && (
                             <Typography variant="body2" paragraph={true}>
                                 <b>
@@ -139,8 +139,8 @@ export class UnconnectedStoryPanel extends React.Component<IStoryPanelProps, ISt
                             <b>Mindenki, aki ismeri:</b>{" "}
                             {personsWhoKnowAsSelectOptions.map(option => option.label).join(", ")}
                         </Typography>
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
+                    </AccordionDetails>
+                </Accordion>
             </div>
         );
     };

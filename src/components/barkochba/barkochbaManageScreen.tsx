@@ -15,11 +15,11 @@ import {
 } from "../../store";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
-import { Typography, TextField, Button, Paper, FormControl, InputLabel, FormHelperText } from "@material-ui/core";
+import { Typography, TextField, Button, Paper, FormControl, InputLabel, FormHelperText } from "@mui/material";
 import { getGlobalServices } from "../../services";
 import { IPersonApi, ICampApi, ISelectOption, ICamp } from "../../commons";
 import { PersonsSelector } from "./personsSelector";
-import Autocomplete, { createFilterOptions } from "@material-ui/lab/Autocomplete";
+import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import css from "./barkochbaManageScreen.module.scss";
 
 export interface IBarkochbaManageScreenOwnProps {}
@@ -59,18 +59,18 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
         return (
             <Paper className={css.barkochbaManagePanel} elevation={2}>
                 <Typography variant="h5">Új gyerek</Typography>
-                <FormControl>
+                <FormControl variant="standard">
                     <InputLabel shrink htmlFor="barkochba-manage-new-person-name">
                         Név
                     </InputLabel>
                     <TextField
+                        variant="standard"
                         value={newPersonName}
                         onChange={this.getTextFieldUpdater("newPersonName")}
                         className={css.barkochbaManageInput}
                         placeholder="Tóth János"
                         label="Név"
-                        id="barkochba-manage-new-person-name"
-                    />
+                        id="barkochba-manage-new-person-name" />
                 </FormControl>
                 {this.renderGroupSelector("newPersonGroup", newPersonGroup)}
                 <Button variant="contained" color="primary" onClick={this.handleNewPersonAdd}>
@@ -87,11 +87,12 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
             <Paper className={css.barkochbaManagePanel} elevation={2}>
                 <Typography variant="h5">Új tábor</Typography>
                 {this.renderGroupSelector("newCampGroup", newCampGroup)}
-                <FormControl>
+                <FormControl variant="standard">
                     <InputLabel shrink htmlFor="barkochba-manage-new-camp-number">
                         Sorszám
                     </InputLabel>
                     <TextField
+                        variant="standard"
                         value={newCampNumber}
                         onChange={this.getTextFieldUpdater("newCampNumber")}
                         className={css.barkochbaManageInput}
@@ -99,8 +100,7 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
                         placeholder="3"
                         type="number"
                         error={this.isNewCampNumberError(newCampNumber)}
-                        id="barkochba-manage-new-camp-number"
-                    />
+                        id="barkochba-manage-new-camp-number" />
                     <FormHelperText>Pl. "3", mint a "Beluga/3"-ban</FormHelperText>
                 </FormControl>
                 <Button variant="contained" color="primary" onClick={this.handleNewCampAdd}>
@@ -203,7 +203,7 @@ class UnconnectedBarkochbaManageScreen extends React.Component<IBarkochbaManageS
     private renderGroupSelector = (fieldName: keyof IBarkochbaManageState, value: string) => {
         const { allGroupsAsOptions } = this.props;
         return (
-            <FormControl>
+            <FormControl variant="standard">
                 <InputLabel shrink htmlFor="barkochba-manage-new-person-name">
                     Csoport
                 </InputLabel>

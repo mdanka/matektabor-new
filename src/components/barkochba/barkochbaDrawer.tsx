@@ -2,9 +2,9 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { IAppState } from "../../store";
 import { Dispatch } from "redux";
-import { List, ListItemText, ListItem, Divider, ListItemIcon, Link } from "@material-ui/core";
-import EditIcon from "@material-ui/icons/Edit";
-import TableChartIcon from "@material-ui/icons/TableChart";
+import { List, ListItemText, ListItem, Divider, ListItemIcon, Link } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import TableChartIcon from "@mui/icons-material/TableChart";
 import { Link as RouterLink } from "react-router-dom";
 import { StoryBrowser } from "./storyBrowser";
 import { getNavUrl, Page } from "../../utils/navUtils";
@@ -32,7 +32,11 @@ export class UnconnectedBarkochbaDrawer extends React.Component<IBarkochbaDrawer
             <div className={css.barkochbaDrawer}>
                 <div className={css.barkochbaDrawerNavigation}>
                     <List>
-                        <Link variant="body1" color="inherit" component={BarkochbaExportLink}>
+                        <Link
+                            variant="body1"
+                            color="inherit"
+                            component={BarkochbaExportLink}
+                            underline="hover">
                             <ListItem button className={css.barkochbaDrawerListItem}>
                                 <ListItemIcon>
                                     <TableChartIcon />
@@ -40,7 +44,11 @@ export class UnconnectedBarkochbaDrawer extends React.Component<IBarkochbaDrawer
                                 <ListItemText primary="Áttekintő táblázatok" />
                             </ListItem>
                         </Link>
-                        <Link variant="body1" color="inherit" component={BarkochbaManageLink}>
+                        <Link
+                            variant="body1"
+                            color="inherit"
+                            component={BarkochbaManageLink}
+                            underline="hover">
                             <ListItem button className={css.barkochbaDrawerListItem}>
                                 <ListItemIcon>
                                     <EditIcon />

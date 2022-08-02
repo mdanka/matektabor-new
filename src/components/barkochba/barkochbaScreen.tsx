@@ -1,13 +1,13 @@
 import * as React from "react";
 import {
     Typography,
-    ExpansionPanel,
-    ExpansionPanelSummary,
-    ExpansionPanelDetails,
-    Hidden,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
     SwipeableDrawer,
     Button,
-} from "@material-ui/core";
+    Box,
+} from "@mui/material";
 import { PersonsSelector } from "./personsSelector";
 import { ISelectOption } from "../../commons";
 import {
@@ -23,8 +23,8 @@ import { connect } from "react-redux";
 import { StoryPanel } from "./storyPanel";
 import { ListeningCampRoomSelector } from "./listeningCampRoomSelector";
 import { BarkochbaDrawer } from "./barkochbaDrawer";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import MenuIcon from "@material-ui/icons/Menu";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import MenuIcon from "@mui/icons-material/Menu";
 import css from "./barkochbaScreen.module.scss";
 
 export interface IBarkochbaScreenOwnProps {}
@@ -53,46 +53,53 @@ class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, 
         }`;
         return (
             <div className={css.barkochbaScreen}>
-                <Hidden xsDown implementation="css">
-                    <div className={css.barkochbaScreenDrawerContainer}>
+                <Box
+                    component="div"
+                    sx={{ display: { xs: 'none', sm: 'block' } }}
+                    className={css.barkochbaScreenDrawerContainer}
+                >
+                    <BarkochbaDrawer />
+                </Box>
+                <Box
+                    component="div"
+                    sx={{ display: { sm: 'none', xs: 'block' } }}
+                    className={css.barkochbaScreenMobileDrawerContainer}
+                >
+                     <SwipeableDrawer
+                        className={css.barkochbaScreenMobileDrawer}
+                        variant="temporary"
+                        open={barkochbaDrawerIsOpen}
+                        onOpen={this.handleDrawerOpen}
+                        onClose={this.handleDrawerClose}
+                        PaperProps={{
+                            className: css.barkochbaScreenMobileDrawerPaper,
+                        }}
+                    >
                         <BarkochbaDrawer />
-                    </div>
-                </Hidden>
-                <Hidden smUp implementation="css">
-                    <div className={css.barkochbaScreenMobileDrawerContainer}>
-                        <SwipeableDrawer
-                            className={css.barkochbaScreenMobileDrawer}
-                            variant="temporary"
-                            open={barkochbaDrawerIsOpen}
-                            onOpen={this.handleDrawerOpen}
-                            onClose={this.handleDrawerClose}
-                            PaperProps={{
-                                className: css.barkochbaScreenMobileDrawerPaper,
-                            }}
-                        >
-                            <BarkochbaDrawer />
-                        </SwipeableDrawer>
-                    </div>
-                </Hidden>
+                    </SwipeableDrawer>
+                </Box>
+
                 <div className={css.barkochbaScreenContentArea}>
-                    <Hidden smUp implementation="css">
-                        <div className={css.barkochbaScreenDrawerToggle}>
-                            <Button
-                                className={css.barkochbaScreenDrawerToggleButton}
-                                variant="outlined"
-                                onClick={this.handleDrawerToggle}
-                            >
-                                <MenuIcon className={css.barkochbaScreenDrawerToggleButtonIcon} />
-                                Navigáció és barkochbatörténetek
-                            </Button>
-                        </div>
-                    </Hidden>
+                    <Box
+                        component="div"
+                        sx={{ display: { sm: 'none', xs: 'block' } }}
+                        className={css.barkochbaScreenDrawerToggle}
+                    >
+                        <Button
+                            className={css.barkochbaScreenDrawerToggleButton}
+                            variant="outlined"
+                            onClick={this.handleDrawerToggle}
+                        >
+                            <MenuIcon className={css.barkochbaScreenDrawerToggleButtonIcon} />
+                            Navigáció és barkochbatörténetek
+                        </Button>
+                    </Box>
                     <div className={css.barkochbaScreenPersonSelector}>
-                        <ExpansionPanel elevation={2} defaultExpanded={true}>
-                            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                        <Accordion elevation={2} defaultExpanded={true}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                                 <Typography variant="subtitle1">{personSelectorTitle}</Typography>
-                            </ExpansionPanelSummary>
-                            <ExpansionPanelDetails className={css.personSelectorContent}>
+                            </AccordionSummary>
+                            <AccordionDetails className={css.personSelectorContent}>
                                 <Typography variant="body2" paragraph={true}>
                                     Válaszd ki a tábort és a szobát, vagy írd be azon gyerekek neveit, akiknek mesélni
                                     szeretnél. Ezután a listában színesek lesznek azok a barkochbatörténetek, amelyeket
@@ -104,8 +111,8 @@ class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, 
                                     selectedPersons={currentListeningPersonsAsSelectOptions}
                                     onChange={this.handleCurrentListeningPersonsChange}
                                 />
-                            </ExpansionPanelDetails>
-                        </ExpansionPanel>{" "}
+                            </AccordionDetails>
+                        </Accordion>{" "}
                     </div>
                     <div className={css.barkochbaScreenPanel}>
                         <StoryPanel />

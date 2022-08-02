@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ISelectOption } from "../../commons";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import { TextField } from "@material-ui/core";
+import Autocomplete from "@mui/material/Autocomplete";
+import { TextField } from "@mui/material";
 
 export interface IPersonsSelectorProps {
     className?: string;
