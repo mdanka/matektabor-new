@@ -4,9 +4,9 @@ import {
     Accordion,
     AccordionSummary,
     AccordionDetails,
-    Hidden,
     SwipeableDrawer,
     Button,
+    Box,
 } from "@mui/material";
 import { PersonsSelector } from "./personsSelector";
 import { ISelectOption } from "../../commons";
@@ -53,40 +53,47 @@ class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, 
         }`;
         return (
             <div className={css.barkochbaScreen}>
-                <Hidden smDown implementation="css">
-                    <div className={css.barkochbaScreenDrawerContainer}>
+                <Box
+                    component="div"
+                    sx={{ display: { xs: 'none', sm: 'block' } }}
+                    className={css.barkochbaScreenDrawerContainer}
+                >
+                    <BarkochbaDrawer />
+                </Box>
+                <Box
+                    component="div"
+                    sx={{ display: { sm: 'none', xs: 'block' } }}
+                    className={css.barkochbaScreenMobileDrawerContainer}
+                >
+                     <SwipeableDrawer
+                        className={css.barkochbaScreenMobileDrawer}
+                        variant="temporary"
+                        open={barkochbaDrawerIsOpen}
+                        onOpen={this.handleDrawerOpen}
+                        onClose={this.handleDrawerClose}
+                        PaperProps={{
+                            className: css.barkochbaScreenMobileDrawerPaper,
+                        }}
+                    >
                         <BarkochbaDrawer />
-                    </div>
-                </Hidden>
-                <Hidden smUp implementation="css">
-                    <div className={css.barkochbaScreenMobileDrawerContainer}>
-                        <SwipeableDrawer
-                            className={css.barkochbaScreenMobileDrawer}
-                            variant="temporary"
-                            open={barkochbaDrawerIsOpen}
-                            onOpen={this.handleDrawerOpen}
-                            onClose={this.handleDrawerClose}
-                            PaperProps={{
-                                className: css.barkochbaScreenMobileDrawerPaper,
-                            }}
-                        >
-                            <BarkochbaDrawer />
-                        </SwipeableDrawer>
-                    </div>
-                </Hidden>
+                    </SwipeableDrawer>
+                </Box>
+
                 <div className={css.barkochbaScreenContentArea}>
-                    <Hidden smUp implementation="css">
-                        <div className={css.barkochbaScreenDrawerToggle}>
-                            <Button
-                                className={css.barkochbaScreenDrawerToggleButton}
-                                variant="outlined"
-                                onClick={this.handleDrawerToggle}
-                            >
-                                <MenuIcon className={css.barkochbaScreenDrawerToggleButtonIcon} />
-                                Navigáció és barkochbatörténetek
-                            </Button>
-                        </div>
-                    </Hidden>
+                    <Box
+                        component="div"
+                        sx={{ display: { sm: 'none', xs: 'block' } }}
+                        className={css.barkochbaScreenDrawerToggle}
+                    >
+                        <Button
+                            className={css.barkochbaScreenDrawerToggleButton}
+                            variant="outlined"
+                            onClick={this.handleDrawerToggle}
+                        >
+                            <MenuIcon className={css.barkochbaScreenDrawerToggleButtonIcon} />
+                            Navigáció és barkochbatörténetek
+                        </Button>
+                    </Box>
                     <div className={css.barkochbaScreenPersonSelector}>
                         <Accordion elevation={2} defaultExpanded={true}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
