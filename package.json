@@ -16,7 +16,7 @@
     "firebase": "^8.8.1",
     "firebase-admin": "^9.11.0",
     "firebaseui": "^4.8.1",
-    "node-sass": "^6.0.1",
+    "node-sass": "^7.0.0",
     "normalize.css": "^8.0.1",
     "query-string": "^7.0.1",
     "re-reselect": "^4.0.0",
