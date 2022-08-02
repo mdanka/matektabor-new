@@ -85,7 +85,7 @@ export class UnconnectedAppHeader extends React.Component<IAppHeaderProps, IAppH
                 <StyledEngineProvider injectFirst>
                     <ThemeProvider theme={DARK_THEME}>
                         <span className={css.appTitle}>
-                        <Link component={HomeLink}>
+                        <Link component={HomeLink} underline="hover">
                             Matektábor
                         </Link>
                         </span>

@@ -44,7 +44,11 @@ class UnconnectedBarkochbaExportScreen extends React.Component<IBarkochbaExportS
     private renderCampItem = (camp: ICamp) => {
         const { id, group, number } = camp;
         return (
-            <Link key={id} color="textPrimary" component={getExportLinkComponent(id)}>
+            <Link
+                key={id}
+                color="textPrimary"
+                component={getExportLinkComponent(id)}
+                underline="hover">
                 <ListItem button divider={true}>
                     <ListItemText primary={`${group}/${number}`} />
                 </ListItem>

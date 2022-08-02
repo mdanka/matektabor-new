@@ -32,7 +32,11 @@ export class UnconnectedBarkochbaDrawer extends React.Component<IBarkochbaDrawer
             <div className={css.barkochbaDrawer}>
                 <div className={css.barkochbaDrawerNavigation}>
                     <List>
-                        <Link variant="body1" color="inherit" component={BarkochbaExportLink}>
+                        <Link
+                            variant="body1"
+                            color="inherit"
+                            component={BarkochbaExportLink}
+                            underline="hover">
                             <ListItem button className={css.barkochbaDrawerListItem}>
                                 <ListItemIcon>
                                     <TableChartIcon />
@@ -40,7 +44,11 @@ export class UnconnectedBarkochbaDrawer extends React.Component<IBarkochbaDrawer
                                 <ListItemText primary="Áttekintő táblázatok" />
                             </ListItem>
                         </Link>
-                        <Link variant="body1" color="inherit" component={BarkochbaManageLink}>
+                        <Link
+                            variant="body1"
+                            color="inherit"
+                            component={BarkochbaManageLink}
+                            underline="hover">
                             <ListItem button className={css.barkochbaDrawerListItem}>
                                 <ListItemIcon>
                                     <EditIcon />
