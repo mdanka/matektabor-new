@@ -1,4 +1,5 @@
 .barkochbaScreen {
+    flex-grow: 1;
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -38,11 +39,6 @@
 }
 
 // DRAWER
-
-.barkochbaScreenDrawerContainer {
-    max-height: 90vh;
-    height: 100%
-}
 
 .barkochbaScreenMobileDrawerPaper {
     width: 80vw;
