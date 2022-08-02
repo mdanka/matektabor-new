@@ -1,9 +1,13 @@
 .appContent {
     width: 100%;
-    min-height: 100vh;
 }
 
 .matektaborApp {
+    display: flex;
+    flex-direction: column;
+}
+
+.barkochbaRouteContainer {
     display: flex;
     flex-direction: column;
 }

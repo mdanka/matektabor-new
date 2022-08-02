@@ -56,7 +56,6 @@ class UnconnectedBarkochbaScreen extends React.Component<IBarkochbaScreenProps, 
                 <Box
                     component="div"
                     sx={{ display: { xs: 'none', sm: 'block' } }}
-                    className={css.barkochbaScreenDrawerContainer}
                 >
                     <BarkochbaDrawer />
                 </Box>
