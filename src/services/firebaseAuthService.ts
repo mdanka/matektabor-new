@@ -1,15 +1,17 @@
-import firebase from "firebase/app";
-import "firebase/auth";
 import { SetCurrentUser, IAppState } from "../store";
 import { Store } from "redoodle";
+import { Auth, getAuth, User } from "firebase/auth";
+import { FirebaseApp } from "firebase/app";
 
-export type IAuthStateListener = (user: firebase.User | undefined) => void;
+export type IAuthStateListener = (user: User | undefined) => void;
 
 export class FirebaseAuthService {
+    private firebaseAuth: Auth;
     private authStateListeners: Array<IAuthStateListener> = [];
 
-    public constructor(private firebaseAuth: firebase.auth.Auth, private store: Store<IAppState> | undefined) {
+    public constructor(private firebaseApp: FirebaseApp, private store: Store<IAppState> | undefined) {
         this.subscribeToAuthState(this.setUserInStore);
+        this.firebaseAuth = getAuth(firebaseApp);
         this.firebaseAuth.onAuthStateChanged(this.handleAuthStateChange);
     }
 
@@ -29,17 +31,17 @@ export class FirebaseAuthService {
         this.authStateListeners.push(authStateListener);
     };
 
-    private handleAuthStateChange = (user: firebase.User | null) => {
+    private handleAuthStateChange = (user: User | null) => {
         const userOrUndefined = user === null ? undefined : user;
         this.setUserInStore(userOrUndefined);
         this.notifyAuthStateListeners(userOrUndefined);
     };
 
-    private notifyAuthStateListeners = (user: firebase.User | undefined) => {
+    private notifyAuthStateListeners = (user: User | undefined) => {
         this.authStateListeners.forEach(authStateListener => authStateListener(user));
     };
 
-    private setUserInStore = (user: firebase.User | undefined) => {
+    private setUserInStore = (user: User | undefined) => {
         if (this.store !== undefined) {
             this.store.dispatch(SetCurrentUser.create({ currentUser: user }));
         }

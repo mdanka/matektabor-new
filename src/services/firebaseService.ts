@@ -1,8 +1,7 @@
-import firebase from "firebase/app";
-import "firebase/auth";
+import { FirebaseApp, initializeApp } from 'firebase/app';
 
 export class FirebaseService {
-    private firebaseApp: firebase.app.App;
+    private firebaseApp: FirebaseApp;
 
     private firebaseAppConfig = {
         apiKey: "AIzaSyCe-gLA62Z68YVh_8jx-wCXuXksT-ZD3ws",
@@ -14,7 +13,7 @@ export class FirebaseService {
     };
 
     public constructor() {
-        this.firebaseApp = firebase.initializeApp(this.firebaseAppConfig);
+        this.firebaseApp = initializeApp(this.firebaseAppConfig);
     }
 
     public getApp = () => {

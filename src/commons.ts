@@ -1,6 +1,6 @@
-import firebase from "firebase/app";
+import { User } from "firebase/auth";
 
-export type IUser = firebase.User;
+export type IUser = User;
 
 export interface IPersonApi {
     group: string | undefined;
