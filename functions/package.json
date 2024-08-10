@@ -1,7 +1,7 @@
 {
   "name": "functions",
   "engines": {
-    "node": "16"
+    "node": "18"
   },
   "scripts": {
     "lint": "tslint --project tsconfig.json",
@@ -14,8 +14,8 @@
   },
   "main": "lib/index.js",
   "dependencies": {
-    "firebase-admin": "~9.11.0",
-    "firebase-functions": "^3.14.1"
+    "firebase-admin": "^12.3.1",
+    "firebase-functions": "^5.0.1"
   },
   "devDependencies": {
     "tslint": "^6.1.3",
