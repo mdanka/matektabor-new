@@ -4,10 +4,9 @@
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "outDir": "lib",
-    "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "es2015"
+    "target": "es2017"
   },
   "compileOnSave": true,
   "include": [
