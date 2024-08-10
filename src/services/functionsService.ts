@@ -1,34 +1,38 @@
-import firebase from "firebase/app";
-import "firebase/functions";
+import { Functions, getFunctions, httpsCallable } from "firebase/functions";
 import {
     ISetStoryStarredForUserRequest,
     IGetUserRolesResponse,
     IAddNewPeopleWhoHeardStory,
 } from "../../functions/src/shared";
+import { FirebaseApp } from "firebase/app";
 
 export class FunctionsService {
-    public constructor(private functions: firebase.functions.Functions) {}
+    private functions: Functions;
+
+    public constructor(firebaseApp: FirebaseApp) {
+        this.functions = getFunctions(firebaseApp, "europe-west1");
+    }
 
     public getUserRoles = async (): Promise<IGetUserRolesResponse> => {
-        const getUserRolesFunction = this.functions.httpsCallable("getUserRoles");
+        const getUserRolesFunction = httpsCallable(this.functions, "getUserRoles");
         const response = await getUserRolesFunction();
         return response.data as IGetUserRolesResponse;
     };
 
     public setStoryStarredForUser = async (request: ISetStoryStarredForUserRequest): Promise<void> => {
-        const setStoryStarredForUserFunction = this.functions.httpsCallable("setStoryStarredForUser");
+        const setStoryStarredForUserFunction = httpsCallable(this.functions, "setStoryStarredForUser");
         await setStoryStarredForUserFunction(request);
         return;
     };
 
     public addNewPeopleWhoHeardStory = async (request: IAddNewPeopleWhoHeardStory): Promise<void> => {
-        const addNewPeopleWhoHeardStoryFunction = this.functions.httpsCallable("addNewPeopleWhoHeardStory");
+        const addNewPeopleWhoHeardStoryFunction = httpsCallable(this.functions, "addNewPeopleWhoHeardStory");
         await addNewPeopleWhoHeardStoryFunction(request);
         return;
     };
 
     public backupData = async (): Promise<string> => {
-        const backupDataFunction = this.functions.httpsCallable("backupData");
+        const backupDataFunction = httpsCallable<unknown, string>(this.functions, "backupData");
         const result = await backupDataFunction();
         return result.data;
     };
