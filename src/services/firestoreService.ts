@@ -1,10 +1,10 @@
-import "firebase/firestore";
-import firebase from "firebase/app";
+import { FirebaseApp } from 'firebase/app';
+import { initializeFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
 
 export class FirestoreService {
-    public constructor(firestore: firebase.firestore.Firestore) {
+    public constructor(firebaseApp: FirebaseApp) {
         const settings = {};
-        firestore.settings(settings);
-        firestore.enablePersistence();
+        const initializedFirestore = initializeFirestore(firebaseApp, settings);
+        enableIndexedDbPersistence(initializedFirestore);
     }
 }

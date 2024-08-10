@@ -18,11 +18,12 @@ export interface IGlobalServices {
 
 function getServices(store: Store<IAppState> | undefined): IGlobalServices {
     const firebaseService = new FirebaseService();
-    const firebaseAuthService = new FirebaseAuthService(firebaseService.getApp().auth(), store);
-    const firebaseAuthUiService = new FirebaseAuthUiService(store);
-    const firestoreService = new FirestoreService(firebaseService.getApp().firestore());
-    const dataService = new DataService(firebaseService.getApp().firestore(), firebaseAuthService, store);
-    const functionsService = new FunctionsService(firebaseService.getApp().functions("europe-west1"));
+    const firebaseApp = firebaseService.getApp();
+    const firebaseAuthService = new FirebaseAuthService(firebaseApp, store);
+    const firebaseAuthUiService = new FirebaseAuthUiService(firebaseApp, store);
+    const firestoreService = new FirestoreService(firebaseApp);
+    const dataService = new DataService(firebaseApp, firebaseAuthService, store);
+    const functionsService = new FunctionsService(firebaseApp);
     return {
         firebaseService,
         firebaseAuthService,

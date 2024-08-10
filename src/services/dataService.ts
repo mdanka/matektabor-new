@@ -1,11 +1,14 @@
-import firebase from "firebase/app";
 import { SetStories, IAppState, SetPersons, SetCamps, SetHasPendingWrites } from "../store";
 import { IStoryApi, IPersonApi, ICampApi, ICamp } from "../commons";
 import { CollectionId } from "../types/shared";
 import { Store } from "redoodle";
 import { FirebaseAuthService } from "./firebaseAuthService";
+import { addDoc, arrayRemove, arrayUnion, collection, doc, Firestore, getDocs, getFirestore, onSnapshot, QuerySnapshot, updateDoc } from "firebase/firestore";
+import { User } from "firebase/auth";
+import { FirebaseApp } from "firebase/app";
 
 export class DataService {
+    private firestore: Firestore;
     private snapshotUnsubscribers: Array<() => void> = [];
     private hasPendingWritesMap: { [key: string]: boolean } = {
         [CollectionId.Persons]: false,
@@ -14,16 +17,17 @@ export class DataService {
     };
 
     public constructor(
-        private firestore: firebase.firestore.Firestore,
+        firebaseApp: FirebaseApp,
         private firebaseAuthService: FirebaseAuthService,
         private store: Store<IAppState> | undefined,
     ) {
+        this.firestore = getFirestore(firebaseApp);
         const currentUser = this.firebaseAuthService.authGetCurrentUser();
         this.subscribeToDataStoreIfLoggedIn(currentUser);
         firebaseAuthService.subscribeToAuthState(this.subscribeToDataStoreIfLoggedIn);
     }
 
-    private subscribeToDataStoreIfLoggedIn = (currentUser: firebase.User | undefined | null) => {
+    private subscribeToDataStoreIfLoggedIn = (currentUser: User | undefined | null) => {
         if (currentUser != null) {
             this.subscribeToDataStore();
         }
@@ -59,18 +63,18 @@ export class DataService {
     };
 
     public subscribeToCollection = <API>(
-        collection: string,
+        collectionName: string,
         onUpdate: (documents: { [id: string]: API }, hasPendingWrites: boolean) => void,
     ) => {
         const currentUser = this.firebaseAuthService.authGetCurrentUser();
         if (currentUser == null) {
             throw new Error(`Cannot subscribe to collection ${collection} if user is not logged in.`);
         }
-        return this.firestore.collection(collection).onSnapshot(
-            {
-                includeMetadataChanges: true,
-            },
-            (querySnapshot: firebase.firestore.QuerySnapshot) => {
+        const collectionRef = collection(this.firestore, collectionName);
+        return onSnapshot(
+            collectionRef,
+            { includeMetadataChanges: true },
+            (querySnapshot: QuerySnapshot) => {
                 const documents = this.querySnapshotToObjects<API>(querySnapshot);
                 const hasPendingWrites = querySnapshot.docs.some(doc => doc.metadata.hasPendingWrites);
                 onUpdate(documents, hasPendingWrites);
@@ -78,9 +82,10 @@ export class DataService {
         );
     };
 
-    public getAllDocuments = async <API>(collection: string) => {
+    public getAllDocuments = async <API>(collectionName: string) => {
         try {
-            const querySnapshot = await this.firestore.collection(collection).get();
+            const collectionRef = collection(this.firestore, collectionName);
+            const querySnapshot = await getDocs(collectionRef);
             return this.querySnapshotToObjects<API>(querySnapshot);
         } catch (error) {
             console.error(`[DataService] Failed to get all ${collection} IDs. ${error}`);
@@ -88,21 +93,20 @@ export class DataService {
         }
     };
 
-    public getAllDocumentIds = (collection: string) => {
-        return this.firestore
-            .collection(collection)
-            .get()
+    public getAllDocumentIds = (collectionName: string) => {
+        const collectionRef = collection(this.firestore, collectionName);
+        return getDocs(collectionRef)
             .then(querySnapshot => {
                 return querySnapshot.docs.map(doc => doc.id);
             })
-            .catch((reason: any) => console.error(`[DataService] Failed to get all ${collection} IDs. ${reason}`));
+            .catch((reason: any) => {
+                console.error(`[DataService] Failed to get all ${collectionName} IDs. ${reason}`);
+            });
     };
 
     public addPersonsWhoKnowStory = (storyId: string, peopleIds: string[]) => {
-        return this.firestore
-            .collection(CollectionId.Stories)
-            .doc(storyId)
-            .update({ personsWhoKnow: firebase.firestore.FieldValue.arrayUnion(...peopleIds) })
+        const storyDocRef = doc(collection(this.firestore, CollectionId.Stories), storyId);
+        return updateDoc(storyDocRef, { personsWhoKnow: arrayUnion(...peopleIds) })
             .catch((reason: any) =>
                 console.error(`[DataService] Failed to update story with persons who know it. ${reason}`),
             );
@@ -114,25 +118,27 @@ export class DataService {
             return;
         }
         const userId = currentUser.uid;
-        return this.firestore
-            .collection(CollectionId.Stories)
-            .doc(storyId)
-            .update(
-                isStarred
-                    ? { usersWhoStarred: firebase.firestore.FieldValue.arrayUnion(userId) }
-                    : { usersWhoStarred: firebase.firestore.FieldValue.arrayRemove(userId) },
-            )
-            .catch((reason: any) =>
-                console.error(`[DataService] Failed to update story with user starring selection. ${reason}`),
-            );
+        const storyDocRef = doc(collection(this.firestore, CollectionId.Stories), storyId);
+
+        return updateDoc(
+            storyDocRef,
+            isStarred
+                ? { usersWhoStarred: arrayUnion(userId) }
+                : { usersWhoStarred: arrayRemove(userId) }
+        )
+        .catch((reason: any) =>
+            console.error(`[DataService] Failed to update story with user starring selection. ${reason}`),
+        );
     };
 
     public createPerson = (newPerson: IPersonApi) => {
-        return this.firestore.collection(CollectionId.Persons).add(newPerson);
+        const personsCollectionRef = collection(this.firestore, CollectionId.Persons);
+        return addDoc(personsCollectionRef, newPerson);
     };
 
     public createCamp = (newCamp: ICampApi) => {
-        return this.firestore.collection(CollectionId.Camps).add(newCamp);
+        const campsCollectionRef = collection(this.firestore, CollectionId.Camps);
+        return addDoc(campsCollectionRef, newCamp);
     };
 
     public createRoom = (camp: ICamp, roomName: string) => {
@@ -141,14 +147,13 @@ export class DataService {
 
     public updateCampRoom = (camp: ICamp, roomName: string, personIds: string[]) => {
         const { id, rooms } = camp;
-        const newRooms = Object.assign(rooms, { [roomName]: personIds });
-        return this.firestore
-            .collection(CollectionId.Camps)
-            .doc(id)
-            .update({ rooms: newRooms });
+        const newRooms = { ...rooms, [roomName]: personIds };
+        const campDocRef = doc(collection(this.firestore, CollectionId.Camps), id);
+
+        return updateDoc(campDocRef, { rooms: newRooms });
     };
 
-    private querySnapshotToObjects = <API>(querySnapshot: firebase.firestore.QuerySnapshot) => {
+    private querySnapshotToObjects = <API>(querySnapshot: QuerySnapshot) => {
         const songs: { [id: string]: API } = {};
         querySnapshot.forEach(doc => {
             songs[doc.id] = doc.data() as API;
