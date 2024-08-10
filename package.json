@@ -16,7 +16,6 @@
     "firebase": "^10.12.5",
     "firebase-admin": "^12.3.1",
     "firebaseui": "^6.1.0",
-    "node-sass": "^7.0.1",
     "normalize.css": "^8.0.1",
     "query-string": "^7.0.1",
     "re-reselect": "^4.0.0",
@@ -29,7 +28,8 @@
     "react-scripts": "^5.0.1",
     "redoodle": "^2.6.1",
     "redux": "^4.1.0",
-    "reselect": "^4.0.0"
+    "reselect": "^4.0.0",
+    "sass": "^1.77.8"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.14.1",
