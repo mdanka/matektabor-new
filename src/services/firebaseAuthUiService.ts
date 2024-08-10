@@ -2,7 +2,7 @@ import { SetCurrentUser, IAppState } from "../store";
 import { Store } from "redoodle";
 import { Page, getNavUrl } from "../utils/navUtils";
 import { getAuth, GoogleAuthProvider, User } from "firebase/auth";
-import firebaseui from "firebaseui";
+import * as firebaseui from "firebaseui";
 import { FirebaseApp } from "firebase/app";
 
 export class FirebaseAuthUiService {
