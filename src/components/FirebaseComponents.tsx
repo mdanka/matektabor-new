@@ -1,5 +1,5 @@
 import { connectAuthEmulator, getAuth } from "firebase/auth";
-import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
+import { connectFirestoreEmulator, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
 import {
@@ -9,8 +9,9 @@ import {
     StorageProvider,
     FirestoreProvider,
     AppCheckProvider,
+    useInitFirestore,
 } from "reactfire";
-import { AppCheck, CustomProvider, initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check";
+import { AppCheck } from "firebase/app-check";
 
 // const APP_CHECK_TOKEN = "6LdzrQoqAAAAABwDfR1mb8Q8JArK5R1TvJ-xIOHz";
 
@@ -50,7 +51,16 @@ export function FirebaseComponents(props: { children: React.ReactNode }) {
     // }
     const auth = getAuth(app);
     const functions = getFunctions(app, "europe-west1");
-    const firestore = getFirestore(app);
+    const { status: firestoreInitStatus, data: firestore } = useInitFirestore(async (firebaseApp) => {
+        const tabManager = persistentMultipleTabManager();
+        const localCache = persistentLocalCache({ tabManager });
+        const db = initializeFirestore(firebaseApp, { localCache });
+        return db;
+    });
+    if (firestoreInitStatus === 'loading') {
+        // TODO(mdanka): add a proper spinner or such here
+        return<div>Töltés...</div>;
+      }
     // const storage = getStorage(app, `gs://${CLOUD_STORAGE_BUCKETS.Main}`);
     const storage = getStorage(app);
     if (isLocalhost()) {
@@ -73,7 +83,9 @@ export function FirebaseComponents(props: { children: React.ReactNode }) {
         <AuthProvider sdk={auth}>
             <FunctionsProvider sdk={functions}>
                 <FirestoreProvider sdk={firestore}>
-                    <StorageProvider sdk={storage}>{children}</StorageProvider>
+                    <StorageProvider sdk={storage}>
+                        {children}
+                    </StorageProvider>
                 </FirestoreProvider>
             </FunctionsProvider>
         </AuthProvider>

@@ -1,6 +1,5 @@
-import * as React from "react";
-import { Switch, Route, Redirect } from "react-router-dom";
-import { RouteComponentProps } from "react-router";
+import React from "react";
+import { Switch, Route, Redirect, RouteComponentProps } from "react-router-dom";
 import { Login } from "./login";
 import { AppHeader } from "./appHeader";
 import { AppFooter } from "./appFooter";
@@ -9,54 +8,21 @@ import { StaticContent } from "./staticContent";
 import { ScrollToTop } from "./common";
 import { LoginProtector } from "./loginProtector";
 import DocumentTitle from "react-document-title";
-import { getNavUrlSimpleTitle, getNavUrlTemplate, getNavUrl, getNavUrlQueryParams, getNavUrlMatch, Page } from "../utils/navUtils";
-import css from "./matektaborApp.module.scss";
+import {
+    getNavUrlSimpleTitle,
+    getNavUrlTemplate,
+    getNavUrl,
+    getNavUrlQueryParams,
+    getNavUrlMatch,
+    Page,
+} from "../utils/navUtils";
+import css from "./matektaborApp.module.scss";  
 
-export class MatektaborApp extends React.Component<{}, {}> {
-    public render() {
-        return (
-            <DocumentTitle title={getNavUrlSimpleTitle[Page.Home]}>
-                <ScrollToTop>
-                    <div className={css.matektaborApp}>
-                        <div className={css.appContent}>
-                            <Switch>
-                                <Route exact path={getNavUrlTemplate[Page.Home]} render={this.renderHome} />
-                                <Route path={getNavUrlTemplate[Page.SignIn]} render={this.renderRouteAuth} />
-                                <Route
-                                    exact
-                                    path={getNavUrlTemplate[Page.Barkochba]}
-                                    render={this.renderBarkochba}
-                                />
-                                <Route
-                                    path={getNavUrlTemplate[Page.BarkochbaExport]}
-                                    render={this.renderBarkochbaExport}
-                                />
-                                <Route
-                                    path={getNavUrlTemplate[Page.BarkochbaManage]}
-                                    render={this.renderBarkochbaManage}
-                                />
-                                <Route
-                                    exact
-                                    path={getNavUrlTemplate[Page.TermsOfService]}
-                                    render={this.renderTermsOfService}
-                                />
-                                <Route
-                                    exact
-                                    path={getNavUrlTemplate[Page.PrivacyPolicy]}
-                                    render={this.renderPrivacyPolicy}
-                                />
-                                <Route render={this.renderRedirectToHome} />
-                            </Switch>
-                        </div>
-                    </div>
-                </ScrollToTop>
-            </DocumentTitle>
-        );
-    }
-
-    private renderHome = (_locationInfo: RouteComponentProps<any>) => {
+export const MatektaborApp: React.FC = () => {    
+    const renderHome = () => {
         // The home screen for now just redirects directly to the barkochba page
         return <Redirect to={getNavUrl[Page.Barkochba]()} />;
+        // Uncomment if you want to render the BarkochbaScreen directly
         // return (
         //     <DocumentTitle title={getNavUrlSimpleTitle[Page.Home]}>
         //         <BarkochbaScreen />
@@ -64,31 +30,27 @@ export class MatektaborApp extends React.Component<{}, {}> {
         // );
     };
 
-    private renderTermsOfService = (_locationInfo: RouteComponentProps<any>) => {
-        return (
-            <DocumentTitle title={getNavUrlSimpleTitle[Page.TermsOfService]}>
-                <div>
-                    <AppHeader />
-                    <StaticContent type="terms of service" />
-                    <AppFooter />
-                </div>
-            </DocumentTitle>
-        );
-    };
+    const renderTermsOfService = () => (
+        <DocumentTitle title={getNavUrlSimpleTitle[Page.TermsOfService]}>
+            <div>
+                <AppHeader />
+                <StaticContent type="terms of service" />
+                <AppFooter />
+            </div>
+        </DocumentTitle>
+    );
 
-    private renderPrivacyPolicy = (_locationInfo: RouteComponentProps<any>) => {
-        return (
-            <DocumentTitle title={getNavUrlSimpleTitle[Page.PrivacyPolicy]}>
-                <div>
-                    <AppHeader />
-                    <StaticContent type="privacy policy" />
-                    <AppFooter />
-                </div>
-            </DocumentTitle>
-        );
-    };
+    const renderPrivacyPolicy = () => (
+        <DocumentTitle title={getNavUrlSimpleTitle[Page.PrivacyPolicy]}>
+            <div>
+                <AppHeader />
+                <StaticContent type="privacy policy" />
+                <AppFooter />
+            </div>
+        </DocumentTitle>
+    );
 
-    private renderRouteAuth = (locationInfo: RouteComponentProps<any>) => {
+    const renderRouteAuth = (locationInfo: RouteComponentProps) => {
         const signInQueryParams = getNavUrlQueryParams[Page.SignIn](locationInfo.location.search);
         const { redirectUrl } = signInQueryParams;
         return (
@@ -102,23 +64,21 @@ export class MatektaborApp extends React.Component<{}, {}> {
         );
     };
 
-    private renderBarkochba = (_locationInfo: RouteComponentProps<any>) => {
-        return (
-            <DocumentTitle title={getNavUrlSimpleTitle[Page.Barkochba]}>
-                <LoginProtector>
-                    <div className={css.barkochbaRouteContainer}>
-                        <AppHeader />
-                        <BarkochbaScreen />
-                        <AppFooter />
-                    </div>
-                </LoginProtector>
-            </DocumentTitle>
-        );
-    };
+    const renderBarkochba = () => (
+        <DocumentTitle title={getNavUrlSimpleTitle[Page.Barkochba]}>
+            <LoginProtector>
+                <div className={css.barkochbaRouteContainer}>
+                    <AppHeader />
+                    <BarkochbaScreen />
+                    <AppFooter />
+                </div>
+            </LoginProtector>
+        </DocumentTitle>
+    );
 
-    private renderBarkochbaExport = (locationInfo: RouteComponentProps<any>) => {
+    const renderBarkochbaExport = (locationInfo: RouteComponentProps) => {
         const match = getNavUrlMatch[Page.BarkochbaExport](locationInfo.location.pathname);
-        if (match == null) {
+        if (!match) {
             return null;
         }
         const { campId } = match.params;
@@ -131,21 +91,38 @@ export class MatektaborApp extends React.Component<{}, {}> {
         );
     };
 
-    private renderBarkochbaManage = (_locationInfo: RouteComponentProps<any>) => {
-        return (
-            <DocumentTitle title={getNavUrlSimpleTitle[Page.BarkochbaManage]}>
-                <LoginProtector>
-                    <div>
-                        <AppHeader />
-                        <BarkochbaManageScreen />
-                        <AppFooter />
-                    </div>
-                </LoginProtector>
-            </DocumentTitle>
-        );
-    };
+    const renderBarkochbaManage = () => (
+        <DocumentTitle title={getNavUrlSimpleTitle[Page.BarkochbaManage]}>
+            <LoginProtector>
+                <div>
+                    <AppHeader />
+                    <BarkochbaManageScreen />
+                    <AppFooter />
+                </div>
+            </LoginProtector>
+        </DocumentTitle>
+    );
 
-    private renderRedirectToHome = (_locationInfo: RouteComponentProps<any>) => {
-        return <Redirect to={getNavUrl[Page.Home]()} />;
-    };
-}
+    const renderRedirectToHome = () => <Redirect to={getNavUrl[Page.Home]()} />;
+
+    return (
+        <DocumentTitle title={getNavUrlSimpleTitle[Page.Home]}>
+            <ScrollToTop>
+                <div className={css.matektaborApp}>
+                    <div className={css.appContent}>
+                        <Switch>
+                            <Route exact path={getNavUrlTemplate[Page.Home]} render={renderHome} />
+                            <Route path={getNavUrlTemplate[Page.SignIn]} render={renderRouteAuth} />
+                            <Route exact path={getNavUrlTemplate[Page.Barkochba]} render={renderBarkochba} />
+                            <Route path={getNavUrlTemplate[Page.BarkochbaExport]} render={renderBarkochbaExport} />
+                            <Route path={getNavUrlTemplate[Page.BarkochbaManage]} render={renderBarkochbaManage} />
+                            <Route exact path={getNavUrlTemplate[Page.TermsOfService]} render={renderTermsOfService} />
+                            <Route exact path={getNavUrlTemplate[Page.PrivacyPolicy]} render={renderPrivacyPolicy} />
+                            <Route render={renderRedirectToHome} />
+                        </Switch>
+                    </div>
+                </div>
+            </ScrollToTop>
+        </DocumentTitle>
+    );
+};
