@@ -1,15 +1,12 @@
-import * as React from "react";
-import { ISelectOption, ICamp } from "../../commons";
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
-    IAppState,
     selectCampsAsSelectOptions,
     selectCurrentListeningCampRoomCampAsSelectOption,
     selectCurrentListeningCampRoomNamesAsSelectOptions,
     SetCurrentListeningCampRoom,
     SetCurrentListeningPersonIds,
 } from "../../store";
-import { Dispatch } from "redux";
-import { connect } from "react-redux";
 import {
     selectCurrentListeningCampRoomNameAsSelectOption,
     selectCurrentListeningCampRoomCamp,
@@ -17,134 +14,63 @@ import {
 import Autocomplete from "@mui/material/Autocomplete";
 import { TextField } from "@mui/material";
 import css from "./listeningCampRoomSelector.module.scss";
+import { ISelectOption } from "../../commons";
 
-export interface IListeningCampRoomSelectorOwnProps {}
+export function ListeningCampRoomSelector() {
+    const dispatch = useDispatch();
 
-export interface IListeningCampRoomSelectorStateProps {
-    allCamps: ISelectOption[];
-    selectedCamp: ISelectOption | null;
-    allRooms: ISelectOption[];
-    selectedRoom: ISelectOption | null;
-    selectedCampData: ICamp | null;
-}
+    const allCamps = useSelector(selectCampsAsSelectOptions);
+    const selectedCamp = useSelector(selectCurrentListeningCampRoomCampAsSelectOption) ?? null;
+    const allRooms = useSelector(selectCurrentListeningCampRoomNamesAsSelectOptions);
+    const selectedRoom = useSelector(selectCurrentListeningCampRoomNameAsSelectOption) ?? null;
+    const selectedCampData = useSelector(selectCurrentListeningCampRoomCamp) ?? null;
 
-export interface IListeningCampRoomSelectorDispatchProps {
-    setSelectedCamp: (camp: ISelectOption | null) => void;
-    setSelectedRoom: (camp: ICamp, room: ISelectOption | null) => void;
-}
+    const handleCampChange = (_event: React.ChangeEvent<{}>, value: ISelectOption | null) => {
+        const currentListeningCampRoom =
+            value === null
+                ? { campId: undefined, roomName: undefined }
+                : { campId: value.value, roomName: undefined };
+        dispatch(SetCurrentListeningCampRoom.create({ currentListeningCampRoom }));
+    };
 
-export type IListeningCampRoomSelectorProps = IListeningCampRoomSelectorOwnProps &
-    IListeningCampRoomSelectorStateProps &
-    IListeningCampRoomSelectorDispatchProps;
+    const handleRoomChange = (_event: React.ChangeEvent<{}>, value: ISelectOption | null) => {
+        if (!selectedCampData) return;
 
-class UnconnectedListeningCampRoomSelector extends React.Component<IListeningCampRoomSelectorProps, {}> {
-    public render() {
-        const { selectedCamp } = this.props;
-        return (
-            <div className={css.listeningCampRoomSelector}>
-                {this.renderCampSelector()}
-                {selectedCamp !== null && this.renderRoomSelector()}
-            </div>
-        );
-    }
+        const { id: campId, rooms } = selectedCampData;
+        const roomName = value ? value.value : undefined;
+        const currentListeningCampRoom = { campId, roomName };
+        dispatch(SetCurrentListeningCampRoom.create({ currentListeningCampRoom }));
 
-    private renderCampSelector = () => {
-        const { allCamps, selectedCamp } = this.props;
-        return (
+        if (roomName) {
+            const currentListeningPersonIds = rooms[roomName];
+            if (currentListeningPersonIds) {
+                dispatch(SetCurrentListeningPersonIds.create({ currentListeningPersonIds }));
+            }
+        }
+    };
+
+    return (
+        <div className={css.listeningCampRoomSelector}>
             <div className={css.listeningCampRoomSelectorCamp}>
                 <Autocomplete
                     options={allCamps}
                     value={selectedCamp}
-                    onChange={this.handleCampChange}
+                    onChange={handleCampChange}
                     renderInput={(params) => <TextField {...params} placeholder="Válassz tábort" variant="standard" />}
                     getOptionLabel={(option: ISelectOption) => option.label}
                 />
             </div>
-        );
-    };
-
-    private renderRoomSelector = () => {
-        const { allRooms, selectedRoom } = this.props;
-        return (
-            <div className={css.listeningCampRoomSelectorRoom}>
-                <Autocomplete
-                    options={allRooms}
-                    value={selectedRoom}
-                    onChange={this.handleRoomChange}
-                    renderInput={(params) => <TextField {...params} placeholder="Válassz szobát" variant="standard" />}
-                    getOptionLabel={(option: ISelectOption) => option.label}
-                />
-            </div>
-        );
-    };
-
-    private handleCampChange = (_event: React.ChangeEvent<{}>, value: ISelectOption | null) => {
-        const { setSelectedCamp } = this.props;
-        this.handleValueChange(value, setSelectedCamp);
-    };
-
-    private handleRoomChange = (_event: React.ChangeEvent<{}>, value: ISelectOption | null) => {
-        const { setSelectedRoom, selectedCampData } = this.props;
-        this.handleValueChange(value, (selectedRoom: ISelectOption | null) =>
-            selectedCampData === null ? null : setSelectedRoom(selectedCampData, selectedRoom),
-        );
-    };
-
-    private handleValueChange = (
-        value: ISelectOption | null,
-        setter: (value: ISelectOption | null) => void,
-    ) => {
-        if (value == null) {
-            setter(null);
-            return;
-        }
-        setter(value as ISelectOption);
-    };
+            {selectedCamp && (
+                <div className={css.listeningCampRoomSelectorRoom}>
+                    <Autocomplete
+                        options={allRooms}
+                        value={selectedRoom}
+                        onChange={handleRoomChange}
+                        renderInput={(params) => <TextField {...params} placeholder="Válassz szobát" variant="standard" />}
+                        getOptionLabel={(option: ISelectOption) => option.label}
+                    />
+                </div>
+            )}
+        </div>
+    );
 }
-
-function mapStateToProps(
-    state: IAppState,
-    _ownProps: IListeningCampRoomSelectorOwnProps,
-): IListeningCampRoomSelectorStateProps {
-    return {
-        allCamps: selectCampsAsSelectOptions(state),
-        selectedCamp: selectCurrentListeningCampRoomCampAsSelectOption(state) ?? null,
-        allRooms: selectCurrentListeningCampRoomNamesAsSelectOptions(state),
-        selectedRoom: selectCurrentListeningCampRoomNameAsSelectOption(state) ?? null,
-        selectedCampData: selectCurrentListeningCampRoomCamp(state) ?? null,
-    };
-}
-
-function mapDispatchToProps(
-    dispatch: Dispatch,
-    _ownProps: IListeningCampRoomSelectorOwnProps,
-): IListeningCampRoomSelectorDispatchProps {
-    return {
-        setSelectedCamp: (camp: ISelectOption | null) => {
-            const currentListeningCampRoom =
-                camp === null
-                    ? { campId: undefined, roomName: undefined }
-                    : { campId: camp.value, roomName: undefined };
-            dispatch(SetCurrentListeningCampRoom.create({ currentListeningCampRoom }));
-        },
-        setSelectedRoom: (camp: ICamp, roomOption: ISelectOption | null) => {
-            const { id: campId, rooms } = camp;
-            const { value: roomName } = roomOption === null ? { value: undefined } : roomOption;
-            const currentListeningCampRoom = { campId, roomName };
-            dispatch(SetCurrentListeningCampRoom.create({ currentListeningCampRoom }));
-            if (roomName === undefined) {
-                return;
-            }
-            const currentListeningPersonIds = rooms[roomName];
-            if (currentListeningPersonIds === undefined) {
-                return;
-            }
-            dispatch(SetCurrentListeningPersonIds({ currentListeningPersonIds }));
-        },
-    };
-}
-
-export const ListeningCampRoomSelector = connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(UnconnectedListeningCampRoomSelector);

@@ -1,56 +1,29 @@
-import * as React from "react";
+import React from "react";
+import { useSelector } from "react-redux";
 import { AppHeader } from "./appHeader";
 import { AppFooter } from "./appFooter";
 import { Typography } from "@mui/material";
-import { selectCurrentUser, IAppState } from "../store";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { selectCurrentUser } from "../store";
 import css from "./loginProtector.module.scss";
 
-export interface ILoginProtectorOwnProps {
-    children: React.ReactChildren | React.ReactChild;
+interface ILoginProtectorProps {
+    children: React.ReactNode;
 }
 
-export interface ILoginProtectorStateProps {
-    isLoggedIn: boolean;
-}
+export function LoginProtector({ children }: ILoginProtectorProps) {
+    const isLoggedIn = useSelector(selectCurrentUser) !== undefined;
 
-export interface ILoginProtectorDispatchProps {}
-
-export type ILoginProtectorProps = ILoginProtectorOwnProps & ILoginProtectorStateProps & ILoginProtectorDispatchProps;
-
-export class UnconnectedLoginProtector extends React.Component<ILoginProtectorProps, {}> {
-    public render() {
-        const { children, isLoggedIn } = this.props;
-        return isLoggedIn ? children : this.renderNotLoggedInScreen();
-    }
-
-    private renderNotLoggedInScreen = () => {
-        return (
-            <div>
-                <AppHeader />
-                <div className={css.loginProtectorNotLoggedIn}>
-                    <Typography variant="h4" align="center" color="textSecondary">
-                        A lap használatához be kell jelentkezned.
-                    </Typography>
-                </div>
-                <AppFooter />
+    const renderNotLoggedInScreen = () => (
+        <div>
+            <AppHeader />
+            <div className={css.loginProtectorNotLoggedIn}>
+                <Typography variant="h4" align="center" color="textSecondary">
+                    A lap használatához be kell jelentkezned.
+                </Typography>
             </div>
-        );
-    };
-}
+            <AppFooter />
+        </div>
+    );
 
-function mapStateToProps(state: IAppState, _ownProps: ILoginProtectorOwnProps): ILoginProtectorStateProps {
-    return {
-        isLoggedIn: selectCurrentUser(state) !== undefined,
-    };
+    return isLoggedIn ? <>{children}</> : renderNotLoggedInScreen();
 }
-
-function mapDispatchToProps(_dispatch: Dispatch, _ownProps: ILoginProtectorOwnProps): ILoginProtectorDispatchProps {
-    return {};
-}
-
-export const LoginProtector = connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(UnconnectedLoginProtector);
