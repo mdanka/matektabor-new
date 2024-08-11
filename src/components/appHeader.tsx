@@ -26,6 +26,7 @@ import { green } from "@mui/material/colors";
 import css from "./appHeader.module.scss";
 import { useState, useRef, useEffect} from "react";
 import { useFirebaseAuthService } from "../services/useFirebaseAuthService";
+import { usePrevious } from "../services/usePrevious";
 
 
 declare module '@mui/styles/defaultTheme' {
@@ -45,13 +46,14 @@ const UnconnectedAppHeader: React.FC<RouteComponentProps> = (props) => {
 
     const currentUser = useSelector(selectCurrentUser);
     const hasPendingWrites = useSelector(selectHasPendingWrites);
+    const previousHasPendingWrites = usePrevious(hasPendingWrites);
     const { authSignOut } = useFirebaseAuthService();
 
     useEffect(() => {
-        if (hasPendingWrites === false) {
+        if (previousHasPendingWrites === true && hasPendingWrites === false) {
             setIsSaveSuccessfulMessageOpen(true);
         }
-    }, [hasPendingWrites]);
+    }, [previousHasPendingWrites, hasPendingWrites]);
 
     const handleSignOutClick = async () => {
         await authSignOut();
