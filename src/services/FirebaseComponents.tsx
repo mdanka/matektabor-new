@@ -1,5 +1,5 @@
 import { connectAuthEmulator, getAuth } from "firebase/auth";
-import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
+import { connectFirestoreEmulator, enableIndexedDbPersistence, getFirestore, initializeFirestore } from "firebase/firestore";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
 import {
@@ -9,6 +9,7 @@ import {
     StorageProvider,
     FirestoreProvider,
     AppCheckProvider,
+    useInitFirestore,
 } from "reactfire";
 import { AppCheck, CustomProvider, initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check";
 
@@ -50,7 +51,11 @@ export function FirebaseComponents(props: { children: React.ReactNode }) {
     // }
     const auth = getAuth(app);
     const functions = getFunctions(app, "europe-west1");
-    const firestore = getFirestore(app);
+    const { data: firestore } = useInitFirestore(async (firebaseApp) => {
+        const db = initializeFirestore(firebaseApp, {});
+        await enableIndexedDbPersistence(db);
+        return db;
+    });
     // const storage = getStorage(app, `gs://${CLOUD_STORAGE_BUCKETS.Main}`);
     const storage = getStorage(app);
     if (isLocalhost()) {
