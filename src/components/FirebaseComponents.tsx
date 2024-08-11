@@ -1,5 +1,5 @@
 import { connectAuthEmulator, getAuth } from "firebase/auth";
-import { connectFirestoreEmulator, enableIndexedDbPersistence, initializeFirestore } from "firebase/firestore";
+import { connectFirestoreEmulator, enableIndexedDbPersistence, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
 import {
@@ -51,11 +51,16 @@ export function FirebaseComponents(props: { children: React.ReactNode }) {
     // }
     const auth = getAuth(app);
     const functions = getFunctions(app, "europe-west1");
-    const { data: firestore } = useInitFirestore(async (firebaseApp) => {
-        const db = initializeFirestore(firebaseApp, {});
-        await enableIndexedDbPersistence(db);
+    const { status: firestoreInitStatus, data: firestore } = useInitFirestore(async (firebaseApp) => {
+        const tabManager = persistentMultipleTabManager();
+        const localCache = persistentLocalCache({ tabManager });
+        const db = initializeFirestore(firebaseApp, { localCache });
         return db;
     });
+    if (firestoreInitStatus === 'loading') {
+        // TODO(mdanka): add a proper spinner or such here
+        return<div>Töltés...</div>;
+      }
     // const storage = getStorage(app, `gs://${CLOUD_STORAGE_BUCKETS.Main}`);
     const storage = getStorage(app);
     if (isLocalhost()) {
@@ -78,7 +83,9 @@ export function FirebaseComponents(props: { children: React.ReactNode }) {
         <AuthProvider sdk={auth}>
             <FunctionsProvider sdk={functions}>
                 <FirestoreProvider sdk={firestore}>
-                    <StorageProvider sdk={storage}>{children}</StorageProvider>
+                    <StorageProvider sdk={storage}>
+                        {children}
+                    </StorageProvider>
                 </FirestoreProvider>
             </FunctionsProvider>
         </AuthProvider>
