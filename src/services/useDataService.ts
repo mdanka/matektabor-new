@@ -4,7 +4,7 @@ import { CollectionId } from "../types/shared";
 import { addDoc, arrayRemove, arrayUnion, collection, doc, getDocs, onSnapshot, QuerySnapshot, updateDoc } from "firebase/firestore";
 import { User } from "firebase/auth";
 import { useAuth, useFirestore } from "reactfire";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useStore } from "react-redux";
 import { useFirebaseAuthService } from "./useFirebaseAuthService";
 
@@ -16,28 +16,39 @@ const hasPendingWritesMap: { [key: string]: boolean } = {
 };
 
 export function useDataService() {
-    const thisStore = useStore();
+    const store = useStore();
     const firestore = useFirestore();
     const auth = useAuth();
     const currentUser = auth.currentUser;
     const firebaseAuthService = useFirebaseAuthService();
 
-    useEffect(() => {
-        subscribeToDataStoreIfLoggedIn(currentUser);
-        firebaseAuthService.subscribeToAuthState(subscribeToDataStoreIfLoggedIn);
-    }, []);
+    const setPendingWrite = useCallback((key: string, value: boolean) => {
+        hasPendingWritesMap[key] = value;
+        const hasPendingWrites = Object.values(hasPendingWritesMap).indexOf(true) !== -1;
+        store.dispatch(SetHasPendingWrites.create({ hasPendingWrites }));
+    }, [store]);
 
-    const subscribeToDataStoreIfLoggedIn = (currentUser: User | undefined | null) => {
-        if (currentUser != null) {
-            subscribeToDataStore();
+    const subscribeToCollection = useCallback(<API>(
+        collectionName: string,
+        onUpdate: (documents: { [id: string]: API }, hasPendingWrites: boolean) => void,
+    ) => {
+        const currentUser = firebaseAuthService.authGetCurrentUser();
+        if (currentUser == null) {
+            throw new Error(`Cannot subscribe to collection ${collection} if user is not logged in.`);
         }
-    };
+        const collectionRef = collection(firestore, collectionName);
+        return onSnapshot(
+            collectionRef,
+            { includeMetadataChanges: true },
+            (querySnapshot: QuerySnapshot) => {
+                const documents = querySnapshotToObjects<API>(querySnapshot);
+                const hasPendingWrites = querySnapshot.docs.some(doc => doc.metadata.hasPendingWrites);
+                onUpdate(documents, hasPendingWrites);
+            },
+        );
+    }, [firebaseAuthService, firestore]);
 
-    const subscribeToDataStore = () => {
-        if (thisStore === undefined) {
-            return;
-        }
-        const store = thisStore;
+    const subscribeToDataStore = useCallback(() => {
         // Unsubscribe previous listeners
         snapshotUnsubscribers.forEach(unsubscriber => unsubscriber());
         snapshotUnsubscribers.splice(0, snapshotUnsubscribers.length);
@@ -60,27 +71,18 @@ export function useDataService() {
                 setPendingWrite(CollectionId.Stories, hasPendingWrites);
             }),
         );
-    };
+    }, [setPendingWrite, store, subscribeToCollection]);
 
-    const subscribeToCollection = <API>(
-        collectionName: string,
-        onUpdate: (documents: { [id: string]: API }, hasPendingWrites: boolean) => void,
-    ) => {
-        const currentUser = firebaseAuthService.authGetCurrentUser();
-        if (currentUser == null) {
-            throw new Error(`Cannot subscribe to collection ${collection} if user is not logged in.`);
+    const subscribeToDataStoreIfLoggedIn = useCallback((currentUser: User | undefined | null) => {
+        if (currentUser != null) {
+            subscribeToDataStore();
         }
-        const collectionRef = collection(firestore, collectionName);
-        return onSnapshot(
-            collectionRef,
-            { includeMetadataChanges: true },
-            (querySnapshot: QuerySnapshot) => {
-                const documents = querySnapshotToObjects<API>(querySnapshot);
-                const hasPendingWrites = querySnapshot.docs.some(doc => doc.metadata.hasPendingWrites);
-                onUpdate(documents, hasPendingWrites);
-            },
-        );
-    };
+    }, [subscribeToDataStore]);
+
+    useEffect(() => {
+        subscribeToDataStoreIfLoggedIn(currentUser);
+        firebaseAuthService.subscribeToAuthState(subscribeToDataStoreIfLoggedIn);
+    }, [currentUser, firebaseAuthService, subscribeToDataStoreIfLoggedIn]);
 
     const getAllDocuments = async <API>(collectionName: string) => {
         try {
@@ -159,16 +161,6 @@ export function useDataService() {
             songs[doc.id] = doc.data() as API;
         });
         return songs;
-    };
-
-    const setPendingWrite = (key: string, value: boolean) => {
-        hasPendingWritesMap[key] = value;
-        const hasPendingWrites = Object.values(hasPendingWritesMap).indexOf(true) !== -1;
-        const store = thisStore;
-        if (store === undefined) {
-            return;
-        }
-        store.dispatch(SetHasPendingWrites.create({ hasPendingWrites }));
     };
 
     return {
