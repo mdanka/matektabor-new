@@ -1,5 +1,5 @@
 import { connectAuthEmulator, getAuth } from "firebase/auth";
-import { connectFirestoreEmulator, enableIndexedDbPersistence, getFirestore, initializeFirestore } from "firebase/firestore";
+import { connectFirestoreEmulator, enableIndexedDbPersistence, initializeFirestore } from "firebase/firestore";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
 import {
@@ -11,7 +11,7 @@ import {
     AppCheckProvider,
     useInitFirestore,
 } from "reactfire";
-import { AppCheck, CustomProvider, initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check";
+import { AppCheck } from "firebase/app-check";
 
 // const APP_CHECK_TOKEN = "6LdzrQoqAAAAABwDfR1mb8Q8JArK5R1TvJ-xIOHz";
 
