@@ -12192,6 +12192,14 @@ react@^17.0.2:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
 
+reactfire@^4.2.3:
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/reactfire/-/reactfire-4.2.3.tgz#efdbc7fa8cf698245d772c63dbd7a0593bc95689"
+  integrity sha512-FG75b586r8dId7EGIyVi/nKokth++BIvdRO1BRIBkM7BGe2v753olcNpUHBLGdBPap7t67vq2FA0P22Pu8rT3Q==
+  dependencies:
+    rxfire "^6.0.3"
+    rxjs "^6.6.3 || ^7.0.1"
+
 read-cache@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/read-cache/-/read-cache-1.0.0.tgz#e664ef31161166c9751cdbe8dbcf86b5fb58f774"
@@ -12586,7 +12594,12 @@ run-parallel@^1.1.9:
   dependencies:
     queue-microtask "^1.2.2"
 
-rxjs@^7.5.4, rxjs@^7.5.5:
+rxfire@^6.0.3:
+  version "6.0.5"
+  resolved "https://registry.yarnpkg.com/rxfire/-/rxfire-6.0.5.tgz#02035400b150dd730353c786ffa15283f0389dd4"
+  integrity sha512-ycBsANGbya3GNtOBKzZVATLEV+0S9gUrlTfwnN15TCXtgG8OgIMAuv2k9+kMeVaevp/DRp1KT+vYf6Wkop6gvw==
+
+"rxjs@^6.6.3 || ^7.0.1", rxjs@^7.5.4, rxjs@^7.5.5:
   version "7.8.1"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.8.1.tgz#6f6f3d99ea8044291efd92e7c7fcf562c4057543"
   integrity sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==
