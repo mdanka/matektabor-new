@@ -1,6 +1,5 @@
 import React from "react";
 import { Switch, Route, Redirect, RouteComponentProps } from "react-router-dom";
-import { Login } from "./login";
 import { AppHeader } from "./appHeader";
 import { AppFooter } from "./appFooter";
 import { BarkochbaScreen, BarkochbaManageScreen, BarkochbaExportScreen } from "./barkochba";
@@ -17,6 +16,7 @@ import {
     Page,
 } from "../utils/navUtils";
 import css from "./matektaborApp.module.scss";  
+import { LoginPanel } from "./auth/LoginPanel";
 
 export const MatektaborApp: React.FC = () => {    
     const renderHome = () => {
@@ -57,7 +57,7 @@ export const MatektaborApp: React.FC = () => {
             <DocumentTitle title={getNavUrlSimpleTitle[Page.SignIn]}>
                 <div>
                     <AppHeader />
-                    <Login redirectUrl={redirectUrl} />
+                    <LoginPanel redirectUrl={redirectUrl} />
                     <AppFooter />
                 </div>
             </DocumentTitle>
