@@ -5,11 +5,9 @@ import App from './app';
 import * as serviceWorker from './serviceWorker';
 import { createAppStore } from "./store";
 import { BrowserRouter } from "react-router-dom";
-import { initializeAndGetClientSideServices } from "./services";
 import { Store } from 'redux';
 
 const store = createAppStore();
-initializeAndGetClientSideServices(store);
 
 ReactDOM.render(
   <React.StrictMode>
