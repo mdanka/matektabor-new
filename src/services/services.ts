@@ -1,5 +1,4 @@
 import { FirebaseService } from "./firebaseService";
-import { FirestoreService } from "./firestoreService";
 import { Store } from "redoodle";
 import { IAppState } from "../store";
 import { FirebaseAuthUiService } from "./firebaseAuthUiService";
@@ -8,7 +7,6 @@ import { FunctionsService } from "./functionsService";
 export interface IGlobalServices {
     firebaseService: FirebaseService;
     firebaseAuthUiService: FirebaseAuthUiService;
-    firestoreService: FirestoreService;
     functionsService: FunctionsService;
 }
 
@@ -16,12 +14,10 @@ function getServices(store: Store<IAppState> | undefined): IGlobalServices {
     const firebaseService = new FirebaseService();
     const firebaseApp = firebaseService.getApp();
     const firebaseAuthUiService = new FirebaseAuthUiService(firebaseApp, store);
-    const firestoreService = new FirestoreService(firebaseApp);
     const functionsService = new FunctionsService(firebaseApp);
     return {
         firebaseService,
         firebaseAuthUiService,
-        firestoreService,
         functionsService,
     };
 }
