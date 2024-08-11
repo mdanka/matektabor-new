@@ -1,19 +1,12 @@
-import * as React from "react";
-import { RouteComponentProps } from "react-router";
-import { withRouter } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
-export interface IScrollToTopProps extends RouteComponentProps<any> {}
+export function ScrollToTop({ children }: { children: React.ReactNode }) {
+    const location = useLocation();
 
-class ScrollToTopWithoutProps extends React.Component<IScrollToTopProps, {}> {
-    public componentDidUpdate(prevProps: IScrollToTopProps) {
-        if (this.props.location !== prevProps.location) {
-            window.scrollTo(0, 0);
-        }
-    }
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [location]);
 
-    render() {
-        return this.props.children;
-    }
+    return <>{children}</>;
 }
-
-export const ScrollToTop = withRouter(ScrollToTopWithoutProps);
