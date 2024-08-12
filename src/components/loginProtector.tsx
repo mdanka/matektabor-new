@@ -11,7 +11,8 @@ interface ILoginProtectorProps {
 }
 
 export function LoginProtector({ children }: ILoginProtectorProps) {
-    const isLoggedIn = useSelector(selectCurrentUser) !== undefined;
+    const currentUser = useSelector(selectCurrentUser);
+    const isLoggedIn = currentUser !== undefined;
 
     const renderNotLoggedInScreen = () => (
         <div>

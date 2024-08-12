@@ -1,71 +1,76 @@
-import React from "react";
-import { Switch, Route, Redirect, RouteComponentProps } from "react-router-dom";
+import React, { useCallback } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { AppHeader } from "./appHeader";
 import { AppFooter } from "./appFooter";
 import { BarkochbaScreen, BarkochbaManageScreen, BarkochbaExportScreen } from "./barkochba";
 import { StaticContent } from "./staticContent";
 import { ScrollToTop } from "./common";
 import { LoginProtector } from "./loginProtector";
-import DocumentTitle from "react-document-title";
 import {
     getNavUrlSimpleTitle,
     getNavUrlTemplate,
     getNavUrl,
-    getNavUrlQueryParams,
-    getNavUrlMatch,
     Page,
 } from "../utils/navUtils";
 import css from "./matektaborApp.module.scss";  
 import { LoginPanel } from "./auth/LoginPanel";
+import { Helmet, HelmetProvider } from "react-helmet-async";
+import { useDataService } from "../services/useDataService";
 
-export const MatektaborApp: React.FC = () => {    
-    const renderHome = () => {
+export const MatektaborApp: React.FC = () => {
+    useDataService(); // this is included to trigger fetching all the data
+
+    const renderHome = useCallback(() => {
         // The home screen for now just redirects directly to the barkochba page
-        return <Redirect to={getNavUrl[Page.Barkochba]()} />;
+        return <Navigate to={getNavUrl[Page.Barkochba]()} replace />;
         // Uncomment if you want to render the BarkochbaScreen directly
         // return (
         //     <DocumentTitle title={getNavUrlSimpleTitle[Page.Home]}>
         //         <BarkochbaScreen />
         //     </DocumentTitle>
         // );
-    };
+    }, []);
 
-    const renderTermsOfService = () => (
-        <DocumentTitle title={getNavUrlSimpleTitle[Page.TermsOfService]}>
-            <div>
-                <AppHeader />
-                <StaticContent type="terms of service" />
-                <AppFooter />
-            </div>
-        </DocumentTitle>
-    );
+    const renderTermsOfService = useCallback(() => (
+        <div>
+            <Helmet>
+                <title>{getNavUrlSimpleTitle[Page.TermsOfService]}</title>
+            </Helmet>
+            <AppHeader />
+            <StaticContent type="terms of service" />
+            <AppFooter />
+        </div>
+    ), []);
 
-    const renderPrivacyPolicy = () => (
-        <DocumentTitle title={getNavUrlSimpleTitle[Page.PrivacyPolicy]}>
-            <div>
-                <AppHeader />
-                <StaticContent type="privacy policy" />
-                <AppFooter />
-            </div>
-        </DocumentTitle>
-    );
+    const renderPrivacyPolicy = useCallback(() => (
+        <div>
+            <Helmet>
+                <title>{getNavUrlSimpleTitle[Page.PrivacyPolicy]}</title>
+            </Helmet>
+            <AppHeader />
+            <StaticContent type="privacy policy" />
+            <AppFooter />
+        </div>
+    ), []);
 
-    const renderRouteAuth = (locationInfo: RouteComponentProps) => {
-        const signInQueryParams = getNavUrlQueryParams[Page.SignIn](locationInfo.location.search);
-        const { redirectUrl } = signInQueryParams;
+    const renderRouteAuth = useCallback(() => {
         return (
-            <DocumentTitle title={getNavUrlSimpleTitle[Page.SignIn]}>
-                <div>
-                    <AppHeader />
-                    <LoginPanel redirectUrl={redirectUrl} />
-                    <AppFooter />
-                </div>
-            </DocumentTitle>
+            <div>
+                <Helmet>
+                    <title>{getNavUrlSimpleTitle[Page.SignIn]}</title>
+                </Helmet>
+                <AppHeader />
+                <LoginPanel />
+                <AppFooter />
+            </div>
         );
-    };
+    }, []);
 
-    const renderBarkochba = () => (
-        <DocumentTitle title={getNavUrlSimpleTitle[Page.Barkochba]}>
+    const renderBarkochba = useCallback(() => (
+        <>
+            <Helmet>
+                <title>{getNavUrlSimpleTitle[Page.Barkochba]}</title>
+            </Helmet>
             <LoginProtector>
                 <div className={css.barkochbaRouteContainer}>
                     <AppHeader />
@@ -73,26 +78,27 @@ export const MatektaborApp: React.FC = () => {
                     <AppFooter />
                 </div>
             </LoginProtector>
-        </DocumentTitle>
-    );
+        </>
+    ), []);
 
-    const renderBarkochbaExport = (locationInfo: RouteComponentProps) => {
-        const match = getNavUrlMatch[Page.BarkochbaExport](locationInfo.location.pathname);
-        if (!match) {
-            return null;
-        }
-        const { campId } = match.params;
+    const renderBarkochbaExport = useCallback(() => {
         return (
-            <DocumentTitle title={getNavUrlSimpleTitle[Page.BarkochbaExport]}>
+            <>
+                <Helmet>
+                    <title>{getNavUrlSimpleTitle[Page.BarkochbaExport]}</title>
+                </Helmet>
                 <LoginProtector>
-                    <BarkochbaExportScreen campId={campId} />
+                    <BarkochbaExportScreen />
                 </LoginProtector>
-            </DocumentTitle>
+            </>
         );
-    };
+    }, []);
 
-    const renderBarkochbaManage = () => (
-        <DocumentTitle title={getNavUrlSimpleTitle[Page.BarkochbaManage]}>
+    const renderBarkochbaManage = useCallback(() => (
+        <>
+            <Helmet>
+                <title>{getNavUrlSimpleTitle[Page.BarkochbaManage]}</title>
+            </Helmet>
             <LoginProtector>
                 <div>
                     <AppHeader />
@@ -100,29 +106,32 @@ export const MatektaborApp: React.FC = () => {
                     <AppFooter />
                 </div>
             </LoginProtector>
-        </DocumentTitle>
-    );
+        </>
+    ), []);
 
-    const renderRedirectToHome = () => <Redirect to={getNavUrl[Page.Home]()} />;
+    const renderRedirectToHome = useCallback(() => <Navigate to={getNavUrl[Page.Home]()} replace />, []);
 
     return (
-        <DocumentTitle title={getNavUrlSimpleTitle[Page.Home]}>
-            <ScrollToTop>
+        <ScrollToTop>
+            <HelmetProvider>
+                <Helmet>
+                    <title>{getNavUrlSimpleTitle[Page.Home]}</title>
+                </Helmet>
                 <div className={css.matektaborApp}>
                     <div className={css.appContent}>
-                        <Switch>
-                            <Route exact path={getNavUrlTemplate[Page.Home]} render={renderHome} />
-                            <Route path={getNavUrlTemplate[Page.SignIn]} render={renderRouteAuth} />
-                            <Route exact path={getNavUrlTemplate[Page.Barkochba]} render={renderBarkochba} />
-                            <Route path={getNavUrlTemplate[Page.BarkochbaExport]} render={renderBarkochbaExport} />
-                            <Route path={getNavUrlTemplate[Page.BarkochbaManage]} render={renderBarkochbaManage} />
-                            <Route exact path={getNavUrlTemplate[Page.TermsOfService]} render={renderTermsOfService} />
-                            <Route exact path={getNavUrlTemplate[Page.PrivacyPolicy]} render={renderPrivacyPolicy} />
-                            <Route render={renderRedirectToHome} />
-                        </Switch>
+                        <Routes>
+                            <Route path={getNavUrlTemplate[Page.Home]} element={renderHome()} />
+                            <Route path={getNavUrlTemplate[Page.SignIn]} element={renderRouteAuth()} />
+                            <Route path={getNavUrlTemplate[Page.Barkochba]} element={renderBarkochba()} />
+                            <Route path={getNavUrlTemplate[Page.BarkochbaExport]} element={renderBarkochbaExport()} />
+                            <Route path={getNavUrlTemplate[Page.BarkochbaManage]} element={renderBarkochbaManage()} />
+                            <Route path={getNavUrlTemplate[Page.TermsOfService]} element={renderTermsOfService()} />
+                            <Route path={getNavUrlTemplate[Page.PrivacyPolicy]} element={renderPrivacyPolicy()} />
+                            <Route path="*" element={renderRedirectToHome()} />
+                        </Routes>
                     </div>
                 </div>
-            </ScrollToTop>
-        </DocumentTitle>
+            </HelmetProvider>
+        </ScrollToTop>
     );
 };

@@ -19,7 +19,7 @@ export function useDataService() {
     const store = useStore();
     const firestore = useFirestore();
     const auth = useAuth();
-    const currentUser = auth.currentUser;
+    const currentUserFromAuth = auth.currentUser;
     const firebaseAuthService = useFirebaseAuthService();
 
     const setPendingWrite = useCallback((key: string, value: boolean) => {
@@ -29,6 +29,7 @@ export function useDataService() {
     }, [store]);
 
     const subscribeToCollection = useCallback(<API>(
+        currentUser: User,
         collectionName: string,
         onUpdate: (documents: { [id: string]: API }, hasPendingWrites: boolean) => void,
     ) => {
@@ -45,27 +46,27 @@ export function useDataService() {
                 onUpdate(documents, hasPendingWrites);
             },
         );
-    }, [currentUser, firestore]);
+    }, [firestore]);
 
-    const subscribeToDataStore = useCallback(() => {
+    const subscribeToDataStore = useCallback((currentUser: User) => {
         // Unsubscribe previous listeners
         snapshotUnsubscribers.forEach(unsubscriber => unsubscriber());
         snapshotUnsubscribers.splice(0, snapshotUnsubscribers.length);
         // Subscribe new listeners
         snapshotUnsubscribers.push(
-            subscribeToCollection<IPersonApi>(CollectionId.Persons, (documents, hasPendingWrites) => {
+            subscribeToCollection<IPersonApi>(currentUser, CollectionId.Persons, (documents, hasPendingWrites) => {
                 store.dispatch(SetPersons.create({ persons: documents }));
                 setPendingWrite(CollectionId.Persons, hasPendingWrites);
             }),
         );
         snapshotUnsubscribers.push(
-            subscribeToCollection<ICampApi>(CollectionId.Camps, (documents, hasPendingWrites) => {
+            subscribeToCollection<ICampApi>(currentUser, CollectionId.Camps, (documents, hasPendingWrites) => {
                 store.dispatch(SetCamps.create({ camps: documents }));
                 setPendingWrite(CollectionId.Camps, hasPendingWrites);
             }),
         );
         snapshotUnsubscribers.push(
-            subscribeToCollection<IStoryApi>(CollectionId.Stories, (documents, hasPendingWrites) => {
+            subscribeToCollection<IStoryApi>(currentUser, CollectionId.Stories, (documents, hasPendingWrites) => {
                 store.dispatch(SetStories.create({ stories: documents }));
                 setPendingWrite(CollectionId.Stories, hasPendingWrites);
             }),
@@ -74,7 +75,7 @@ export function useDataService() {
 
     const subscribeToDataStoreIfLoggedIn = useCallback((currentUser: User | undefined | null) => {
         if (currentUser != null) {
-            subscribeToDataStore();
+            subscribeToDataStore(currentUser);
         }
     }, [subscribeToDataStore]);
 
@@ -82,7 +83,7 @@ export function useDataService() {
         // TODO(mdanka): without disabling this line, the system seems to get into an infinite loop
         // subscribeToDataStoreIfLoggedIn(currentUser);
         firebaseAuthService.subscribeToAuthState(subscribeToDataStoreIfLoggedIn);
-    }, [currentUser, firebaseAuthService, subscribeToDataStoreIfLoggedIn]);
+    }, [currentUserFromAuth, firebaseAuthService, subscribeToDataStoreIfLoggedIn]);
 
     const addPersonsWhoKnowStory = (storyId: string, peopleIds: string[]) => {
         const storyDocRef = doc(collection(firestore, CollectionId.Stories), storyId);
@@ -93,10 +94,10 @@ export function useDataService() {
     };
 
     const updateStoryStarred = useCallback((storyId: string, isStarred: boolean) => {
-        if (currentUser == null) {
+        if (currentUserFromAuth == null) {
             return;
         }
-        const userId = currentUser.uid;
+        const userId = currentUserFromAuth.uid;
         const storyDocRef = doc(collection(firestore, CollectionId.Stories), storyId);
 
         return updateDoc(
@@ -108,7 +109,7 @@ export function useDataService() {
         .catch((reason: any) =>
             console.error(`[DataService] Failed to update story with user starring selection. ${reason}`),
         );
-    }, [currentUser, firestore]);
+    }, [currentUserFromAuth, firestore]);
 
     const createPerson = (newPerson: IPersonApi) => {
         const personsCollectionRef = collection(firestore, CollectionId.Persons);
