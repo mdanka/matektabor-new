@@ -1,6 +1,5 @@
 import { matchPath } from "react-router-dom";
-import { RouteComponentProps } from "react-router";
-import * as queryString from "query-string";
+import { NavigateFunction } from "react-router";
 
 export enum Page {
     Home = "home",
@@ -33,32 +32,8 @@ export const getNavUrlTemplate = {
     [Page.PrivacyPolicy]: getNavUrl[Page.PrivacyPolicy](),
 };
 
-interface ISignInRouteQueryParams {
-    redirectUrl: string | undefined;
-}
-
-interface IBarkochbaExportRouteComponentParams {
-    campId: string;
-}
-
-export const getNavUrlMatch = {
-    [Page.BarkochbaExport]: (pathName: string) => {
-        return matchPath<IBarkochbaExportRouteComponentParams>(pathName, {
-            path: getNavUrlTemplate[Page.BarkochbaExport],
-        });
-    },
-};
-
-export const getNavUrlQueryParams = {
-    [Page.SignIn]: (value: string) => (queryString.parse(value) as unknown) as ISignInRouteQueryParams,
-    [Page.BarkochbaExport]: (value: string) =>
-        (queryString.parse(value) as unknown) as IBarkochbaExportRouteComponentParams,
-};
-
-export const singInAndReturn = (reactRouterProps: RouteComponentProps<any>) => {
-    const { history } = reactRouterProps;
-    const currentPath = history.location.pathname;
-    history.push(getNavUrl[Page.SignIn](currentPath));
+export const singInAndReturn = (navigate: NavigateFunction, pathName: string) => {
+    navigate(getNavUrl[Page.SignIn](pathName));
 };
 
 const pageTitleBase = "Matektábor";
@@ -75,11 +50,11 @@ export function pathToPage(path: string) {
 }
 
 function pageToMatch(path: string, page: Page) {
-    return matchPath(path, {
+    return matchPath({
         path: getNavUrlTemplate[page],
-        exact: true,
-        strict: false,
-    });
+        end: true,
+        caseSensitive: false,
+    }, path);
 }
 
 export const getNavUrlSimpleTitle = {

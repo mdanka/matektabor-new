@@ -3,7 +3,6 @@ import { User } from "firebase/auth";
 import { useStore } from "react-redux";
 import { useAuth } from "reactfire";
 import { useCallback, useEffect } from "react";
-import { usePrevious } from "./usePrevious";
 
 export type IAuthStateListener = (user: User | undefined) => void;
 

@@ -1,16 +1,18 @@
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useAuth, useSigninCheck } from "reactfire";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useSnackbar } from "notistack";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { LoginWithEmailLink } from "./LoginWithEmailLink";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { getNavUrl, Page } from "../../utils/navUtils";
+import { useSearchParams } from "react-router-dom";
 
-export function LoginPanel(props: { redirectUrl?: string }) {
-    const { redirectUrl } = props;
-    const history = useHistory();
+export function LoginPanel() {
+    const [searchParams] = useSearchParams();
+    const redirectUrl = searchParams.get("redirectUrl") ?? undefined;
+    const navigate = useNavigate();
     const auth = useAuth();
     const { status: signInCheckStatus, data: signInCheckResult } = useSigninCheck();
     const { enqueueSnackbar } = useSnackbar();
@@ -18,8 +20,8 @@ export function LoginPanel(props: { redirectUrl?: string }) {
     const [activatedFlow, setActivatedFlow] = useState<"EMAIL_WITH_LINK" | undefined>(undefined);
 
     const handleAuthSuccess = useCallback(() => {
-        void history.push(redirectUrl ?? getNavUrl[Page.Home]());
-    }, [history, redirectUrl]);
+        void navigate(redirectUrl ?? getNavUrl[Page.Home]());
+    }, [navigate, redirectUrl]);
 
     const handleInitGoogleLogin = useCallback(() => {
         const execute = async () => {
@@ -39,8 +41,8 @@ export function LoginPanel(props: { redirectUrl?: string }) {
     }, [auth, handleAuthSuccess, enqueueSnackbar]);
 
     const handleGoToHome = useCallback(() => {
-        void history.push(getNavUrl[Page.Home]());
-    }, [history]);
+        void navigate(getNavUrl[Page.Home]());
+    }, [navigate]);
 
     const handleEmailWithLinkFlowActivated = useCallback(() => {
         setActivatedFlow("EMAIL_WITH_LINK");
