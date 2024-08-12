@@ -79,6 +79,7 @@ export function useDataService() {
     }, [subscribeToDataStore]);
 
     useEffect(() => {
+        // TODO(mdanka): without disabling this line, the system seems to get into an infinite loop
         // subscribeToDataStoreIfLoggedIn(currentUser);
         firebaseAuthService.subscribeToAuthState(subscribeToDataStoreIfLoggedIn);
     }, [currentUser, firebaseAuthService, subscribeToDataStoreIfLoggedIn]);
