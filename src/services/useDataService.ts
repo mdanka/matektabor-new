@@ -34,7 +34,7 @@ export function useDataService() {
     ) => {
         const currentUser = firebaseAuthService.authGetCurrentUser();
         if (currentUser == null) {
-            throw new Error(`Cannot subscribe to collection ${collection} if user is not logged in.`);
+            throw new Error(`Cannot subscribe to collection ${collectionName} if user is not logged in.`);
         }
         const collectionRef = collection(firestore, collectionName);
         return onSnapshot(
@@ -90,7 +90,7 @@ export function useDataService() {
             const querySnapshot = await getDocs(collectionRef);
             return querySnapshotToObjects<API>(querySnapshot);
         } catch (error) {
-            console.error(`[DataService] Failed to get all ${collection} IDs. ${error}`);
+            console.error(`[DataService] Failed to get all ${collectionName} IDs. ${error}`);
             return {} as { [id: string]: API };
         }
     };
