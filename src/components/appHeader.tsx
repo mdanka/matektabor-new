@@ -1,8 +1,7 @@
 import * as React from "react";
 import { useSelector } from "react-redux";
 import { selectCurrentUser, selectHasPendingWrites } from "../store";
-import { RouteComponentProps } from "react-router";
-import { Link as RouterLink, withRouter } from "react-router-dom";
+import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import {
     Button,
     Link,
@@ -37,10 +36,12 @@ declare module '@mui/styles/defaultTheme' {
 
 const HomeLink = (props: any) => <RouterLink to={getNavUrl[Page.Home]()} {...props} />;
 
-const UnconnectedAppHeader: React.FC<RouteComponentProps> = (props) => {
+export const AppHeader: React.FC = () => {
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const [isSignedOutMessageOpen, setIsSignedOutMessageOpen] = useState(false);
     const [isSaveSuccessfulMessageOpen, setIsSaveSuccessfulMessageOpen] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const userMenuButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -61,7 +62,7 @@ const UnconnectedAppHeader: React.FC<RouteComponentProps> = (props) => {
     };
 
     const handleSignInClick = () => {
-        singInAndReturn(props);
+        singInAndReturn(navigate, location.pathname);
     };
 
     const renderContactButton = () => (
@@ -182,5 +183,3 @@ const UnconnectedAppHeader: React.FC<RouteComponentProps> = (props) => {
         </div>
     );
 };
-
-export const AppHeader = withRouter(UnconnectedAppHeader);

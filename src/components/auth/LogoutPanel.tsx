@@ -2,18 +2,18 @@ import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "reactfire";
 import { useSnackbar } from "notistack";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getNavUrl, Page } from "../../utils/navUtils";
 
 export function LogoutPanel() {
     const auth = useAuth();
     const { enqueueSnackbar } = useSnackbar();
     const [status, setStatus] = useState<"working" | "success" | "error" | undefined>();
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const handleGoToHome = useCallback(() => {
-        history.push(getNavUrl[Page.Home]());
-    }, [history]);
+        navigate(getNavUrl[Page.Home]());
+    }, [navigate]);
 
     const handleTryAgain = useCallback(() => {
         window.location.reload();

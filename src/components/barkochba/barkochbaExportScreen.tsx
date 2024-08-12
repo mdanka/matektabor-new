@@ -1,65 +1,31 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useSelector } from "react-redux";
 import { ICamp, IStory } from "../../commons";
 import { IAppState, selectStoriesOrderedByNumber, selectPersons } from "../../store";
 import { selectCamp, selectCampsListOrderedByNameAndNumber } from "../../store/selectors";
 import { Link, List, ListItem, ListItemText } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useParams } from "react-router-dom";
 import { Page, getNavUrl } from "../../utils/navUtils";
 import css from "./barkochbaExportScreen.module.scss";
-
-interface BarkochbaExportScreenProps {
-    campId: string | undefined;
-}
 
 const getExportLinkComponent = (id: string) => (props: any) => (
     <RouterLink to={getNavUrl[Page.BarkochbaExport](id)} {...props} />
 );
 
-export function BarkochbaExportScreen({ campId }: BarkochbaExportScreenProps) {
+export function BarkochbaExportScreen() {
+    const { campId } = useParams();
     const camp = useSelector((state: IAppState) => campId ? selectCamp(state, campId) : undefined);
     const camps = useSelector(selectCampsListOrderedByNameAndNumber);
     const stories = useSelector(selectStoriesOrderedByNumber);
     const personMap = useSelector(selectPersons);
 
-    const renderCampSelector = () => (
-        <List>
-            {camps.map(renderCampItem)}
-        </List>
-    );
+    const renderPeopleRow = useCallback((roomName: string, people: string[]) => (
+        <div key={roomName}>
+            {roomName}: {people.join(", ")}
+        </div>
+    ), []);
 
-    const renderCampItem = (camp: ICamp) => {
-        const { id, group, number } = camp;
-        return (
-            <Link
-                key={id}
-                color="textPrimary"
-                component={getExportLinkComponent(id)}
-                underline="hover"
-            >
-                <ListItem button divider={true}>
-                    <ListItemText primary={`${group}/${number}`} />
-                </ListItem>
-            </Link>
-        );
-    };
-
-    const renderTable = () => {
-        if (!camp) return null;
-        const { group, number } = camp;
-        return (
-            <div className={css.barkochbaExport}>
-                <div className={css.barkochbaExportTitle}>
-                    {group}/{number} barkochbatörténet ismeretek
-                </div>
-                <table>
-                    <tbody>{stories.map(renderTableRow)}</tbody>
-                </table>
-            </div>
-        );
-    };
-
-    const renderTableRow = (story: IStory) => {
+    const renderTableRow = useCallback((story: IStory) => {
         if (!camp) return null;
         const { rooms } = camp;
         const { id: storyId, title, number, personsWhoKnow } = story;
@@ -90,13 +56,46 @@ export function BarkochbaExportScreen({ campId }: BarkochbaExportScreenProps) {
                 </td>
             </tr>
         );
-    };
+    }, [camp, personMap, renderPeopleRow]);
 
-    const renderPeopleRow = (roomName: string, people: string[]) => (
-        <div key={roomName}>
-            {roomName}: {people.join(", ")}
-        </div>
-    );
+    const renderTable = useCallback(() => {
+        if (!camp) return null;
+        const { group, number } = camp;
+        return (
+            <div className={css.barkochbaExport}>
+                <div className={css.barkochbaExportTitle}>
+                    {group}/{number} barkochbatörténet ismeretek
+                </div>
+                <table>
+                    <tbody>{stories.map(renderTableRow)}</tbody>
+                </table>
+            </div>
+        );
+    }, [camp, renderTableRow, stories]);
+
+    const renderCampItem = useCallback((camp: ICamp) => {
+        const { id, group, number } = camp;
+        return (
+            <Link
+                key={id}
+                color="textPrimary"
+                component={getExportLinkComponent(id)}
+                underline="hover"
+            >
+                <ListItem button divider={true}>
+                    <ListItemText primary={`${group}/${number}`} />
+                </ListItem>
+            </Link>
+        );
+    }, []);
+
+    const renderCampSelector = useCallback(() => {
+        return (
+            <List>
+                {camps.map(renderCampItem)}
+            </List>
+        );
+    }, [camps, renderCampItem]);
 
     return (
         <div>
