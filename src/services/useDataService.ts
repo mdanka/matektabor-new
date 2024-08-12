@@ -1,7 +1,7 @@
 import { SetStories, SetPersons, SetCamps, SetHasPendingWrites } from "../store";
 import { IStoryApi, IPersonApi, ICampApi, ICamp } from "../commons";
 import { CollectionId } from "../types/shared";
-import { addDoc, arrayRemove, arrayUnion, collection, doc, getDocs, onSnapshot, QuerySnapshot, updateDoc } from "firebase/firestore";
+import { addDoc, arrayRemove, arrayUnion, collection, doc, onSnapshot, QuerySnapshot, updateDoc } from "firebase/firestore";
 import { User } from "firebase/auth";
 import { useAuth, useFirestore } from "reactfire";
 import { useEffect, useCallback } from "react";
@@ -32,7 +32,6 @@ export function useDataService() {
         collectionName: string,
         onUpdate: (documents: { [id: string]: API }, hasPendingWrites: boolean) => void,
     ) => {
-        const currentUser = firebaseAuthService.authGetCurrentUser();
         if (currentUser == null) {
             throw new Error(`Cannot subscribe to collection ${collectionName} if user is not logged in.`);
         }
@@ -46,7 +45,7 @@ export function useDataService() {
                 onUpdate(documents, hasPendingWrites);
             },
         );
-    }, [firebaseAuthService, firestore]);
+    }, [currentUser, firestore]);
 
     const subscribeToDataStore = useCallback(() => {
         // Unsubscribe previous listeners
@@ -80,31 +79,9 @@ export function useDataService() {
     }, [subscribeToDataStore]);
 
     useEffect(() => {
-        subscribeToDataStoreIfLoggedIn(currentUser);
+        // subscribeToDataStoreIfLoggedIn(currentUser);
         firebaseAuthService.subscribeToAuthState(subscribeToDataStoreIfLoggedIn);
     }, [currentUser, firebaseAuthService, subscribeToDataStoreIfLoggedIn]);
-
-    const getAllDocuments = async <API>(collectionName: string) => {
-        try {
-            const collectionRef = collection(firestore, collectionName);
-            const querySnapshot = await getDocs(collectionRef);
-            return querySnapshotToObjects<API>(querySnapshot);
-        } catch (error) {
-            console.error(`[DataService] Failed to get all ${collectionName} IDs. ${error}`);
-            return {} as { [id: string]: API };
-        }
-    };
-
-    const getAllDocumentIds = (collectionName: string) => {
-        const collectionRef = collection(firestore, collectionName);
-        return getDocs(collectionRef)
-            .then(querySnapshot => {
-                return querySnapshot.docs.map(doc => doc.id);
-            })
-            .catch((reason: any) => {
-                console.error(`[DataService] Failed to get all ${collectionName} IDs. ${reason}`);
-            });
-    };
 
     const addPersonsWhoKnowStory = (storyId: string, peopleIds: string[]) => {
         const storyDocRef = doc(collection(firestore, CollectionId.Stories), storyId);
@@ -114,8 +91,7 @@ export function useDataService() {
             );
     };
 
-    const updateStoryStarred = (storyId: string, isStarred: boolean) => {
-        const currentUser = firebaseAuthService.authGetCurrentUser();
+    const updateStoryStarred = useCallback((storyId: string, isStarred: boolean) => {
         if (currentUser == null) {
             return;
         }
@@ -131,7 +107,7 @@ export function useDataService() {
         .catch((reason: any) =>
             console.error(`[DataService] Failed to update story with user starring selection. ${reason}`),
         );
-    };
+    }, [currentUser, firestore]);
 
     const createPerson = (newPerson: IPersonApi) => {
         const personsCollectionRef = collection(firestore, CollectionId.Persons);
@@ -164,10 +140,6 @@ export function useDataService() {
     };
 
     return {
-        subscribeToDataStore,
-        subscribeToCollection,
-        getAllDocuments,
-        getAllDocumentIds,
         addPersonsWhoKnowStory,
         updateStoryStarred,
         createPerson,

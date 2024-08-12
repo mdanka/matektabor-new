@@ -3,6 +3,7 @@ import { User } from "firebase/auth";
 import { useStore } from "react-redux";
 import { useAuth } from "reactfire";
 import { useCallback, useEffect } from "react";
+import { usePrevious } from "./usePrevious";
 
 export type IAuthStateListener = (user: User | undefined) => void;
 
@@ -16,40 +17,31 @@ export function useFirebaseAuthService() {
         store.dispatch(SetCurrentUser.create({ currentUser: user }));
     }, [store]);
 
+    const subscribeToAuthState = useCallback((authStateListener: IAuthStateListener) => {
+        authStateListeners.push(authStateListener);
+    }, []);
+
+    const notifyAuthStateListeners = useCallback((user: User | undefined) => {
+        authStateListeners.forEach(authStateListener => authStateListener(user));
+    }, []);
+
     const handleAuthStateChange = useCallback((user: User | null) => {
+        console.log("[FirebaseAuthService] Auth state changed:", user);
         const userOrUndefined = user === null ? undefined : user;
         setUserInStore(userOrUndefined);
         notifyAuthStateListeners(userOrUndefined);
-    }, [setUserInStore]);
+    }, [setUserInStore, notifyAuthStateListeners]);
     
     useEffect(() => {
         subscribeToAuthState(setUserInStore);
         firebaseAuth.onAuthStateChanged(handleAuthStateChange);
-    }, [firebaseAuth, handleAuthStateChange, setUserInStore]);
+    }, [firebaseAuth, handleAuthStateChange, setUserInStore, subscribeToAuthState]);
 
-    const authGetCurrentUser = () => {
-        return firebaseAuth.currentUser;
-    };
-
-    const authIsLoggedIn = () => {
-        return authGetCurrentUser() != null;
-    };
-
-    const authSignOut = () => {
+    const authSignOut = useCallback(() => {
         return firebaseAuth.signOut();
-    };
-
-    const subscribeToAuthState = (authStateListener: IAuthStateListener) => {
-        authStateListeners.push(authStateListener);
-    };
-
-    const notifyAuthStateListeners = (user: User | undefined) => {
-        authStateListeners.forEach(authStateListener => authStateListener(user));
-    };
+    }, [firebaseAuth]);
 
     return {
-        authGetCurrentUser,
-        authIsLoggedIn,
         authSignOut,
         subscribeToAuthState,
     };
