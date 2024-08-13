@@ -1,4 +1,3 @@
-import React from "react";
 import { ThemeProvider, StyledEngineProvider } from "@mui/material";
 import { DARK_THEME, CONTACT_HREF } from "../utils";
 import css from "./appFooter.module.scss";

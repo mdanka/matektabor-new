@@ -1,4 +1,3 @@
-import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
     selectCampsAsSelectOptions,
@@ -15,6 +14,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { TextField } from "@mui/material";
 import css from "./listeningCampRoomSelector.module.scss";
 import { ISelectOption } from "../../commons";
+import { ChangeEvent } from "react";
 
 export function ListeningCampRoomSelector() {
     const dispatch = useDispatch();
@@ -25,7 +25,7 @@ export function ListeningCampRoomSelector() {
     const selectedRoom = useSelector(selectCurrentListeningCampRoomNameAsSelectOption) ?? null;
     const selectedCampData = useSelector(selectCurrentListeningCampRoomCamp) ?? null;
 
-    const handleCampChange = (_event: React.ChangeEvent<{}>, value: ISelectOption | null) => {
+    const handleCampChange = (_event: ChangeEvent<{}>, value: ISelectOption | null) => {
         const currentListeningCampRoom =
             value === null
                 ? { campId: undefined, roomName: undefined }
@@ -33,7 +33,7 @@ export function ListeningCampRoomSelector() {
         dispatch(SetCurrentListeningCampRoom.create({ currentListeningCampRoom }));
     };
 
-    const handleRoomChange = (_event: React.ChangeEvent<{}>, value: ISelectOption | null) => {
+    const handleRoomChange = (_event: ChangeEvent<{}>, value: ISelectOption | null) => {
         if (!selectedCampData) return;
 
         const { id: campId, rooms } = selectedCampData;

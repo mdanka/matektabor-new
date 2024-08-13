@@ -1,4 +1,4 @@
-import React from "react";
+import { ReactNode } from "react";
 import { useSelector } from "react-redux";
 import { AppHeader } from "./appHeader";
 import { AppFooter } from "./appFooter";
@@ -7,7 +7,7 @@ import { selectCurrentUser } from "../store";
 import css from "./loginProtector.module.scss";
 
 interface ILoginProtectorProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 export function LoginProtector({ children }: ILoginProtectorProps) {
