@@ -1,3 +1,4 @@
+// Had to add this import per https://github.com/vitejs/vite/issues/12423#issuecomment-2080351394
 import '@mui/material/styles/styled';
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
