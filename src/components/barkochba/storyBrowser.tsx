@@ -1,4 +1,3 @@
-import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
     selectStoriesOrdered,
@@ -29,8 +28,9 @@ import StarRateIcon from "@mui/icons-material/StarRate";
 import { BarkochbaSortingSelector } from "./barkochbaSortingSelector";
 import css from "./storyBrowser.module.scss";
 import { useDataService } from "../../services/useDataService";
+import { FC, MouseEvent } from "react";
 
-export const StoryBrowser: React.FC = () => {
+export const StoryBrowser: FC = () => {
     const dispatch = useDispatch();
     const stories = useSelector(selectStoriesOrdered);
     const starredStories = useSelector(selectStarredStoriesOrdered);
@@ -45,7 +45,7 @@ export const StoryBrowser: React.FC = () => {
     };
 
     const handleStarClick = (storyId: string, shouldBeStarred: boolean) => (
-        event: React.MouseEvent<HTMLButtonElement>
+        event: MouseEvent<HTMLButtonElement>
     ) => {
         event.stopPropagation();
         updateStoryStarred(storyId, shouldBeStarred);

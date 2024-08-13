@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import { useSelector } from "react-redux";
 import { ICamp, IStory } from "../../commons";
 import { IAppState, selectStoriesOrderedByNumber, selectPersons } from "../../store";
