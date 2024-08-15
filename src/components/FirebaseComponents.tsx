@@ -58,10 +58,10 @@ export function FirebaseComponents(props: { children: React.ReactNode }) {
         const db = initializeFirestore(firebaseApp, { localCache });
         return db;
     });
-    if (firestoreInitStatus === 'loading') {
+    if (firestoreInitStatus === "loading") {
         // TODO(mdanka): add a proper spinner or such here
         return<div>Töltés...</div>;
-      }
+    }
     // const storage = getStorage(app, `gs://${CLOUD_STORAGE_BUCKETS.Main}`);
     const storage = getStorage(app);
     if (isLocalhost()) {

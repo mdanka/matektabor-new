@@ -31,8 +31,8 @@ export const selectStoriesOrdered = createSelector(
             ordering === "storyNumber"
                 ? storyByNumberOrderer
                 : ordering === "knowNumber"
-                ? storyByKnowOrderer
-                : storyByStarOrderer;
+                    ? storyByKnowOrderer
+                    : storyByStarOrderer;
         return stories.sort(sorter).slice(0);
     },
 );
@@ -259,8 +259,8 @@ export const selectCampRoomsAsOptions = createCachedSelector(
         return camp === undefined
             ? []
             : Object.keys(camp.rooms).map(roomName => {
-                  return { value: roomName, label: roomName };
-              });
+                return { value: roomName, label: roomName };
+            });
     },
 )((_state: IAppState, id: string) => id);
 
@@ -277,11 +277,11 @@ export const selectCampRoomPeopleAsOptions = createCachedSelector(
         return peopleIds === undefined
             ? []
             : peopleIds.map(personId => {
-                  const personApi = personMap[personId];
-                  return personApi === undefined
-                      ? { value: personId, label: "<ismeretlen>" }
-                      : personToSelectOption({ id: personId, ...personApi });
-              });
+                const personApi = personMap[personId];
+                return personApi === undefined
+                    ? { value: personId, label: "<ismeretlen>" }
+                    : personToSelectOption({ id: personId, ...personApi });
+            });
     },
 )((_state: IAppState, campId: string, roomName: string) => `${campId}:${roomName}`);
 

@@ -106,9 +106,9 @@ export function useDataService() {
                 ? { usersWhoStarred: arrayUnion(userId) }
                 : { usersWhoStarred: arrayRemove(userId) }
         )
-        .catch((reason: unknown) =>
-            console.error(`[DataService] Failed to update story with user starring selection. ${reason}`),
-        );
+            .catch((reason: unknown) =>
+                console.error(`[DataService] Failed to update story with user starring selection. ${reason}`),
+            );
     }, [currentUserFromAuth, firestore]);
 
     const createPerson = (newPerson: IPersonApi) => {

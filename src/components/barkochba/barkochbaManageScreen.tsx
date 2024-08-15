@@ -39,10 +39,10 @@ export const BarkochbaManageScreen: React.FC = () => {
     const roomPeopleAsOptions = useSelector((state: IAppState) =>
         manageState.roomsSelectionCampId !== undefined && manageState.roomsSelectionRoomName !== undefined
             ? selectCampRoomPeopleAsOptions(
-                  state,
-                  manageState.roomsSelectionCampId,
-                  manageState.roomsSelectionRoomName
-              )
+                state,
+                manageState.roomsSelectionCampId,
+                manageState.roomsSelectionRoomName
+            )
             : []
     );
     const allPersonsAsOptions = useSelector(selectPersonsAsSelectOptions);

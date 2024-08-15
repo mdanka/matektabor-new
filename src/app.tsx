@@ -4,11 +4,11 @@ import { MatektaborApp } from "./components";
 import { ThemeProvider, Theme, StyledEngineProvider } from "@mui/material";
 import { StylesProvider } from "@mui/styles";
 import { LIGHT_THEME } from "./utils";
-import { FirebaseAppProvider } from 'reactfire';
-import { FirebaseComponents } from './components/FirebaseComponents';
+import { FirebaseAppProvider } from "reactfire";
+import { FirebaseComponents } from "./components/FirebaseComponents";
 
 
-declare module '@mui/styles/defaultTheme' {
+declare module "@mui/styles/defaultTheme" {
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface DefaultTheme extends Theme {}
 }

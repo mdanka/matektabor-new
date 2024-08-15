@@ -15,7 +15,7 @@ const getUserForUserId = (userId: string) => {
 }
 
 const getVerifiedEmailForUser = (user: admin.auth.UserRecord) => {
-    const { email, emailVerified} = user;
+    const { email, emailVerified } = user;
     return emailVerified ? email : undefined;
 }
 
@@ -107,7 +107,7 @@ export const scheduledFirestoreExport = functions
         const client = new firestore.v1.FirestoreAdminClient();
         const bucket = "gs://barkochba-app.appspot.com";
         const projectId = process.env.GCP_PROJECT ?? process.env.GCLOUD_PROJECT ?? PROJECT_ID;
-        const databaseName = client.databasePath(projectId, '(default)');
+        const databaseName = client.databasePath(projectId, "(default)");
         try {
             const responses = await client.exportDocuments({
                 name: databaseName,
@@ -118,9 +118,9 @@ export const scheduledFirestoreExport = functions
                 collectionIds: [],
             })
             const response = responses[0];
-            console.log(`Operation Name: ${response['name']}`);
+            console.log(`Operation Name: ${response["name"]}`);
         } catch (err) {
             console.error(err);
-            throw new Error('Export operation failed');
+            throw new Error("Export operation failed");
         }
     });

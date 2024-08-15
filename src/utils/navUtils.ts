@@ -15,18 +15,18 @@ export const getNavUrl = {
     [Page.Home]: () => "/",
     [Page.SignIn]: (redirectUrl?: string) =>
         `/signin${redirectUrl === undefined ? "" : `?redirectUrl=${redirectUrl}`}`,
-    [Page.Barkochba]: () => `/barkochba`,
+    [Page.Barkochba]: () => "/barkochba",
     [Page.BarkochbaExport]: (campId?: string) => `/barkochba/export/${campId === undefined ? "" : `${campId}`}`,
-    [Page.BarkochbaManage]: () => `/barkochba/manage`,
-    [Page.TermsOfService]: () => `/terms-of-service`,
-    [Page.PrivacyPolicy]: () => `/privacy-policy`,
+    [Page.BarkochbaManage]: () => "/barkochba/manage",
+    [Page.TermsOfService]: () => "/terms-of-service",
+    [Page.PrivacyPolicy]: () => "/privacy-policy",
 };
 
 export const getNavUrlTemplate = {
     [Page.Home]: getNavUrl[Page.Home](),
     [Page.SignIn]: getNavUrl[Page.SignIn](),
     [Page.Barkochba]: getNavUrl[Page.Barkochba](),
-    [Page.BarkochbaExport]: `/barkochba/export/:campId?`,
+    [Page.BarkochbaExport]: "/barkochba/export/:campId?",
     [Page.BarkochbaManage]: getNavUrl[Page.BarkochbaManage](),
     [Page.TermsOfService]: getNavUrl[Page.TermsOfService](),
     [Page.PrivacyPolicy]: getNavUrl[Page.PrivacyPolicy](),

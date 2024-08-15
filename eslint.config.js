@@ -22,6 +22,15 @@ export default tseslint.config({
       'warn',
       { allowConstantExport: true },
     ],
+    // My custom rules
+    "quotes": ["error", "double"],
+    "import/no-unresolved": 0,
+    "indent": ["error", 4, { "SwitchCase": 1 }],
+    "max-len": 0,
+    "require-jsdoc": 0,
+    "object-curly-spacing": ["error", "always"],
+    "@typescript-eslint/no-var-requires": 0,
+    // Allow unused vars that start with an underscore
     "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
   },
 })
