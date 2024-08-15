@@ -25,7 +25,7 @@ export function ListeningCampRoomSelector() {
     const selectedRoom = useSelector(selectCurrentListeningCampRoomNameAsSelectOption) ?? null;
     const selectedCampData = useSelector(selectCurrentListeningCampRoomCamp) ?? null;
 
-    const handleCampChange = (_event: ChangeEvent<{}>, value: ISelectOption | null) => {
+    const handleCampChange = (_event: ChangeEvent<unknown>, value: ISelectOption | null) => {
         const currentListeningCampRoom =
             value === null
                 ? { campId: undefined, roomName: undefined }
@@ -33,7 +33,7 @@ export function ListeningCampRoomSelector() {
         dispatch(SetCurrentListeningCampRoom.create({ currentListeningCampRoom }));
     };
 
-    const handleRoomChange = (_event: ChangeEvent<{}>, value: ISelectOption | null) => {
+    const handleRoomChange = (_event: ChangeEvent<unknown>, value: ISelectOption | null) => {
         if (!selectedCampData) return;
 
         const { id: campId, rooms } = selectedCampData;

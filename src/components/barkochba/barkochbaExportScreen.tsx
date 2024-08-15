@@ -8,7 +8,7 @@ import { Link as RouterLink, useParams } from "react-router-dom";
 import { Page, getNavUrl } from "../../utils/navUtils";
 import css from "./barkochbaExportScreen.module.scss";
 
-const getExportLinkComponent = (id: string) => (props: any) => (
+const getExportLinkComponent = (id: string) => (props: object) => (
     <RouterLink to={getNavUrl[Page.BarkochbaExport](id)} {...props} />
 );
 

@@ -5,11 +5,11 @@ import { Link as RouterLink } from "react-router-dom";
 import { StoryBrowser } from "./storyBrowser";
 import { getNavUrl, Page } from "../../utils/navUtils";
 
-const BarkochbaExportLink = (props: any) => (
+const BarkochbaExportLink = (props: object) => (
     <RouterLink to={getNavUrl[Page.BarkochbaExport](undefined)} {...props} />
 );
 
-const BarkochbaManageLink = (props: any) => (
+const BarkochbaManageLink = (props: object) => (
     <RouterLink to={getNavUrl[Page.BarkochbaManage]()} {...props} />
 );
 

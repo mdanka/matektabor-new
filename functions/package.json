@@ -4,7 +4,7 @@
     "node": "18"
   },
   "scripts": {
-    "lint": "tslint --project tsconfig.json",
+    "lint": "eslint .",
     "build": "tsc",
     "serve": "npm run build && firebase serve --only functions",
     "shell": "npm run build && firebase functions:shell",
@@ -18,7 +18,7 @@
     "firebase-functions": "^5.0.1"
   },
   "devDependencies": {
-    "tslint": "^6.1.3",
+    "eslint": "^9.9.0",
     "typescript": "~5.5.4"
   },
   "private": true

@@ -7,6 +7,7 @@ declare module "react-document-title" {
         title: string;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     class DocumentTitle extends React.Component<DocumentTitleProps, any> {}
 
     export = DocumentTitle;

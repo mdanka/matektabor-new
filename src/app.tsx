@@ -9,7 +9,7 @@ import { FirebaseComponents } from './components/FirebaseComponents';
 
 
 declare module '@mui/styles/defaultTheme' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface DefaultTheme extends Theme {}
 }
 
@@ -26,12 +26,12 @@ const FIREBASE_APP_CONFIG = {
 };
 
 export interface IAppProps {
-  store: Store<any>;
+  store: Store;
 }
 
 function App({ store }: IAppProps) {
     return (
-        <Provider store={store as Store<any>}>
+        <Provider store={store}>
             <FirebaseAppProvider firebaseConfig={FIREBASE_APP_CONFIG}>
                 <FirebaseComponents>
                     <StyledEngineProvider injectFirst>
