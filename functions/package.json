@@ -4,7 +4,7 @@
     "node": "18"
   },
   "scripts": {
-    "lint": "eslint .",
+    "lint": "eslint src",
     "build": "tsc",
     "serve": "npm run build && firebase serve --only functions",
     "shell": "npm run build && firebase functions:shell",

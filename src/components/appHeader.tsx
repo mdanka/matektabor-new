@@ -23,12 +23,12 @@ import { singInAndReturn, getNavUrl, Page } from "../utils/navUtils";
 import amber from "@mui/material/colors/amber";
 import { green } from "@mui/material/colors";
 import css from "./appHeader.module.scss";
-import { useState, useRef, useEffect} from "react";
+import { useState, useRef, useEffect } from "react";
 import { useFirebaseAuthService } from "../services/useFirebaseAuthService";
 import { usePrevious } from "../services/usePrevious";
 
 
-declare module '@mui/styles/defaultTheme' {
+declare module "@mui/styles/defaultTheme" {
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface DefaultTheme extends Theme {}
 }

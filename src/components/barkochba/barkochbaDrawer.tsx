@@ -16,7 +16,7 @@ const BarkochbaManageLink = (props: object) => (
 export function BarkochbaDrawer() {
     return (
         <Box sx={{ display: "flex", flexDirection: "column", maxHeight: "100vh" }}>
-            <Box sx={{width: 1, flexShrink: 0 }}>
+            <Box sx={{ width: 1, flexShrink: 0 }}>
                 <List>
                     <Link
                         variant="body1"
@@ -47,7 +47,7 @@ export function BarkochbaDrawer() {
                 </List>
                 <Divider />
             </Box>
-            <Box sx={{flexGrow: 1, width: 1, overflowX: "hidden", overflowY: "auto" }}>
+            <Box sx={{ flexGrow: 1, width: 1, overflowX: "hidden", overflowY: "auto" }}>
                 <StoryBrowser />
             </Box>
         </Box>
