@@ -18,7 +18,7 @@ declare module "@mui/styles/defaultTheme" {
 
 const FIREBASE_APP_CONFIG = {
     apiKey: "AIzaSyCe-gLA62Z68YVh_8jx-wCXuXksT-ZD3ws",
-    authDomain: window.location.host,
+    authDomain: "barkochba-app.web.app",
     databaseURL: "https://barkochba-app.firebaseio.com",
     projectId: "barkochba-app",
     storageBucket: "barkochba-app.appspot.com",
