@@ -56,7 +56,7 @@ const getUserDataAndCheckIsViewer = async (context: functions.https.CallableCont
 
 const getCollection = async (collectionId: string) => {
     const querySnapshot = await admin.firestore().collection(collectionId).get();
-    const docs: {[id: string]: any} = {};
+    const docs: {[id: string]: unknown} = {};
     querySnapshot.forEach(doc => {
         docs[doc.id] = doc.data();
     });
@@ -91,7 +91,7 @@ export const backupData = functions.region("europe-west1").https.onCall(async (d
     await getUserDataAndCheckIsViewer(context);
     const collectionIds = [CollectionId.Stories, CollectionId.Camps, CollectionId.Persons];
     const collections = await Promise.all(collectionIds.map(getCollection));
-    const allDocs: {[id: string]: any} = {};
+    const allDocs: {[id: string]: unknown} = {};
     collectionIds.forEach((collectionId, index) => {
         allDocs[collectionId] = collections[index];
     });
