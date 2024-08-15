@@ -61,7 +61,7 @@ export const BarkochbaManageScreen: React.FC = () => {
     };
 
     const getAutoCompleteFieldUpdater = (fieldName: keyof IBarkochbaManageState) => (
-        _event: React.ChangeEvent<{}>,
+        _event: React.ChangeEvent<unknown>,
         value: ISelectOption | null
     ) => {
         const newValue = value ? value.value : undefined;
@@ -107,12 +107,12 @@ export const BarkochbaManageScreen: React.FC = () => {
         createRoom(selectedCamp, newRoomName);
     };
 
-    const handleCampChange = (_event: React.ChangeEvent<{}>, value: ISelectOption | null) => {
+    const handleCampChange = (_event: React.ChangeEvent<unknown>, value: ISelectOption | null) => {
         const newCampId = value ? value.value : undefined;
         update({ roomsSelectionCampId: newCampId });
     };
 
-    const handleRoomChange = (_event: React.ChangeEvent<{}>, value: ISelectOption | null) => {
+    const handleRoomChange = (_event: React.ChangeEvent<unknown>, value: ISelectOption | null) => {
         if (value && !availableRoomsAsOptions.includes(value)) {
             handleNewRoomAdd(value.value);
         }

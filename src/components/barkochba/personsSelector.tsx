@@ -18,7 +18,7 @@ export function PersonsSelector({
     onChange,
     disabled,
 }: IPersonsSelectorProps) {
-    const handlePersonsWhoKnowChange = (_event: ChangeEvent<{}>, value: ISelectOption[]) => {
+    const handlePersonsWhoKnowChange = (_event: ChangeEvent<unknown>, value: ISelectOption[]) => {
         onChange(value);
     };
 

@@ -6,7 +6,6 @@ import './index.scss';
 import App from './app';
 import { createAppStore } from "./store";
 import { BrowserRouter } from "react-router-dom";
-import { Store } from 'redux';
 import { registerSW } from 'virtual:pwa-register'
 
 const store = createAppStore();
@@ -14,7 +13,7 @@ const store = createAppStore();
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <App store={store as Store<any>} />
+      <App store={store} />
     </BrowserRouter>
   </StrictMode>,
 )
