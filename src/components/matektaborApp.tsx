@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { FC, useCallback } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AppHeader } from "./appHeader";
 import { AppFooter } from "./appFooter";
@@ -17,7 +17,7 @@ import { LoginPanel } from "./auth/LoginPanel";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useDataService } from "../services/useDataService";
 
-export const MatektaborApp: React.FC = () => {
+export const MatektaborApp: FC = () => {
     useDataService(); // this is included to trigger fetching all the data
 
     const renderHome = useCallback(() => {

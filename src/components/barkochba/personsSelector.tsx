@@ -1,7 +1,7 @@
-import React from "react";
 import { ISelectOption } from "../../commons";
 import Autocomplete from "@mui/material/Autocomplete";
 import { TextField } from "@mui/material";
+import { ChangeEvent } from "react";
 
 interface IPersonsSelectorProps {
     className?: string;
@@ -18,7 +18,7 @@ export function PersonsSelector({
     onChange,
     disabled,
 }: IPersonsSelectorProps) {
-    const handlePersonsWhoKnowChange = (_event: React.ChangeEvent<{}>, value: ISelectOption[]) => {
+    const handlePersonsWhoKnowChange = (_event: ChangeEvent<{}>, value: ISelectOption[]) => {
         onChange(value);
     };
 
