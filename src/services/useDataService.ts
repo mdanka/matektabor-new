@@ -88,7 +88,7 @@ export function useDataService() {
     const addPersonsWhoKnowStory = (storyId: string, peopleIds: string[]) => {
         const storyDocRef = doc(collection(firestore, CollectionId.Stories), storyId);
         return updateDoc(storyDocRef, { personsWhoKnow: arrayUnion(...peopleIds) })
-            .catch((reason: any) =>
+            .catch((reason: unknown) =>
                 console.error(`[DataService] Failed to update story with persons who know it. ${reason}`),
             );
     };
@@ -106,7 +106,7 @@ export function useDataService() {
                 ? { usersWhoStarred: arrayUnion(userId) }
                 : { usersWhoStarred: arrayRemove(userId) }
         )
-        .catch((reason: any) =>
+        .catch((reason: unknown) =>
             console.error(`[DataService] Failed to update story with user starring selection. ${reason}`),
         );
     }, [currentUserFromAuth, firestore]);

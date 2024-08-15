@@ -29,12 +29,12 @@ import { usePrevious } from "../services/usePrevious";
 
 
 declare module '@mui/styles/defaultTheme' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface DefaultTheme extends Theme {}
 }
 
 
-const HomeLink = (props: any) => <RouterLink to={getNavUrl[Page.Home]()} {...props} />;
+const HomeLink = (props: object) => <RouterLink to={getNavUrl[Page.Home]()} {...props} />;
 
 export const AppHeader: React.FC = () => {
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);

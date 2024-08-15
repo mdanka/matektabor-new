@@ -11,12 +11,12 @@ import {
     AppCheckProvider,
     useInitFirestore,
 } from "reactfire";
-import { AppCheck } from "firebase/app-check";
+// import { AppCheck } from "firebase/app-check";
 
 // const APP_CHECK_TOKEN = "6LdzrQoqAAAAABwDfR1mb8Q8JArK5R1TvJ-xIOHz";
 
 function isLocalhost() {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+     
     if (typeof window === "undefined") {
         // TODO(mdanka): if using SSR, use context.req.headers.host
         return false;
@@ -28,7 +28,8 @@ function isLocalhost() {
 export function FirebaseComponents(props: { children: React.ReactNode }) {
     const { children } = props;
     const app = useFirebaseApp(); // a parent component contains a `FirebaseAppProvider`
-    let appCheck: AppCheck | undefined = undefined;
+    const appCheck = undefined;
+    // let appCheck: AppCheck | undefined = undefined;
     // if (typeof window !== "undefined") {
     //     // We can't initialize App Check while in SSR
     //     // TODO(mdanka): this is a bit hacky about the SSR...
