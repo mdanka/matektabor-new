@@ -24,6 +24,7 @@ import { green } from "@mui/material/colors";
 import { useState, useRef, useEffect } from "react";
 import { useFirebaseAuthService } from "../hooks/useFirebaseAuthService";
 import { usePrevious } from "../hooks/usePrevious";
+import { lighten } from "@mui/material/styles";
 
 
 declare module "@mui/styles/defaultTheme" {
@@ -136,7 +137,7 @@ export const AppHeader: React.FC = () => {
         <Box sx={(theme) => ({
             height: "60px",
             color: "black",
-            backgroundColor: theme.palette.primary.main,
+            backgroundColor: lighten(theme.palette.primary.main, 0.3),
             padding: "10px 20px 10px 20px",
             display: "flex",
             alignItems: "center",
