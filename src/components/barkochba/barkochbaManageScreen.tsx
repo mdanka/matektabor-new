@@ -152,7 +152,7 @@ export const BarkochbaManageScreen: React.FC = () => {
                     return filtered;
                 }}
                 renderInput={params => (
-                    <TextField {...params} label="Csoport" placeholder="Pl. Beluga" variant="standard" />
+                    <TextField {...params} label="Csoport" placeholder="Pl. Beluga" variant="filled" />
                 )}
                 getOptionLabel={(option: ISelectOption) => option.label}
             />
@@ -170,7 +170,7 @@ export const BarkochbaManageScreen: React.FC = () => {
                         Név
                     </InputLabel>
                     <TextField
-                        variant="standard"
+                        variant="filled"
                         value={newPersonName}
                         onChange={getTextFieldUpdater("newPersonName")}
                         className={css.barkochbaManageInput}
@@ -198,7 +198,7 @@ export const BarkochbaManageScreen: React.FC = () => {
                         Sorszám
                     </InputLabel>
                     <TextField
-                        variant="standard"
+                        variant="filled"
                         value={newCampNumber}
                         onChange={getTextFieldUpdater("newCampNumber")}
                         className={css.barkochbaManageInput}
@@ -233,7 +233,7 @@ export const BarkochbaManageScreen: React.FC = () => {
                         value={currentCampOption}
                         onChange={handleCampChange}
                         renderInput={params => (
-                            <TextField {...params} label="Tábor" placeholder="Válassz tábort" variant="standard" />
+                            <TextField {...params} label="Tábor" placeholder="Válassz tábort" variant="filled" />
                         )}
                         getOptionLabel={(option: ISelectOption) => option.label}
                     />
@@ -260,7 +260,7 @@ export const BarkochbaManageScreen: React.FC = () => {
                                     return filtered;
                                 }}
                                 renderInput={params => (
-                                    <TextField {...params} label="Szoba" placeholder="Válassz szobát" variant="standard" />
+                                    <TextField {...params} label="Szoba" placeholder="Válassz szobát" variant="filled" />
                                 )}
                                 getOptionLabel={(option: ISelectOption) => option.label}
                             />
