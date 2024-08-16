@@ -8,10 +8,6 @@ import { Link as RouterLink, useParams } from "react-router-dom";
 import { Page, getNavUrl } from "../../utils/navUtils";
 import css from "./barkochbaExportScreen.module.scss";
 
-const getExportLinkComponent = (id: string) => (props: object) => (
-    <RouterLink to={getNavUrl[Page.BarkochbaExport](id)} {...props} />
-);
-
 export function BarkochbaExportScreen() {
     const { campId } = useParams();
     const camp = useSelector((state: IAppState) => campId ? selectCamp(state, campId) : undefined);
@@ -79,7 +75,8 @@ export function BarkochbaExportScreen() {
             <Link
                 key={id}
                 color="textPrimary"
-                component={getExportLinkComponent(id)}
+                component={RouterLink}
+                to={getNavUrl[Page.BarkochbaExport](id)}
                 underline="hover"
             >
                 <ListItem button divider={true}>
