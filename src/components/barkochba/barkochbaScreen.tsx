@@ -6,6 +6,7 @@ import {
     SwipeableDrawer,
     Button,
     Box,
+    CircularProgress,
 } from "@mui/material";
 import { PersonsSelector } from "./personsSelector";
 import { ISelectOption } from "../../commons";
@@ -54,10 +55,18 @@ export function BarkochbaScreen() {
         dispatch(SetBarkochbaDrawerIsOpen.create({ barkochbaDrawerIsOpen: !barkochbaDrawerIsOpen }));
     };
 
-    if (hasViewerRole === undefined || !hasViewerRole) {
+    if (hasViewerRole === undefined) {
         return (
-            <Box className={css.barkochbaScreen} sx={{ padding: 3 }}>
-                <Typography variant="h4" align="center" color="textSecondary">
+            <Box className={css.barkochbaScreen} sx={{ padding: 5, display: "flex" }}>
+                <CircularProgress />
+            </Box>
+        )
+    }
+
+    if (hasViewerRole === false) {
+        return (
+            <Box className={css.barkochbaScreen} sx={{ padding: 5 }}>
+                <Typography variant="h5" align="center">
                     Nincs hozzáférésed az apphoz. Ahhoz, hogy hozzáférést kapj, írd meg egy illetékesnek az e-mail-címedet, amivel bejelentkeztél.
                 </Typography>
             </Box>
