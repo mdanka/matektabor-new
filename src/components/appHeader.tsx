@@ -12,17 +12,15 @@ import {
     MenuItem,
     ListItemText,
     Snackbar,
-    ThemeProvider,
     Theme,
-    StyledEngineProvider,
     SnackbarContent,
+    Box,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { DARK_THEME, CONTACT_HREF } from "../utils";
+import { CONTACT_HREF } from "../utils";
 import { singInAndReturn, getNavUrl, Page } from "../utils/navUtils";
 import amber from "@mui/material/colors/amber";
 import { green } from "@mui/material/colors";
-import css from "./appHeader.module.scss";
 import { useState, useRef, useEffect } from "react";
 import { useFirebaseAuthService } from "../hooks/useFirebaseAuthService";
 import { usePrevious } from "../hooks/usePrevious";
@@ -67,7 +65,12 @@ export const AppHeader: React.FC = () => {
 
     const renderContactButton = () => (
         <IconButton
-            className={css.appHeaderContactButton}
+            sx={{
+                width: "36px",
+                height: "36px",
+                fontSize: "16px",
+                color: "black",
+            }}
             href={CONTACT_HREF}
             disableRipple
             size="large"
@@ -77,9 +80,13 @@ export const AppHeader: React.FC = () => {
     );
 
     const renderAvatar = (photoUrl: string | undefined, displayName?: string) => {
-        const classes = css.appHeaderAvatarImage;
+        const style = {
+            width: "30px",
+            height: "30px",
+            color: "black",
+        };
         if (photoUrl) {
-            return <Avatar className={classes} src={photoUrl} />;
+            return <Avatar sx={style} src={photoUrl} />;
         }
         if (displayName) {
             const initials = displayName
@@ -87,9 +94,9 @@ export const AppHeader: React.FC = () => {
                 .filter((nameComponent) => nameComponent.length > 0)
                 .map((nameComponent) => nameComponent[0])
                 .join("");
-            return <Avatar className={classes}>{initials}</Avatar>;
+            return <Avatar sx={style}>{initials}</Avatar>;
         }
-        return <Avatar className={classes} />;
+        return <Avatar sx={style} />;
     };
 
     const renderUserMenu = () => (
@@ -110,7 +117,11 @@ export const AppHeader: React.FC = () => {
         const avatar = renderAvatar(photoURL ?? undefined, displayName ?? undefined);
         return (
             <IconButton
-                className={css.appHeaderAvatarButton}
+                sx={{
+                    marginLeft: "10px",
+                    width: "36px",
+                    height: "36px",
+                }}
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                 ref={userMenuButtonRef}
                 disableRipple
@@ -122,64 +133,68 @@ export const AppHeader: React.FC = () => {
     };
 
     return (
-        <div className={css.appHeader}>
-            <StyledEngineProvider injectFirst>
-                <ThemeProvider theme={DARK_THEME}>
-                    <span className={css.appTitle}>
-                        <Link component={HomeLink} underline="hover">
-                            Matektábor
-                        </Link>
-                    </span>
-                    {renderContactButton()}
-                    {currentUser && renderUser()}
-                    {currentUser && renderUserMenu()}
-                    {!currentUser && (
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            size="small"
-                            className={css.appHeaderSignInButton}
-                            onClick={handleSignInClick}
-                        >
-                            Bejelentkezés
-                        </Button>
-                    )}
-                    <Snackbar
-                        autoHideDuration={3000}
-                        anchorOrigin={{ horizontal: "center", vertical: "top" }}
-                        message={<span>Sikeresen kiléptél. Ügyes vagy!</span>}
-                        onClose={() => setIsSignedOutMessageOpen(false)}
-                        open={isSignedOutMessageOpen}
-                        action={
-                            <IconButton
-                                aria-label="Close"
-                                color="inherit"
-                                onClick={() => setIsSignedOutMessageOpen(false)}
-                                size="large"
-                            >
-                                <CloseIcon />
-                            </IconButton>
-                        }
-                    />
-                    <Snackbar anchorOrigin={{ horizontal: "right", vertical: "top" }} open={hasPendingWrites}>
-                        <SnackbarContent
-                            message={<span>Mentés... (ha nem vagy online, csatlakozz)</span>}
-                            style={{ backgroundColor: amber[200] }}
-                        />
-                    </Snackbar>
-                    <Snackbar
-                        autoHideDuration={3000}
-                        anchorOrigin={{ horizontal: "right", vertical: "top" }}
-                        open={isSaveSuccessfulMessageOpen}
-                        onClose={() => setIsSaveSuccessfulMessageOpen(false)}
+        <Box sx={(theme) => ({
+            height: "60px",
+            color: "black",
+            backgroundColor: theme.palette.primary.main,
+            padding: "10px 20px 10px 20px",
+            display: "flex",
+            alignItems: "center",
+            borderBottom: "1px solid",
+            borderColor: theme.palette.divider,
+        })}>
+            <Box sx={{ fontSize: "18px", flexGrow: 1 }}>
+                <Link component={HomeLink} underline="hover" sx={{ color: "black", fontWeight: "bold", fontFamily: "Roboto" }}>
+                    Matektábor
+                </Link>
+            </Box>
+            {renderContactButton()}
+            {currentUser && renderUser()}
+            {currentUser && renderUserMenu()}
+            {!currentUser && (
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    size="small"
+                    onClick={handleSignInClick}
+                >
+                    Bejelentkezés
+                </Button>
+            )}
+            <Snackbar
+                autoHideDuration={3000}
+                anchorOrigin={{ horizontal: "center", vertical: "top" }}
+                message={<span>Sikeresen kiléptél. Ügyes vagy!</span>}
+                onClose={() => setIsSignedOutMessageOpen(false)}
+                open={isSignedOutMessageOpen}
+                action={
+                    <IconButton
+                        aria-label="Close"
+                        color="inherit"
+                        onClick={() => setIsSignedOutMessageOpen(false)}
+                        size="large"
                     >
-                        <SnackbarContent
-                            message={<span>A mentés sikeres volt</span>}
-                            style={{ backgroundColor: green[200] }}
-                        />
-                    </Snackbar>
-                </ThemeProvider>
-            </StyledEngineProvider>
-        </div>
+                        <CloseIcon />
+                    </IconButton>
+                }
+            />
+            <Snackbar anchorOrigin={{ horizontal: "right", vertical: "top" }} open={hasPendingWrites}>
+                <SnackbarContent
+                    message={<span>Mentés... (ha nem vagy online, csatlakozz)</span>}
+                    style={{ backgroundColor: amber[200] }}
+                />
+            </Snackbar>
+            <Snackbar
+                autoHideDuration={3000}
+                anchorOrigin={{ horizontal: "right", vertical: "top" }}
+                open={isSaveSuccessfulMessageOpen}
+                onClose={() => setIsSaveSuccessfulMessageOpen(false)}
+            >
+                <SnackbarContent
+                    message={<span>A mentés sikeres volt</span>}
+                    style={{ backgroundColor: green[200] }}
+                />
+            </Snackbar>
+        </Box>
     );
 };
