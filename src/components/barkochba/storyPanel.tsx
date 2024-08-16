@@ -21,7 +21,7 @@ import { ISelectOption } from "../../commons";
 import { PersonsSelector } from "./personsSelector";
 import css from "./storyPanel.module.scss";
 import { useState } from "react";
-import { useDataService } from "../../services/useDataService";
+import { useDataService } from "../../hooks/useDataService";
 
 export const StoryPanel: React.FC = () => {
     const story = useSelector(selectCurrentStory);

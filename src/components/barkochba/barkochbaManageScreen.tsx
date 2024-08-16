@@ -19,7 +19,7 @@ import { ISelectOption } from "../../commons";
 import { PersonsSelector } from "./personsSelector";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import css from "./barkochbaManageScreen.module.scss";
-import { useDataService } from "../../services/useDataService";
+import { useDataService } from "../../hooks/useDataService";
 
 export const BarkochbaManageScreen: React.FC = () => {
     const dispatch = useDispatch();

@@ -24,8 +24,8 @@ import amber from "@mui/material/colors/amber";
 import { green } from "@mui/material/colors";
 import css from "./appHeader.module.scss";
 import { useState, useRef, useEffect } from "react";
-import { useFirebaseAuthService } from "../services/useFirebaseAuthService";
-import { usePrevious } from "../services/usePrevious";
+import { useFirebaseAuthService } from "../hooks/useFirebaseAuthService";
+import { usePrevious } from "../hooks/usePrevious";
 
 
 declare module "@mui/styles/defaultTheme" {

@@ -27,7 +27,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import { BarkochbaSortingSelector } from "./barkochbaSortingSelector";
 import css from "./storyBrowser.module.scss";
-import { useDataService } from "../../services/useDataService";
+import { useDataService } from "../../hooks/useDataService";
 import { FC, MouseEvent } from "react";
 
 export const StoryBrowser: FC = () => {
