@@ -56,11 +56,11 @@ export function BarkochbaScreen() {
 
     if (hasViewerRole === undefined || !hasViewerRole) {
         return (
-            <div className={css.barkochbaScreen}>
+            <Box className={css.barkochbaScreen} sx={{ padding: 3 }}>
                 <Typography variant="h4" align="center" color="textSecondary">
                     Nincs hozzáférésed az apphoz. Ahhoz, hogy hozzáférést kapj, írd meg egy illetékesnek az e-mail-címedet, amivel bejelentkeztél.
                 </Typography>
-            </div>
+            </Box>
         )
     }
 
