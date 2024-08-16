@@ -6,51 +6,39 @@ This work is not licensed - all rights are reserved.
 
 ## Data backup
 
-To back up the data, open the dev console and type `document.backupData();`. This will download a JSON with all the story information.
+Monthly backups are created automatically using GCP's Cloud Scheduler and a backend function. The backups are saved to Cloud Storage.
+
+To trigger a new backup, open Cloud Scheduler in the GCP Console and click on Run Now or an equivalent button.
 
 # Development
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is built on [Vite](https://vitejs.dev/).
 
 ## Available Scripts
 
 In the project directory, you can run:
 
-### `yarn start`
+### `yarn start` and `yarn dev`
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Run `yarn start` to start the Firebase Emulators. However, this will use the `dist` folder without recompiling when you make any changes.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+So run also `yarn dev` to start the webserver with HMR (Hot Module Replacement), meaning that the page will automatically update as you make edits. You can use the URL created by `yarn dev` for your local development.
 
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The Firebase Emulators are important because this will set up a local Firestore instance with a local database. This means that you can freely test the app's functions without affecting the production database. The local database uses a snapshot of the database but with all names changed to protect personal information.
 
 ### `yarn build`
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Builds the app for production to the `dist` folder.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+### `yarn lint`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Runs ESLint. Make sure you fix linting errors because this is a required check before merging a pull request.
 
-### `yarn eject`
+## Preview
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+When a pull request is opened, a temporary preview version of the web app is created for testing purposes. This is linked to from the pull request in a comment.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Deployment
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- The web app is automatically deployed using Github Actions when new code is merged into the `main` branch.
+- The functions need to be manually deployed from the command line using `firebase`. The functions are only used for the scheduled backups.
