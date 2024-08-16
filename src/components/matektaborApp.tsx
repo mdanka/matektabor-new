@@ -16,6 +16,7 @@ import css from "./matektaborApp.module.scss";
 import { LoginPanel } from "./auth/LoginPanel";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useDataService } from "../hooks/useDataService";
+import { Container } from "@mui/material";
 
 export const MatektaborApp: FC = () => {
     useDataService(); // this is included to trigger fetching all the data
@@ -60,7 +61,9 @@ export const MatektaborApp: FC = () => {
                     <title>{getNavUrlSimpleTitle[Page.SignIn]}</title>
                 </Helmet>
                 <AppHeader />
-                <LoginPanel />
+                <Container sx={{ padding: 5 }}>
+                    <LoginPanel />
+                </Container>
                 <AppFooter />
             </div>
         );

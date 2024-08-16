@@ -137,7 +137,7 @@ export const AppHeader: React.FC = () => {
         <Box sx={(theme) => ({
             height: "60px",
             color: "black",
-            backgroundColor: lighten(theme.palette.primary.main, 0.3),
+            backgroundColor: lighten(theme.palette.primary.main, 0.5),
             padding: "10px 20px 10px 20px",
             display: "flex",
             alignItems: "center",
