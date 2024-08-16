@@ -63,7 +63,7 @@ export function BarkochbaScreen() {
         )
     }
 
-    if (hasViewerRole === false || 1 === 1 as number) {
+    if (hasViewerRole === false) {
         return (
             <Box className={css.barkochbaScreen} sx={{ padding: 5 }}>
                 <Typography variant="h5" align="center">
