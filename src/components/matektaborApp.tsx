@@ -15,7 +15,7 @@ import {
 import css from "./matektaborApp.module.scss";  
 import { LoginPanel } from "./auth/LoginPanel";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { useDataService } from "../services/useDataService";
+import { useDataService } from "../hooks/useDataService";
 
 export const MatektaborApp: FC = () => {
     useDataService(); // this is included to trigger fetching all the data
