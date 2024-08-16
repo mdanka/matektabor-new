@@ -11,6 +11,7 @@ import {
     SetBarkochbaManageState,
     SetBarkochbaDrawerIsOpen,
     SetHasViewerRole,
+    SetDataLoaded,
 } from "./actions";
 import { IAppState, IBarkochbaManageState } from "./state";
 import { SetBarkochbaOrdering } from "./actions";
@@ -34,6 +35,11 @@ export const appReducer = TypedReducer.builder<IAppState>()
     .withHandler(SetCamps.TYPE, (state, payload) => {
         return setWith(state, {
             camps: payload.camps,
+        });
+    })
+    .withHandler(SetDataLoaded.TYPE, (state, payload) => {
+        return setWith(state, {
+            dataLoading: { ...state.dataLoading, ...payload }
         });
     })
     .withHandler(SetStories.TYPE, (state, payload) => {

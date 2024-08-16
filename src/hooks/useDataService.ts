@@ -1,4 +1,4 @@
-import { SetStories, SetPersons, SetCamps, SetHasPendingWrites, SetHasViewerRole } from "../store";
+import { SetStories, SetPersons, SetCamps, SetHasPendingWrites, SetHasViewerRole, SetDataLoaded } from "../store";
 import { IStoryApi, IPersonApi, ICampApi, ICamp } from "../commons";
 import { CollectionId } from "../types/shared";
 import { addDoc, arrayRemove, arrayUnion, collection, doc, FirestoreError, onSnapshot, QuerySnapshot, updateDoc } from "firebase/firestore";
@@ -65,6 +65,7 @@ export function useDataService() {
             subscribeToCollection<IPersonApi>(currentUser, CollectionId.Persons, (documents, hasPendingWrites) => {
                 store.dispatch(SetHasViewerRole.create({ hasViewerRole: true }))
                 store.dispatch(SetPersons.create({ persons: documents }));
+                store.dispatch(SetDataLoaded.create({ arePersonsLoaded: true }));
                 setPendingWrite(CollectionId.Persons, hasPendingWrites);
             },
             () => {
@@ -75,6 +76,7 @@ export function useDataService() {
             subscribeToCollection<ICampApi>(currentUser, CollectionId.Camps, (documents, hasPendingWrites) => {
                 store.dispatch(SetHasViewerRole.create({ hasViewerRole: true }))
                 store.dispatch(SetCamps.create({ camps: documents }));
+                store.dispatch(SetDataLoaded.create({ areCampsLoaded: true }));
                 setPendingWrite(CollectionId.Camps, hasPendingWrites);
             },
             () => {
@@ -85,6 +87,7 @@ export function useDataService() {
             subscribeToCollection<IStoryApi>(currentUser, CollectionId.Stories, (documents, hasPendingWrites) => {
                 store.dispatch(SetHasViewerRole.create({ hasViewerRole: true }))
                 store.dispatch(SetStories.create({ stories: documents }));
+                store.dispatch(SetDataLoaded.create({ areStoriesLoaded: true }));
                 setPendingWrite(CollectionId.Stories, hasPendingWrites);
             },
             () => {
