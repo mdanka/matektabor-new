@@ -107,7 +107,7 @@ export function BarkochbaScreen() {
                 >
                     <Button
                         className={css.barkochbaScreenDrawerToggleButton}
-                        variant="outlined"
+                        variant="contained"
                         onClick={handleDrawerToggle}
                     >
                         <MenuIcon className={css.barkochbaScreenDrawerToggleButtonIcon} />
