@@ -32,9 +32,6 @@ declare module "@mui/styles/defaultTheme" {
   interface DefaultTheme extends Theme {}
 }
 
-
-const HomeLink = (props: object) => <RouterLink to={getNavUrl[Page.Home]()} {...props} />;
-
 export const AppHeader: React.FC = () => {
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const [isSignedOutMessageOpen, setIsSignedOutMessageOpen] = useState(false);
@@ -145,7 +142,7 @@ export const AppHeader: React.FC = () => {
             borderColor: theme.palette.divider,
         })}>
             <Box sx={{ fontSize: "18px", flexGrow: 1 }}>
-                <Link component={HomeLink} underline="hover" sx={{ color: "black", fontWeight: "bold", fontFamily: "Roboto" }}>
+                <Link component={RouterLink} to={getNavUrl[Page.Home]()} underline="hover" sx={{ color: "black", fontWeight: "bold", fontFamily: "Roboto" }}>
                     Matektábor
                 </Link>
             </Box>
