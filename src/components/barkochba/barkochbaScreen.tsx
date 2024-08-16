@@ -57,17 +57,17 @@ export function BarkochbaScreen() {
 
     if (hasViewerRole === undefined) {
         return (
-            <Box className={css.barkochbaScreen} sx={{ padding: 5, display: "flex" }}>
+            <Box className={css.barkochbaScreen} sx={{ padding: 5, display: "flex", justifyContent: "center" }}>
                 <CircularProgress />
             </Box>
         )
     }
 
-    if (hasViewerRole === false) {
+    if (hasViewerRole === false || 1 === 1 as number) {
         return (
             <Box className={css.barkochbaScreen} sx={{ padding: 5 }}>
                 <Typography variant="h5" align="center">
-                    Nincs hozzáférésed az apphoz. Ahhoz, hogy hozzáférést kapj, írd meg egy illetékesnek az e-mail-címedet, amivel bejelentkeztél.
+                    Nincs hozzáférésed az apphoz. Ahhoz, hogy hozzáférést kapj, írd meg egy illetékesnek az e-mail-címedet, amivel bejelentkeztél!
                 </Typography>
             </Box>
         )
