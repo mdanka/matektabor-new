@@ -9,6 +9,8 @@ import { useNavigate } from "react-router";
 import { getNavUrl, Page } from "../../utils/navUtils";
 import { useSearchParams } from "react-router-dom";
 
+const IS_EMAIL_LINK_SIGN_IN_ENABLED = false;
+
 export function LoginPanel() {
     const [searchParams] = useSearchParams();
     const redirectUrl = searchParams.get("redirectUrl") ?? undefined;
@@ -101,16 +103,18 @@ export function LoginPanel() {
                                         </Button>
                                     </Grid2>
                                 )}
-                                <Grid2>
-                                    <LoginWithEmailLink
-                                        authInfo={{
-                                            auth,
-                                            tenantLanguageCode: "hu",
-                                        }}
-                                        onFlowActivated={handleEmailWithLinkFlowActivated}
-                                        onAuthSuccess={handleAuthSuccess}
-                                    />
-                                </Grid2>
+                                {IS_EMAIL_LINK_SIGN_IN_ENABLED && (
+                                    <Grid2>
+                                        <LoginWithEmailLink
+                                            authInfo={{
+                                                auth,
+                                                tenantLanguageCode: "hu",
+                                            }}
+                                            onFlowActivated={handleEmailWithLinkFlowActivated}
+                                            onAuthSuccess={handleAuthSuccess}
+                                        />
+                                    </Grid2>
+                                )}
                             </Grid2>
                         </>
                     )}
