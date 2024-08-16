@@ -5,14 +5,6 @@ import { Link as RouterLink } from "react-router-dom";
 import { StoryBrowser } from "./storyBrowser";
 import { getNavUrl, Page } from "../../utils/navUtils";
 
-const BarkochbaExportLink = (props: object) => (
-    <RouterLink to={getNavUrl[Page.BarkochbaExport](undefined)} {...props} />
-);
-
-const BarkochbaManageLink = (props: object) => (
-    <RouterLink to={getNavUrl[Page.BarkochbaManage]()} {...props} />
-);
-
 export function BarkochbaDrawer() {
     return (
         <Box sx={{ display: "flex", flexDirection: "column", maxHeight: "100vh" }}>
@@ -21,7 +13,8 @@ export function BarkochbaDrawer() {
                     <Link
                         variant="body1"
                         color="inherit"
-                        component={BarkochbaExportLink}
+                        component={RouterLink}
+                        to={getNavUrl[Page.BarkochbaExport](undefined)}
                         underline="hover"
                     >
                         <ListItem button sx={{ overflow: "hidden", whiteSpace: "nowrap" }}>
@@ -34,7 +27,8 @@ export function BarkochbaDrawer() {
                     <Link
                         variant="body1"
                         color="inherit"
-                        component={BarkochbaManageLink}
+                        component={RouterLink}
+                        to={getNavUrl[Page.BarkochbaManage]()}
                         underline="hover"
                     >
                         <ListItem button sx={{ overflow: "hidden", whiteSpace: "nowrap" }}>
