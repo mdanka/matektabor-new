@@ -2,6 +2,7 @@ import { IUser, IPersonApi, ICampApi, IStoryApi } from "../commons";
 
 export interface IAppState {
     currentUser: IUser | undefined;
+    hasViewerRole: boolean | undefined;
     persons: IPersonsState;
     camps: ICampsState;
     stories: IStoriesState;
