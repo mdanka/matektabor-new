@@ -18,11 +18,9 @@ This project is built on [Vite](https://vitejs.dev/).
 
 In the project directory, you can run:
 
-### `yarn start` and `yarn dev`
+### `yarn start`
 
-Run `yarn start` to start the Firebase Emulators. However, this will use the `dist` folder without recompiling when you make any changes.
-
-So run also `yarn dev` to start the webserver with HMR (Hot Module Replacement), meaning that the page will automatically update as you make edits. You can use the URL created by `yarn dev` for your local development.
+Run `yarn start` to start the Firebase Emulators AND to start the Vite webserver with HMR (Hot Module Replacement), meaning that the page will automatically update as you make edits. Use the URL created by Vite (something like `http://localhost:5173/`) for viewing the page with HMR.
 
 The Firebase Emulators are important because this will set up a local Firestore instance with a local database. This means that you can freely test the app's functions without affecting the production database. The local database uses a snapshot of the database but with all names changed to protect personal information.
 
