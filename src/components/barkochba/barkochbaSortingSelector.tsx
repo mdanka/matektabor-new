@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { Select, MenuItem, SelectChangeEvent } from "@mui/material";
+import { Select, MenuItem, SelectChangeEvent, FormControl, InputLabel } from "@mui/material";
 import { IBarkochbaOrdering } from "../../store/state";
 import { selectBarkochbaOrdering } from "../../store/selectors";
 import { SetBarkochbaOrdering } from "../../store/actions";
@@ -14,15 +14,19 @@ export function BarkochbaSortingSelector() {
     };
 
     return (
-        <Select
-            variant="standard"
-            className={css.barkochbaSortingSelector}
-            value={ordering}
-            onChange={handleChange}
-        >
-            <MenuItem value={"storyNumber"}>Sorszám</MenuItem>
-            <MenuItem value={"knowNumber"}>Hányan hallották</MenuItem>
-            <MenuItem value={"starNumber"}>Kedvelések száma</MenuItem>
-        </Select>
+        <FormControl className={css.barkochbaSortingSelector} variant="filled">
+            <InputLabel id="barkochba-sorting-selector-label">Rendezés</InputLabel>
+            <Select
+                labelId="barkochba-sorting-selector-label"
+                variant="filled"
+                className={css.barkochbaSortingSelector}
+                value={ordering}
+                onChange={handleChange}
+            >
+                <MenuItem value={"storyNumber"}>Sorszám</MenuItem>
+                <MenuItem value={"knowNumber"}>Hányan hallották</MenuItem>
+                <MenuItem value={"starNumber"}>Kedvelések száma</MenuItem>
+            </Select>
+        </FormControl>
     );
 }
