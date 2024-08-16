@@ -12,6 +12,8 @@ export function AppFooter() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            borderTop: "1px solid",
+            borderColor: theme.palette.divider,
         })}>
             <Box sx={{ display: "inline-block", fontFamily: "Roboto" }}>
                 <a className="underline inherit-color" href={CONTACT_HREF}>
