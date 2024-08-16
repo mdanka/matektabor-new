@@ -13,6 +13,10 @@ export const SetCurrentUser = TypedAction.define("MATEKTABOR//SET_CURRENT_USER")
     currentUser: IUser | undefined;
 }>();
 
+export const SetHasViewerRole = TypedAction.define("MATEKTABOR//SET_HAS_VIEWER_ROLE")<{
+    hasViewerRole: boolean;
+}>();
+
 export const SetPersons = TypedAction.define("MATEKTABOR//SET_PERSONS")<{
     persons: IPersonsState;
 }>();

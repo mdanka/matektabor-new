@@ -5,6 +5,7 @@ import { IAppState } from "./state";
 
 const initialState: IAppState = {
     currentUser: undefined,
+    hasViewerRole: undefined,
     persons: {},
     camps: {},
     stories: {},

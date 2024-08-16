@@ -10,6 +10,7 @@ import {
     SetHasPendingWrites,
     SetBarkochbaManageState,
     SetBarkochbaDrawerIsOpen,
+    SetHasViewerRole,
 } from "./actions";
 import { IAppState, IBarkochbaManageState } from "./state";
 import { SetBarkochbaOrdering } from "./actions";
@@ -18,6 +19,11 @@ export const appReducer = TypedReducer.builder<IAppState>()
     .withHandler(SetCurrentUser.TYPE, (state, payload) => {
         return setWith(state, {
             currentUser: payload.currentUser,
+        });
+    })
+    .withHandler(SetHasViewerRole.TYPE, (state, payload) => {
+        return setWith(state, {
+            hasViewerRole: payload.hasViewerRole,
         });
     })
     .withHandler(SetPersons.TYPE, (state, payload) => {

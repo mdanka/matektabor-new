@@ -15,6 +15,7 @@ import {
     SetCurrentListeningPersonIds,
     selectBarkochbaDrawerIsOpen,
     SetBarkochbaDrawerIsOpen,
+    selectHasViewerRole,
 } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
 import { StoryPanel } from "./storyPanel";
@@ -29,6 +30,7 @@ export function BarkochbaScreen() {
     const barkochbaDrawerIsOpen = useSelector(selectBarkochbaDrawerIsOpen);
     const currentListeningPersonsAsSelectOptions = useSelector(selectCurrentListeningPersonsAsSelectOptions);
     const personsAsSelectOptions = useSelector(selectPersonsAsSelectOptions);
+    const hasViewerRole = useSelector(selectHasViewerRole);
 
     const selectedPeopleNumber = currentListeningPersonsAsSelectOptions.length;
     const personSelectorTitle = `Nekik mesélek${
@@ -51,6 +53,16 @@ export function BarkochbaScreen() {
     const handleDrawerToggle = () => {
         dispatch(SetBarkochbaDrawerIsOpen.create({ barkochbaDrawerIsOpen: !barkochbaDrawerIsOpen }));
     };
+
+    if (hasViewerRole === undefined || !hasViewerRole) {
+        return (
+            <div className={css.barkochbaScreen}>
+                <Typography variant="h4" align="center" color="textSecondary">
+                    Nincs hozzáférésed az apphoz. Ahhoz, hogy hozzáférést kapj, írd meg egy illetékesnek az e-mail-címedet, amivel bejelentkeztél.
+                </Typography>
+            </div>
+        )
+    }
 
     return (
         <div className={css.barkochbaScreen}>

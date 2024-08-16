@@ -1,7 +1,7 @@
-import { SetStories, SetPersons, SetCamps, SetHasPendingWrites } from "../store";
+import { SetStories, SetPersons, SetCamps, SetHasPendingWrites, SetHasViewerRole } from "../store";
 import { IStoryApi, IPersonApi, ICampApi, ICamp } from "../commons";
 import { CollectionId } from "../types/shared";
-import { addDoc, arrayRemove, arrayUnion, collection, doc, onSnapshot, QuerySnapshot, updateDoc } from "firebase/firestore";
+import { addDoc, arrayRemove, arrayUnion, collection, doc, FirestoreError, onSnapshot, QuerySnapshot, updateDoc } from "firebase/firestore";
 import { User } from "firebase/auth";
 import { useAuth, useFirestore } from "reactfire";
 import { useEffect, useCallback } from "react";
@@ -32,6 +32,7 @@ export function useDataService() {
         currentUser: User,
         collectionName: string,
         onUpdate: (documents: { [id: string]: API }, hasPendingWrites: boolean) => void,
+        onPermissionDenied: () => void,
     ) => {
         if (currentUser == null) {
             throw new Error(`Cannot subscribe to collection ${collectionName} if user is not logged in.`);
@@ -45,6 +46,13 @@ export function useDataService() {
                 const hasPendingWrites = querySnapshot.docs.some(doc => doc.metadata.hasPendingWrites);
                 onUpdate(documents, hasPendingWrites);
             },
+            (error: FirestoreError) => {
+                if (error.code === "permission-denied") {
+                    onPermissionDenied();
+                } else {
+                    console.error(`[DataService] Failed to subscribe to collection ${collectionName}. ${error}`);
+                }
+            },
         );
     }, [firestore]);
 
@@ -55,20 +63,32 @@ export function useDataService() {
         // Subscribe new listeners
         snapshotUnsubscribers.push(
             subscribeToCollection<IPersonApi>(currentUser, CollectionId.Persons, (documents, hasPendingWrites) => {
+                store.dispatch(SetHasViewerRole.create({ hasViewerRole: true }))
                 store.dispatch(SetPersons.create({ persons: documents }));
                 setPendingWrite(CollectionId.Persons, hasPendingWrites);
+            },
+            () => {
+                store.dispatch(SetHasViewerRole.create({ hasViewerRole: false }))
             }),
         );
         snapshotUnsubscribers.push(
             subscribeToCollection<ICampApi>(currentUser, CollectionId.Camps, (documents, hasPendingWrites) => {
+                store.dispatch(SetHasViewerRole.create({ hasViewerRole: true }))
                 store.dispatch(SetCamps.create({ camps: documents }));
                 setPendingWrite(CollectionId.Camps, hasPendingWrites);
+            },
+            () => {
+                store.dispatch(SetHasViewerRole.create({ hasViewerRole: false }))
             }),
         );
         snapshotUnsubscribers.push(
             subscribeToCollection<IStoryApi>(currentUser, CollectionId.Stories, (documents, hasPendingWrites) => {
+                store.dispatch(SetHasViewerRole.create({ hasViewerRole: true }))
                 store.dispatch(SetStories.create({ stories: documents }));
                 setPendingWrite(CollectionId.Stories, hasPendingWrites);
+            },
+            () => {
+                store.dispatch(SetHasViewerRole.create({ hasViewerRole: false }))
             }),
         );
     }, [setPendingWrite, store, subscribeToCollection]);
