@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "firebase emulators:start --import=seed-data",
+    "start": "concurrently 'firebase emulators:start --import=seed-data' 'vite'",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint src",
@@ -52,6 +52,7 @@
     "@typescript-eslint/eslint-plugin": "^8.1.0",
     "@typescript-eslint/parser": "^8.1.0",
     "@vitejs/plugin-react": "^4.3.1",
+    "concurrently": "^8.2.2",
     "eslint": "^9.8.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
