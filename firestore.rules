@@ -1,15 +1,17 @@
+rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
     function isSignedIn() {
-      return request.auth.uid != null;
+      return request.auth != null;
     }
 
     function isViewer() {
-      return request.auth.token.email_verified && getViewers().hasAll([request.auth.token.email]);
+      return request.auth.token.email_verified == true && getViewers().hasAll([request.auth.token.email]);
     }
 
     function getViewers() {
-      return get(/databases/$(database)/documents/admin/roles).data.viewers
+      return get(/databases/$(database)/documents/admin/roles).data.viewers;
     }
 
     function areSetsEqual(list1, list2) {
@@ -18,7 +20,7 @@ service cloud.firestore {
 
     match /stories/{document=**} {
       allow read: if isSignedIn() && isViewer();
-      // TODO(mdanka): currently can rewrite all starred users - use Functions to only allow updating for the current user
+      // TODO(mdanka): currently can rewrite all starred users - update rules to only update modifying yourself
       allow update: if isSignedIn() && isViewer() && (areSetsEqual(request.writeFields, ["personsWhoKnow"]) || areSetsEqual(request.writeFields, ["usersWhoStarred"]));
       allow create, delete: if false;
     }
