@@ -133,15 +133,12 @@ export const BarkochbaManageScreen: React.FC = () => {
         return value !== "" && (isNaN(valueInt) || valueInt < 0 || valueInt.toString() !== value);
     };
 
-    const renderGroupSelector = (fieldName: keyof IBarkochbaManageState, value: string) => (
+    const renderGroupSelector = (fieldName: keyof IBarkochbaManageState, value: string | null) => (
         <FormControl variant="standard">
-            <InputLabel shrink htmlFor="barkochba-manage-new-person-name">
-                Csoport
-            </InputLabel>
             <Autocomplete
                 className={css.barkochbaManageInput}
                 options={allGroupsAsOptions}
-                value={stringToSelectOption(value)}
+                value={value == null ? null : stringToSelectOption(value)}
                 onChange={getAutoCompleteFieldUpdater(fieldName)}
                 filterOptions={(options, params) => {
                     const filter = createFilterOptions<ISelectOption>();
@@ -166,9 +163,6 @@ export const BarkochbaManageScreen: React.FC = () => {
             <Paper className={css.barkochbaManagePanel} elevation={2}>
                 <Typography variant="h5">Új gyerek</Typography>
                 <FormControl variant="standard">
-                    <InputLabel shrink htmlFor="barkochba-manage-new-person-name">
-                        Név
-                    </InputLabel>
                     <TextField
                         variant="filled"
                         value={newPersonName}
@@ -176,7 +170,6 @@ export const BarkochbaManageScreen: React.FC = () => {
                         className={css.barkochbaManageInput}
                         placeholder="Tóth János"
                         label="Név"
-                        id="barkochba-manage-new-person-name"
                     />
                 </FormControl>
                 {renderGroupSelector("newPersonGroup", newPersonGroup)}
@@ -194,9 +187,6 @@ export const BarkochbaManageScreen: React.FC = () => {
                 <Typography variant="h5">Új tábor</Typography>
                 {renderGroupSelector("newCampGroup", newCampGroup)}
                 <FormControl variant="standard">
-                    <InputLabel shrink htmlFor="barkochba-manage-new-camp-number">
-                        Sorszám
-                    </InputLabel>
                     <TextField
                         variant="filled"
                         value={newCampNumber}
@@ -206,7 +196,6 @@ export const BarkochbaManageScreen: React.FC = () => {
                         placeholder="3"
                         type="number"
                         error={isNewCampNumberError(newCampNumber)}
-                        id="barkochba-manage-new-camp-number"
                     />
                     <FormHelperText>Pl. "3", mint a "Beluga/3"-ban</FormHelperText>
                 </FormControl>
