@@ -56,7 +56,7 @@ export function ListeningCampRoomSelector() {
                     options={allCamps}
                     value={selectedCamp}
                     onChange={handleCampChange}
-                    renderInput={(params) => <TextField {...params} placeholder="Válassz tábort" variant="standard" />}
+                    renderInput={(params) => <TextField {...params} label="Tábor" placeholder="Válassz tábort" variant="filled" />}
                     getOptionLabel={(option: ISelectOption) => option.label}
                 />
             </div>
@@ -66,7 +66,7 @@ export function ListeningCampRoomSelector() {
                         options={allRooms}
                         value={selectedRoom}
                         onChange={handleRoomChange}
-                        renderInput={(params) => <TextField {...params} placeholder="Válassz szobát" variant="standard" />}
+                        renderInput={(params) => <TextField {...params} label="Szoba" placeholder="Válassz szobát" variant="filled" />}
                         getOptionLabel={(option: ISelectOption) => option.label}
                     />
                 </div>
