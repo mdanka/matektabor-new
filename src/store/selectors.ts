@@ -289,6 +289,10 @@ export const selectCampRoomPeopleAsOptions = createCachedSelector(
 
 export const selectBarkochbaDrawerIsOpen = (state: IAppState) => state.barkochbaDrawerIsOpen;
 
+export const selectIsAllDataLoaded = (state: IAppState) => {
+    return Object.values(state.dataLoading).every((value) => value);
+}
+
 const storyByNumberOrderer = (a: IStory, b: IStory) => {
     return ascOrderer(a.number, b.number);
 };

@@ -9,6 +9,11 @@ const initialState: IAppState = {
     persons: {},
     camps: {},
     stories: {},
+    dataLoading: {
+        arePersonsLoaded: false,
+        areCampsLoaded: false,
+        areStoriesLoaded: false,
+    },
     currentStoryId: undefined,
     currentListeningPersonIds: [],
     currentListeningCampRoom: {

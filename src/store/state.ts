@@ -6,6 +6,7 @@ export interface IAppState {
     persons: IPersonsState;
     camps: ICampsState;
     stories: IStoriesState;
+    dataLoading: IDataLoadingState;
     currentStoryId: string | undefined;
     currentListeningPersonIds: string[];
     currentListeningCampRoom: ICampRoomState;
@@ -22,6 +23,12 @@ export type IPersonsState = IMapState<IPersonApi>;
 export type ICampsState = IMapState<ICampApi>;
 
 export type IStoriesState = IMapState<IStoryApi>;
+
+export interface IDataLoadingState {
+    arePersonsLoaded: boolean;
+    areCampsLoaded: boolean;
+    areStoriesLoaded: boolean;
+}
 
 export interface ICampRoomState {
     campId: string | undefined;
