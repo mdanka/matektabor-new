@@ -12,7 +12,7 @@ export const DARK_THEME = createTheme(adaptV4Theme({
     },
 }));
 
-export const LIGHT_THEME = createTheme(adaptV4Theme({
+export const LIGHT_THEME = createTheme({
     palette: {
         mode: "light",
         primary: {
@@ -22,4 +22,10 @@ export const LIGHT_THEME = createTheme(adaptV4Theme({
             main: "#1363A5",
         },
     },
-}));
+    typography: {
+        fontFamily: [
+            "Roboto",
+            "Times New Roman",
+        ].join(","),
+    }
+});
