@@ -17,6 +17,7 @@ import {
     selectBarkochbaDrawerIsOpen,
     SetBarkochbaDrawerIsOpen,
     selectHasViewerRole,
+    selectIsAllDataLoaded,
 } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
 import { StoryPanel } from "./storyPanel";
@@ -32,6 +33,7 @@ export function BarkochbaScreen() {
     const currentListeningPersonsAsSelectOptions = useSelector(selectCurrentListeningPersonsAsSelectOptions);
     const personsAsSelectOptions = useSelector(selectPersonsAsSelectOptions);
     const hasViewerRole = useSelector(selectHasViewerRole);
+    const isAllDataLoaded = useSelector(selectIsAllDataLoaded);
 
     const selectedPeopleNumber = currentListeningPersonsAsSelectOptions.length;
     const personSelectorTitle = `Nekik mesélek${
@@ -55,20 +57,20 @@ export function BarkochbaScreen() {
         dispatch(SetBarkochbaDrawerIsOpen.create({ barkochbaDrawerIsOpen: !barkochbaDrawerIsOpen }));
     };
 
-    if (hasViewerRole === undefined) {
-        return (
-            <Box className={css.barkochbaScreen} sx={{ padding: 5, display: "flex", justifyContent: "center" }}>
-                <CircularProgress />
-            </Box>
-        )
-    }
-
     if (hasViewerRole === false) {
         return (
             <Box className={css.barkochbaScreen} sx={{ padding: 5 }}>
                 <Typography variant="h5" align="center">
                     Nincs hozzáférésed az apphoz. Ahhoz, hogy hozzáférést kapj, írd meg egy illetékesnek az e-mail-címedet, amivel bejelentkeztél!
                 </Typography>
+            </Box>
+        )
+    }
+
+    if (hasViewerRole === undefined || !isAllDataLoaded) {
+        return (
+            <Box className={css.barkochbaScreen} sx={{ padding: 5, display: "flex", justifyContent: "center" }}>
+                <CircularProgress />
             </Box>
         )
     }

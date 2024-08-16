@@ -7,6 +7,7 @@ import {
     ICampRoomState,
     IBarkochbaManageState,
     IBarkochbaOrdering,
+    IDataLoadingState,
 } from "./state";
 
 export const SetCurrentUser = TypedAction.define("MATEKTABOR//SET_CURRENT_USER")<{
@@ -28,6 +29,8 @@ export const SetCamps = TypedAction.define("MATEKTABOR//SET_CAMPS")<{
 export const SetStories = TypedAction.define("MATEKTABOR//SET_STORIES")<{
     stories: IStoriesState;
 }>();
+
+export const SetDataLoaded = TypedAction.define("MATEKTABOR//SET_DATA_LOADED")<Pick<IDataLoadingState, "areCampsLoaded"> | Pick<IDataLoadingState, "arePersonsLoaded"> | Pick<IDataLoadingState, "areStoriesLoaded">>();
 
 export const SetCurrentStoryId = TypedAction.define("MATEKTABOR//SET_CURRENT_STORY_ID")<{
     currentStoryId: string | undefined;
