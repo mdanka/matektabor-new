@@ -14,7 +14,7 @@ import {
     stringToSelectOption,
 } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
-import { Typography, TextField, Button, Paper, FormControl, InputLabel, FormHelperText } from "@mui/material";
+import { Typography, TextField, Button, Paper, FormControl, FormHelperText } from "@mui/material";
 import { ISelectOption } from "../../commons";
 import { PersonsSelector } from "./personsSelector";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
