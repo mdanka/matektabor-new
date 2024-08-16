@@ -31,7 +31,7 @@ export function PersonsSelector({
             onChange={handlePersonsWhoKnowChange}
             disabled={disabled}
             renderInput={(params) => (
-                <TextField {...params} placeholder="Keress egy gyerek nevére" variant="standard" />
+                <TextField {...params} label="Gyerekek" placeholder="Keress egy gyerek nevére" variant="filled" />
             )}
             getOptionLabel={(option: ISelectOption) => option.label}
         />
