@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { ICamp, IStory } from "../../commons";
 import { IAppState, selectStoriesOrderedByNumber, selectPersons } from "../../store";
 import { selectCamp, selectCampsListOrderedByNameAndNumber } from "../../store/selectors";
-import { Link, List, ListItem, ListItemText } from "@mui/material";
+import { Link, List, ListItemButton, ListItemText } from "@mui/material";
 import { Link as RouterLink, useParams } from "react-router-dom";
 import { Page, getNavUrl } from "../../utils/navUtils";
 import css from "./barkochbaExportScreen.module.scss";
@@ -30,10 +30,10 @@ export function BarkochbaExportScreen() {
 
         Object.keys(rooms).forEach(roomName => {
             const personsInRoom = rooms[roomName];
-            const personsInRoomWhoKnow = personsInRoom.filter(personId => personsWhoKnowSet.has(personId));
+            const personsInRoomWhoKnow = personsInRoom.filter((personId: string) => personsWhoKnowSet.has(personId));
             if (personsInRoomWhoKnow.length === 0) return;
 
-            const personNames = personsInRoomWhoKnow.map(personId => {
+            const personNames = personsInRoomWhoKnow.map((personId: string) => {
                 const person = personMap[personId];
                 return person ? person.name : "<nincs név>";
             });
@@ -79,9 +79,9 @@ export function BarkochbaExportScreen() {
                 to={getNavUrl[Page.BarkochbaExport](id)}
                 underline="hover"
             >
-                <ListItem button divider={true}>
+                <ListItemButton divider={true}>
                     <ListItemText primary={`${group}/${number}`} />
-                </ListItem>
+                </ListItemButton>
             </Link>
         );
     }, []);

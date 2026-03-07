@@ -1,19 +1,20 @@
-import { SetStories, SetPersons, SetCamps, SetHasPendingWrites, SetHasViewerRole, SetDataLoaded } from "../store";
+import { setStories, setPersons, setCamps, setHasPendingWrites, setHasViewerRole, setDataLoaded } from "../store";
 import { IStoryApi, IPersonApi, ICampApi, ICamp } from "../commons";
 import { CollectionId } from "../types/shared";
 import { addDoc, arrayRemove, arrayUnion, collection, doc, FirestoreError, onSnapshot, QuerySnapshot, updateDoc } from "firebase/firestore";
 import { User } from "firebase/auth";
 import { useAuth, useFirestore } from "reactfire";
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import { useStore } from "react-redux";
 import { useFirebaseAuthService } from "./useFirebaseAuthService";
 
-const snapshotUnsubscribers: Array<() => void> = [];
-const hasPendingWritesMap: { [key: string]: boolean } = {
-    [CollectionId.Persons]: false,
-    [CollectionId.Camps]: false,
-    [CollectionId.Stories]: false,
-};
+function querySnapshotToObjects<API>(querySnapshot: QuerySnapshot) {
+    const result: { [id: string]: API } = {};
+    querySnapshot.forEach(doc => {
+        result[doc.id] = doc.data() as API;
+    });
+    return result;
+}
 
 export function useDataService() {
     const store = useStore();
@@ -22,13 +23,20 @@ export function useDataService() {
     const currentUserFromAuth = auth.currentUser;
     const firebaseAuthService = useFirebaseAuthService();
 
+    const snapshotUnsubscribersRef = useRef<Array<() => void>>([]);
+    const hasPendingWritesMapRef = useRef<{ [key: string]: boolean }>({
+        [CollectionId.Persons]: false,
+        [CollectionId.Camps]: false,
+        [CollectionId.Stories]: false,
+    });
+
     const setPendingWrite = useCallback((key: string, value: boolean) => {
-        hasPendingWritesMap[key] = value;
-        const hasPendingWrites = Object.values(hasPendingWritesMap).indexOf(true) !== -1;
-        store.dispatch(SetHasPendingWrites.create({ hasPendingWrites }));
+        hasPendingWritesMapRef.current[key] = value;
+        const hasPendingWrites = Object.values(hasPendingWritesMapRef.current).includes(true);
+        store.dispatch(setHasPendingWrites({ hasPendingWrites }));
     }, [store]);
 
-    const subscribeToCollection = useCallback(<API>(
+    const subscribeToCollection = useCallback(<API,>(
         currentUser: User,
         collectionName: string,
         onUpdate: (documents: { [id: string]: API }, hasPendingWrites: boolean) => void,
@@ -58,40 +66,40 @@ export function useDataService() {
 
     const subscribeToDataStore = useCallback((currentUser: User) => {
         // Unsubscribe previous listeners
-        snapshotUnsubscribers.forEach(unsubscriber => unsubscriber());
-        snapshotUnsubscribers.splice(0, snapshotUnsubscribers.length);
+        snapshotUnsubscribersRef.current.forEach(unsubscriber => unsubscriber());
+        snapshotUnsubscribersRef.current = [];
         // Subscribe new listeners
-        snapshotUnsubscribers.push(
+        snapshotUnsubscribersRef.current.push(
             subscribeToCollection<IPersonApi>(currentUser, CollectionId.Persons, (documents, hasPendingWrites) => {
-                store.dispatch(SetHasViewerRole.create({ hasViewerRole: true }))
-                store.dispatch(SetPersons.create({ persons: documents }));
-                store.dispatch(SetDataLoaded.create({ arePersonsLoaded: true }));
+                store.dispatch(setHasViewerRole({ hasViewerRole: true }))
+                store.dispatch(setPersons({ persons: documents }));
+                store.dispatch(setDataLoaded({ arePersonsLoaded: true }));
                 setPendingWrite(CollectionId.Persons, hasPendingWrites);
             },
             () => {
-                store.dispatch(SetHasViewerRole.create({ hasViewerRole: false }))
+                store.dispatch(setHasViewerRole({ hasViewerRole: false }))
             }),
         );
-        snapshotUnsubscribers.push(
+        snapshotUnsubscribersRef.current.push(
             subscribeToCollection<ICampApi>(currentUser, CollectionId.Camps, (documents, hasPendingWrites) => {
-                store.dispatch(SetHasViewerRole.create({ hasViewerRole: true }))
-                store.dispatch(SetCamps.create({ camps: documents }));
-                store.dispatch(SetDataLoaded.create({ areCampsLoaded: true }));
+                store.dispatch(setHasViewerRole({ hasViewerRole: true }))
+                store.dispatch(setCamps({ camps: documents }));
+                store.dispatch(setDataLoaded({ areCampsLoaded: true }));
                 setPendingWrite(CollectionId.Camps, hasPendingWrites);
             },
             () => {
-                store.dispatch(SetHasViewerRole.create({ hasViewerRole: false }))
+                store.dispatch(setHasViewerRole({ hasViewerRole: false }))
             }),
         );
-        snapshotUnsubscribers.push(
+        snapshotUnsubscribersRef.current.push(
             subscribeToCollection<IStoryApi>(currentUser, CollectionId.Stories, (documents, hasPendingWrites) => {
-                store.dispatch(SetHasViewerRole.create({ hasViewerRole: true }))
-                store.dispatch(SetStories.create({ stories: documents }));
-                store.dispatch(SetDataLoaded.create({ areStoriesLoaded: true }));
+                store.dispatch(setHasViewerRole({ hasViewerRole: true }))
+                store.dispatch(setStories({ stories: documents }));
+                store.dispatch(setDataLoaded({ areStoriesLoaded: true }));
                 setPendingWrite(CollectionId.Stories, hasPendingWrites);
             },
             () => {
-                store.dispatch(SetHasViewerRole.create({ hasViewerRole: false }))
+                store.dispatch(setHasViewerRole({ hasViewerRole: false }))
             }),
         );
     }, [setPendingWrite, store, subscribeToCollection]);
@@ -103,8 +111,6 @@ export function useDataService() {
     }, [subscribeToDataStore]);
 
     useEffect(() => {
-        // TODO(mdanka): without disabling this line, the system seems to get into an infinite loop
-        // subscribeToDataStoreIfLoggedIn(currentUser);
         firebaseAuthService.subscribeToAuthState(subscribeToDataStoreIfLoggedIn);
     }, [currentUserFromAuth, firebaseAuthService, subscribeToDataStoreIfLoggedIn]);
 
@@ -154,14 +160,6 @@ export function useDataService() {
         const campDocRef = doc(collection(firestore, CollectionId.Camps), id);
 
         return updateDoc(campDocRef, { rooms: newRooms });
-    };
-
-    const querySnapshotToObjects = <API>(querySnapshot: QuerySnapshot) => {
-        const songs: { [id: string]: API } = {};
-        querySnapshot.forEach(doc => {
-            songs[doc.id] = doc.data() as API;
-        });
-        return songs;
     };
 
     return {

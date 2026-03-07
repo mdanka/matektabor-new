@@ -1,4 +1,4 @@
-import { List, ListItemText, ListItem, Divider, ListItemIcon, Link, Box } from "@mui/material";
+import { List, ListItemText, ListItemButton, Divider, ListItemIcon, Link, Box } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import { Link as RouterLink } from "react-router-dom";
@@ -17,12 +17,12 @@ export function BarkochbaDrawer() {
                         to={getNavUrl[Page.BarkochbaExport](undefined)}
                         underline="hover"
                     >
-                        <ListItem button sx={{ overflow: "hidden", whiteSpace: "nowrap" }}>
+                        <ListItemButton sx={{ overflow: "hidden", whiteSpace: "nowrap" }}>
                             <ListItemIcon>
                                 <TableChartIcon />
                             </ListItemIcon>
                             <ListItemText primary="Áttekintő táblázatok" />
-                        </ListItem>
+                        </ListItemButton>
                     </Link>
                     <Link
                         variant="body1"
@@ -31,12 +31,12 @@ export function BarkochbaDrawer() {
                         to={getNavUrl[Page.BarkochbaManage]()}
                         underline="hover"
                     >
-                        <ListItem button sx={{ overflow: "hidden", whiteSpace: "nowrap" }}>
+                        <ListItemButton sx={{ overflow: "hidden", whiteSpace: "nowrap" }}>
                             <ListItemIcon>
                                 <EditIcon />
                             </ListItemIcon>
                             <ListItemText primary="Táborok szerkesztése" />
-                        </ListItem>
+                        </ListItemButton>
                     </Link>
                 </List>
                 <Divider />

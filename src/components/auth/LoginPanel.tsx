@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import { useAuth, useSigninCheck } from "reactfire";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useSnackbar } from "notistack";
-import Grid2 from "@mui/material/Unstable_Grid2";
+import { Grid as Grid2 } from "@mui/material";
 import { LoginWithEmailLink } from "./LoginWithEmailLink";
 import { useNavigate } from "react-router";
 import { getNavUrl, Page } from "../../utils/navUtils";
@@ -30,7 +30,6 @@ export function LoginPanel() {
             setIsLoggingIn(true);
             const provider = new GoogleAuthProvider();
             try {
-                auth.languageCode = "hu";
                 await signInWithPopup(auth, provider);
                 handleAuthSuccess();
             } catch (error) {

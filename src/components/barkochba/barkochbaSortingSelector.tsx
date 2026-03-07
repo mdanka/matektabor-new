@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Select, MenuItem, SelectChangeEvent, FormControl, InputLabel } from "@mui/material";
 import { IBarkochbaOrdering } from "../../store/state";
 import { selectBarkochbaOrdering } from "../../store/selectors";
-import { SetBarkochbaOrdering } from "../../store/actions";
+import { setBarkochbaOrdering } from "../../store";
 import css from "./barkochbaSortingSelector.module.scss";
 
 export function BarkochbaSortingSelector() {
@@ -10,7 +10,7 @@ export function BarkochbaSortingSelector() {
     const ordering = useSelector(selectBarkochbaOrdering);
 
     const handleChange = (event: SelectChangeEvent<"storyNumber" | "knowNumber" | "starNumber">) => {
-        dispatch(SetBarkochbaOrdering.create({ barkochbaOrdering: event.target.value as IBarkochbaOrdering }));
+        dispatch(setBarkochbaOrdering({ barkochbaOrdering: event.target.value as IBarkochbaOrdering }));
     };
 
     return (
