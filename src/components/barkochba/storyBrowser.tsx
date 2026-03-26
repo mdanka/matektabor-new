@@ -1,10 +1,10 @@
 import { useSelector, useDispatch } from "react-redux";
 import {
     selectStoriesOrdered,
-    SetCurrentStoryId,
+    setCurrentStoryId,
     selectCurrentStoryId,
     selectCurrentListeningPersonIds,
-    SetBarkochbaDrawerIsOpen,
+    setBarkochbaDrawerIsOpen,
     selectCurrentUserId,
     selectStarredStoriesOrdered,
 } from "../../store";
@@ -12,6 +12,7 @@ import {
     List,
     ListItemText,
     ListItem,
+    ListItemButton,
     Chip,
     Tooltip,
     Avatar,
@@ -40,8 +41,8 @@ export const StoryBrowser: FC = () => {
     const { updateStoryStarred } = useDataService();
 
     const selectStory = (id: string | undefined) => {
-        dispatch(SetCurrentStoryId.create({ currentStoryId: id }));
-        dispatch(SetBarkochbaDrawerIsOpen.create({ barkochbaDrawerIsOpen: false }));
+        dispatch(setCurrentStoryId({ currentStoryId: id }));
+        dispatch(setBarkochbaDrawerIsOpen({ barkochbaDrawerIsOpen: false }));
     };
 
     const handleStarClick = (storyId: string, shouldBeStarred: boolean) => (
@@ -72,11 +73,10 @@ export const StoryBrowser: FC = () => {
         });
 
         return (
-            <ListItem
+            <ListItemButton
                 className={classes}
                 key={storyId}
                 selected={storyId === currentStoryId}
-                button
                 divider={false}
                 onClick={() => selectStory(storyId)}
             >
@@ -117,7 +117,7 @@ export const StoryBrowser: FC = () => {
                 >
                     {isStarredForCurrentUser ? <StarIcon /> : <StarBorderIcon />}
                 </IconButton>
-            </ListItem>
+            </ListItemButton>
         );
     };
 

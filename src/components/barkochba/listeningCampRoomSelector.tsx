@@ -3,8 +3,8 @@ import {
     selectCampsAsSelectOptions,
     selectCurrentListeningCampRoomCampAsSelectOption,
     selectCurrentListeningCampRoomNamesAsSelectOptions,
-    SetCurrentListeningCampRoom,
-    SetCurrentListeningPersonIds,
+    setCurrentListeningCampRoom,
+    setCurrentListeningPersonIds,
 } from "../../store";
 import {
     selectCurrentListeningCampRoomNameAsSelectOption,
@@ -30,7 +30,7 @@ export function ListeningCampRoomSelector() {
             value === null
                 ? { campId: undefined, roomName: undefined }
                 : { campId: value.value, roomName: undefined };
-        dispatch(SetCurrentListeningCampRoom.create({ currentListeningCampRoom }));
+        dispatch(setCurrentListeningCampRoom({ currentListeningCampRoom }));
     };
 
     const handleRoomChange = (_event: ChangeEvent<unknown>, value: ISelectOption | null) => {
@@ -39,12 +39,12 @@ export function ListeningCampRoomSelector() {
         const { id: campId, rooms } = selectedCampData;
         const roomName = value ? value.value : undefined;
         const currentListeningCampRoom = { campId, roomName };
-        dispatch(SetCurrentListeningCampRoom.create({ currentListeningCampRoom }));
+        dispatch(setCurrentListeningCampRoom({ currentListeningCampRoom }));
 
         if (roomName) {
             const currentListeningPersonIds = rooms[roomName];
             if (currentListeningPersonIds) {
-                dispatch(SetCurrentListeningPersonIds.create({ currentListeningPersonIds }));
+                dispatch(setCurrentListeningPersonIds({ currentListeningPersonIds }));
             }
         }
     };
