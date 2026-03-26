@@ -51,6 +51,7 @@ export function FirebaseComponents(props: { children: React.ReactNode }) {
     //     });
     // }
     const auth = getAuth(app);
+    auth.languageCode = "hu";
     const functions = getFunctions(app, "europe-west1");
     const { status: firestoreInitStatus, data: firestore } = useInitFirestore(async (firebaseApp) => {
         const tabManager = persistentMultipleTabManager();
