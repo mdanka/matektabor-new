@@ -21,6 +21,6 @@ yarn install --frozen-lockfile
 
 # Install Cloud Functions dependencies
 echo "Installing functions dependencies..."
-(cd functions && yarn install --frozen-lockfile)
+(cd functions && yarn install --frozen-lockfile --ignore-engines)
 
 echo "Dev environment ready. Run 'yarn start' to launch."
