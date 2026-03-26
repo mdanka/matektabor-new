@@ -60,3 +60,5 @@ dev-dist
 
 # TypeScript build info
 *.tsbuildinfo
+
+.claude/worktrees/
