@@ -1,39 +1,19 @@
-import { StoreEnhancer, createStore, loggingMiddleware } from "redoodle";
-import { applyMiddleware } from "redux";
-import { appReducer } from "./reducers";
-import { IAppState } from "./state";
-
-const initialState: IAppState = {
-    currentUser: undefined,
-    hasViewerRole: undefined,
-    persons: {},
-    camps: {},
-    stories: {},
-    dataLoading: {
-        arePersonsLoaded: false,
-        areCampsLoaded: false,
-        areStoriesLoaded: false,
-    },
-    currentStoryId: undefined,
-    currentListeningPersonIds: [],
-    currentListeningCampRoom: {
-        campId: undefined,
-        roomName: undefined,
-    },
-    hasPendingWrites: false,
-    barkochbaManageState: {
-        newPersonName: "",
-        newPersonGroup: "",
-        newCampGroup: "",
-        newCampNumber: "",
-        roomsSelectionCampId: undefined,
-        roomsSelectionRoomName: undefined,
-    },
-    barkochbaDrawerIsOpen: false,
-    barkochbaOrdering: "storyNumber",
-};
+import { configureStore } from "@reduxjs/toolkit";
+import { appReducer } from "./slice";
 
 export function createAppStore() {
-    const middlewareEnhancer = applyMiddleware(loggingMiddleware()) as unknown as StoreEnhancer;
-    return createStore<IAppState>(appReducer, initialState, middlewareEnhancer);
+    return configureStore({
+        reducer: appReducer,
+        middleware: (getDefaultMiddleware) =>
+            getDefaultMiddleware({
+                serializableCheck: {
+                    // Firebase User objects are not serializable
+                    ignoredActions: ["matektabor/setCurrentUser"],
+                    ignoredPaths: ["currentUser"],
+                },
+            }),
+    });
 }
+
+export type AppStore = ReturnType<typeof createAppStore>;
+export type AppDispatch = AppStore["dispatch"];

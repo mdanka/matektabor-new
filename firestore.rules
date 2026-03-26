@@ -18,10 +18,27 @@ service cloud.firestore {
       return list1.hasAll(list2) && list2.hasAll(list1);
     }
 
-    match /stories/{document=**} {
+    match /stories/{storyId} {
       allow read: if isSignedIn() && isViewer();
-      // TODO(mdanka): currently can rewrite all starred users - update rules to only update modifying yourself
-      allow update: if isSignedIn() && isViewer() && (areSetsEqual(request.writeFields, ["personsWhoKnow"]) || areSetsEqual(request.writeFields, ["usersWhoStarred"]));
+      allow update: if isSignedIn() && isViewer() && (
+        // Allow updating personsWhoKnow
+        areSetsEqual(request.writeFields, ["personsWhoKnow"])
+        // Allow updating usersWhoStarred only by adding/removing your own uid
+        || (
+          areSetsEqual(request.writeFields, ["usersWhoStarred"])
+          && (
+            // Adding yourself: new list is old list + your uid
+            (request.resource.data.usersWhoStarred.hasAll(resource.data.usersWhoStarred)
+              && request.resource.data.usersWhoStarred.size() == resource.data.usersWhoStarred.size() + 1
+              && request.resource.data.usersWhoStarred.hasAll([request.auth.uid]))
+            ||
+            // Removing yourself: new list is old list minus your uid
+            (resource.data.usersWhoStarred.hasAll(request.resource.data.usersWhoStarred)
+              && request.resource.data.usersWhoStarred.size() == resource.data.usersWhoStarred.size() - 1
+              && !request.resource.data.usersWhoStarred.hasAll([request.auth.uid]))
+          )
+        )
+      );
       allow create, delete: if false;
     }
 

@@ -12,45 +12,36 @@ import {
     MenuItem,
     ListItemText,
     Snackbar,
-    Theme,
     SnackbarContent,
     Box,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { CONTACT_HREF } from "../utils";
 import { singInAndReturn, getNavUrl, Page } from "../utils/navUtils";
-import amber from "@mui/material/colors/amber";
+import { amber } from "@mui/material/colors";
 import { green } from "@mui/material/colors";
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { useFirebaseAuthService } from "../hooks/useFirebaseAuthService";
 import { usePrevious } from "../hooks/usePrevious";
 import { lighten } from "@mui/material/styles";
 
-
-declare module "@mui/styles/defaultTheme" {
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  interface DefaultTheme extends Theme {}
-}
-
 export const AppHeader: React.FC = () => {
-    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+    const [userMenuAnchorEl, setUserMenuAnchorEl] = useState<HTMLElement | null>(null);
     const [isSignedOutMessageOpen, setIsSignedOutMessageOpen] = useState(false);
     const [isSaveSuccessfulMessageOpen, setIsSaveSuccessfulMessageOpen] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
-
-    const userMenuButtonRef = useRef<HTMLButtonElement>(null);
 
     const currentUser = useSelector(selectCurrentUser);
     const hasPendingWrites = useSelector(selectHasPendingWrites);
     const previousHasPendingWrites = usePrevious(hasPendingWrites);
     const { authSignOut } = useFirebaseAuthService();
 
-    useEffect(() => {
-        if (previousHasPendingWrites === true && hasPendingWrites === false) {
-            setIsSaveSuccessfulMessageOpen(true);
-        }
-    }, [previousHasPendingWrites, hasPendingWrites]);
+    // Detect save completion: pending writes just resolved
+    const justSaved = previousHasPendingWrites === true && hasPendingWrites === false;
+    if (justSaved && !isSaveSuccessfulMessageOpen) {
+        setIsSaveSuccessfulMessageOpen(true);
+    }
 
     const handleSignOutClick = async () => {
         await authSignOut();
@@ -97,18 +88,6 @@ export const AppHeader: React.FC = () => {
         return <Avatar sx={style} />;
     };
 
-    const renderUserMenu = () => (
-        <Menu
-            open={isUserMenuOpen}
-            onClose={() => setIsUserMenuOpen(false)}
-            anchorEl={userMenuButtonRef.current}
-        >
-            <MenuItem onClick={handleSignOutClick}>
-                <ListItemText primary="Kijelentkezés" />
-            </MenuItem>
-        </Menu>
-    );
-
     const renderUser = () => {
         if (!currentUser) return null;
         const { displayName, photoURL } = currentUser;
@@ -120,8 +99,7 @@ export const AppHeader: React.FC = () => {
                     width: "36px",
                     height: "36px",
                 }}
-                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                ref={userMenuButtonRef}
+                onClick={(e) => setUserMenuAnchorEl(userMenuAnchorEl ? null : e.currentTarget)}
                 disableRipple
                 size="large"
             >
@@ -148,7 +126,17 @@ export const AppHeader: React.FC = () => {
             </Box>
             {renderContactButton()}
             {currentUser && renderUser()}
-            {currentUser && renderUserMenu()}
+            {currentUser && (
+                <Menu
+                    open={Boolean(userMenuAnchorEl)}
+                    onClose={() => setUserMenuAnchorEl(null)}
+                    anchorEl={userMenuAnchorEl}
+                >
+                    <MenuItem onClick={handleSignOutClick}>
+                        <ListItemText primary="Kijelentkezés" />
+                    </MenuItem>
+                </Menu>
+            )}
             {!currentUser && (
                 <Button
                     variant="contained"

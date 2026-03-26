@@ -1,49 +1,40 @@
 import { Provider } from "react-redux";
-import { Store } from "redux";
 import { MatektaborApp } from "./components";
-import { ThemeProvider, Theme, StyledEngineProvider } from "@mui/material";
-import { StylesProvider } from "@mui/styles";
+import { ThemeProvider, StyledEngineProvider } from "@mui/material";
 import { LIGHT_THEME } from "./utils";
 import { FirebaseAppProvider } from "reactfire";
 import { FirebaseComponents } from "./components/FirebaseComponents";
-
-
-declare module "@mui/styles/defaultTheme" {
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  interface DefaultTheme extends Theme {}
-}
-
-
-// import './App.css';
+import { ErrorBoundary } from "./components/ErrorBoundary";
+import { AppStore } from "./store";
 
 const FIREBASE_APP_CONFIG = {
-    apiKey: "AIzaSyCe-gLA62Z68YVh_8jx-wCXuXksT-ZD3ws",
-    authDomain: "barkochba-app.web.app",
-    databaseURL: "https://barkochba-app.firebaseio.com",
-    projectId: "barkochba-app",
-    storageBucket: "barkochba-app.appspot.com",
-    messagingSenderId: "134084998344",
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
 };
 
 export interface IAppProps {
-  store: Store;
+  store: AppStore;
 }
 
 function App({ store }: IAppProps) {
     return (
-        <Provider store={store}>
-            <FirebaseAppProvider firebaseConfig={FIREBASE_APP_CONFIG}>
-                <FirebaseComponents>
-                    <StyledEngineProvider injectFirst>
-                        <ThemeProvider theme={LIGHT_THEME}>
-                            <StylesProvider injectFirst>
+        <ErrorBoundary>
+            <Provider store={store}>
+                <FirebaseAppProvider firebaseConfig={FIREBASE_APP_CONFIG}>
+                    <FirebaseComponents>
+                        <StyledEngineProvider injectFirst>
+                            <ThemeProvider theme={LIGHT_THEME}>
                                 <MatektaborApp />
-                            </StylesProvider>
-                        </ThemeProvider>
-                    </StyledEngineProvider>
-                </FirebaseComponents>
-            </FirebaseAppProvider>
-        </Provider>
+                            </ThemeProvider>
+                        </StyledEngineProvider>
+                    </FirebaseComponents>
+                </FirebaseAppProvider>
+            </Provider>
+        </ErrorBoundary>
     );
 }
 

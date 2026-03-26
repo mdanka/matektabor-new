@@ -1,5 +1,5 @@
 import { TextField, Typography } from "@mui/material";
-import Grid2 from "@mui/material/Unstable_Grid2";
+import { Grid as Grid2 } from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Auth, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink } from "firebase/auth";
 import { useLocalStorage } from "react-use";

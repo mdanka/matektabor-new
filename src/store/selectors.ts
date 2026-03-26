@@ -1,5 +1,5 @@
 import { IAppState, IStoriesState, IPersonsState, ICampsState, ICampRoomState, IBarkochbaOrdering } from "./state";
-import createCachedSelector from "re-reselect";
+import { createCachedSelector } from "re-reselect";
 import { createSelector } from "reselect";
 import { IStory, IPerson, ISelectOption, IWithId, ICamp } from "../commons";
 

@@ -1,27 +1,26 @@
-import { SetCurrentUser } from "../store";
+import { setCurrentUser } from "../store";
 import { User } from "firebase/auth";
 import { useStore } from "react-redux";
 import { useAuth } from "reactfire";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 export type IAuthStateListener = (user: User | undefined) => void;
-
-const authStateListeners: Array<IAuthStateListener> = [];
 
 export function useFirebaseAuthService() {
     const store = useStore();
     const firebaseAuth = useAuth();
+    const authStateListenersRef = useRef<Array<IAuthStateListener>>([]);
 
     const setUserInStore = useCallback((user: User | undefined) => {
-        store.dispatch(SetCurrentUser.create({ currentUser: user }));
+        store.dispatch(setCurrentUser({ currentUser: user }));
     }, [store]);
 
     const subscribeToAuthState = useCallback((authStateListener: IAuthStateListener) => {
-        authStateListeners.push(authStateListener);
+        authStateListenersRef.current.push(authStateListener);
     }, []);
 
     const notifyAuthStateListeners = useCallback((user: User | undefined) => {
-        authStateListeners.forEach(authStateListener => authStateListener(user));
+        authStateListenersRef.current.forEach(authStateListener => authStateListener(user));
     }, []);
 
     const handleAuthStateChange = useCallback((user: User | null) => {
@@ -30,7 +29,7 @@ export function useFirebaseAuthService() {
         setUserInStore(userOrUndefined);
         notifyAuthStateListeners(userOrUndefined);
     }, [setUserInStore, notifyAuthStateListeners]);
-    
+
     useEffect(() => {
         subscribeToAuthState(setUserInStore);
         firebaseAuth.onAuthStateChanged(handleAuthStateChange);

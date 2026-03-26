@@ -23,7 +23,6 @@ export function LogoutPanel() {
         const execute = async () => {
             setStatus("working");
             try {
-                auth.languageCode = "hu";
                 await auth.signOut();
                 setStatus("success");
             } catch (e) {

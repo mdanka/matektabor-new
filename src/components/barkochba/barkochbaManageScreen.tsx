@@ -3,7 +3,7 @@ import {
     IAppState,
     IBarkochbaManageState,
     selectBarkochbaManageState,
-    SetBarkochbaManageState,
+    setBarkochbaManageState,
     selectCampsAsSelectOptions,
     selectCamp,
     selectCampRoomPeopleAsOptions,
@@ -50,7 +50,7 @@ export const BarkochbaManageScreen: React.FC = () => {
     const { createPerson, createCamp, createRoom, updateCampRoom } = useDataService();
 
     const update = (fields: Partial<IBarkochbaManageState>) => {
-        dispatch(SetBarkochbaManageState.create(fields));
+        dispatch(setBarkochbaManageState(fields));
     };
 
     const getTextFieldUpdater = (fieldName: keyof IBarkochbaManageState) => (

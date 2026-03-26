@@ -13,9 +13,9 @@ import { ISelectOption } from "../../commons";
 import {
     selectCurrentListeningPersonsAsSelectOptions,
     selectPersonsAsSelectOptions,
-    SetCurrentListeningPersonIds,
+    setCurrentListeningPersonIds,
     selectBarkochbaDrawerIsOpen,
-    SetBarkochbaDrawerIsOpen,
+    setBarkochbaDrawerIsOpen,
     selectHasViewerRole,
     selectIsAllDataLoaded,
 } from "../../store";
@@ -42,19 +42,19 @@ export function BarkochbaScreen() {
 
     const handleCurrentListeningPersonsChange = (values: ISelectOption[]) => {
         const personIds = values.map((value) => value.value);
-        dispatch(SetCurrentListeningPersonIds.create({ currentListeningPersonIds: personIds }));
+        dispatch(setCurrentListeningPersonIds({ currentListeningPersonIds: personIds }));
     };
 
     const handleDrawerOpen = () => {
-        dispatch(SetBarkochbaDrawerIsOpen.create({ barkochbaDrawerIsOpen: true }));
+        dispatch(setBarkochbaDrawerIsOpen({ barkochbaDrawerIsOpen: true }));
     };
 
     const handleDrawerClose = () => {
-        dispatch(SetBarkochbaDrawerIsOpen.create({ barkochbaDrawerIsOpen: false }));
+        dispatch(setBarkochbaDrawerIsOpen({ barkochbaDrawerIsOpen: false }));
     };
 
     const handleDrawerToggle = () => {
-        dispatch(SetBarkochbaDrawerIsOpen.create({ barkochbaDrawerIsOpen: !barkochbaDrawerIsOpen }));
+        dispatch(setBarkochbaDrawerIsOpen({ barkochbaDrawerIsOpen: !barkochbaDrawerIsOpen }));
     };
 
     if (hasViewerRole === false) {
