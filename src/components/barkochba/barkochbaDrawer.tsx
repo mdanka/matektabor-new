@@ -1,13 +1,15 @@
 import { List, ListItemText, ListItemButton, Divider, ListItemIcon, Link, Box } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import TableChartIcon from "@mui/icons-material/TableChart";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 import { StoryBrowser } from "./storyBrowser";
 import { getNavUrl, Page } from "../../utils/navUtils";
 
 export function BarkochbaDrawer() {
+    const { pathname } = useLocation();
+
     return (
-        <Box sx={{ display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#FAFAF7", borderRight: "1px solid", borderColor: "divider" }}>
+        <Box component="nav" aria-label="Barkochba navigáció" sx={{ display: "flex", flexDirection: "column", height: "100%", backgroundColor: "background.default", borderRight: "1px solid", borderColor: "divider" }}>
             <Box sx={{ width: 1, flexShrink: 0 }}>
                 <List>
                     <Link
@@ -17,7 +19,7 @@ export function BarkochbaDrawer() {
                         to={getNavUrl[Page.BarkochbaExport](undefined)}
                         underline="hover"
                     >
-                        <ListItemButton sx={{ overflow: "hidden", whiteSpace: "nowrap" }}>
+                        <ListItemButton selected={pathname.startsWith("/barkochba/export")} sx={{ overflow: "hidden", whiteSpace: "nowrap" }}>
                             <ListItemIcon>
                                 <TableChartIcon />
                             </ListItemIcon>
@@ -31,7 +33,7 @@ export function BarkochbaDrawer() {
                         to={getNavUrl[Page.BarkochbaManage]()}
                         underline="hover"
                     >
-                        <ListItemButton sx={{ overflow: "hidden", whiteSpace: "nowrap" }}>
+                        <ListItemButton selected={pathname === "/barkochba/manage"} sx={{ overflow: "hidden", whiteSpace: "nowrap" }}>
                             <ListItemIcon>
                                 <EditIcon />
                             </ListItemIcon>

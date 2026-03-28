@@ -14,15 +14,17 @@ import {
     stringToSelectOption,
 } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
-import { Typography, TextField, Button, Paper, FormControl, FormHelperText } from "@mui/material";
+import { Typography, TextField, Button, Paper, FormControl, FormHelperText, Alert } from "@mui/material";
 import { ISelectOption } from "../../commons";
 import { PersonsSelector } from "./personsSelector";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import css from "./barkochbaManageScreen.module.scss";
 import { useDataService } from "../../hooks/useDataService";
+import { useState } from "react";
 
 export const BarkochbaManageScreen: React.FC = () => {
     const dispatch = useDispatch();
+    const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
     const manageState = useSelector(selectBarkochbaManageState);
     const availableCampsAsOptions = useSelector(selectCampsAsSelectOptions);
@@ -49,6 +51,18 @@ export const BarkochbaManageScreen: React.FC = () => {
     const allGroupsAsOptions = useSelector(selectGroupsAsSelectOptions);
     const { createPerson, createCamp, createRoom, updateCampRoom } = useDataService();
 
+    const setFieldError = (field: string, message: string) => {
+        setValidationErrors(prev => ({ ...prev, [field]: message }));
+    };
+
+    const clearFieldError = (field: string) => {
+        setValidationErrors(prev => {
+            const next = { ...prev };
+            delete next[field];
+            return next;
+        });
+    };
+
     const update = (fields: Partial<IBarkochbaManageState>) => {
         dispatch(setBarkochbaManageState(fields));
     };
@@ -58,6 +72,7 @@ export const BarkochbaManageScreen: React.FC = () => {
     ) => {
         const value = event.target.value;
         update({ [fieldName]: value });
+        clearFieldError(fieldName);
     };
 
     const getAutoCompleteFieldUpdater = (fieldName: keyof IBarkochbaManageState) => (
@@ -66,12 +81,17 @@ export const BarkochbaManageScreen: React.FC = () => {
     ) => {
         const newValue = value ? value.value : undefined;
         update({ [fieldName]: newValue });
+        clearFieldError(fieldName);
     };
 
     const handleNewPersonAdd = () => {
         const { newPersonName, newPersonGroup } = manageState;
-        if (!newPersonName || !newPersonGroup) {
-            console.error("Nem lehet személyt létrehozni üres névvel vagy csoporttal.");
+        if (!newPersonName) {
+            setFieldError("newPersonName", "A név megadása kötelező.");
+            return;
+        }
+        if (!newPersonGroup) {
+            setFieldError("newPersonGroup", "A csoport megadása kötelező.");
             return;
         }
         const newPerson = { name: newPersonName, group: newPersonGroup };
@@ -81,15 +101,19 @@ export const BarkochbaManageScreen: React.FC = () => {
 
     const handleNewCampAdd = () => {
         const { newCampGroup, newCampNumber } = manageState;
-        const newCampNumberParsed = parseInt(newCampNumber);
+        if (!newCampGroup) {
+            setFieldError("newCampGroup", "A csoport megadása kötelező.");
+            return;
+        }
+        if (!newCampNumber) {
+            setFieldError("newCampNumber", "A sorszám megadása kötelező.");
+            return;
+        }
         if (isNewCampNumberError(newCampNumber)) {
-            console.error("A tábor számának - meglepetés - nem-negatív egész számnak kell lennie.");
+            setFieldError("newCampNumber", "A tábor számának nem-negatív egész számnak kell lennie.");
             return;
         }
-        if (!newCampGroup || !newCampNumber) {
-            console.error("Nem lehet tábort létrehozni üres névvel vagy számmal");
-            return;
-        }
+        const newCampNumberParsed = parseInt(newCampNumber);
         const newCamp = { group: newCampGroup, number: newCampNumberParsed, rooms: {} };
         createCamp(newCamp);
         update({ newCampGroup: "", newCampNumber: "" });
@@ -97,11 +121,11 @@ export const BarkochbaManageScreen: React.FC = () => {
 
     const handleNewRoomAdd = (newRoomName: string) => {
         if (!selectedCamp) {
-            console.error("Előbb válassz tábort.");
+            setFieldError("roomsSelection", "Előbb válassz tábort.");
             return;
         }
         if (!newRoomName) {
-            console.error("Nem lehet szobát létrehozni üres névvel.");
+            setFieldError("roomsSelection", "Nem lehet szobát létrehozni üres névvel.");
             return;
         }
         createRoom(selectedCamp, newRoomName);
@@ -110,6 +134,7 @@ export const BarkochbaManageScreen: React.FC = () => {
     const handleCampChange = (_event: React.ChangeEvent<unknown>, value: ISelectOption | null) => {
         const newCampId = value ? value.value : undefined;
         update({ roomsSelectionCampId: newCampId });
+        clearFieldError("roomsSelection");
     };
 
     const handleRoomChange = (_event: React.ChangeEvent<unknown>, value: ISelectOption | null) => {
@@ -118,6 +143,7 @@ export const BarkochbaManageScreen: React.FC = () => {
         }
         const newRoomName = value ? value.value : undefined;
         update({ roomsSelectionRoomName: newRoomName });
+        clearFieldError("roomsSelection");
     };
 
     const handleRoomPersonsChange = (values: ISelectOption[]) => {
@@ -134,7 +160,7 @@ export const BarkochbaManageScreen: React.FC = () => {
     };
 
     const renderGroupSelector = (fieldName: keyof IBarkochbaManageState, value: string | null) => (
-        <FormControl variant="standard" fullWidth>
+        <FormControl variant="standard" fullWidth error={!!validationErrors[fieldName]}>
             <Autocomplete
                 options={allGroupsAsOptions}
                 value={value == null ? null : stringToSelectOption(value)}
@@ -148,11 +174,11 @@ export const BarkochbaManageScreen: React.FC = () => {
                     return filtered;
                 }}
                 renderInput={params => (
-                    <TextField {...params} label="Csoport" placeholder="Pl. Beluga" variant="filled" />
+                    <TextField {...params} label="Csoport" placeholder="Pl. Beluga" variant="filled" error={!!validationErrors[fieldName]} />
                 )}
                 getOptionLabel={(option: ISelectOption) => option.label}
             />
-            <FormHelperText>Pl. "Beluga"</FormHelperText>
+            <FormHelperText>{validationErrors[fieldName] || "Pl. \"Beluga\""}</FormHelperText>
         </FormControl>
     );
 
@@ -162,7 +188,7 @@ export const BarkochbaManageScreen: React.FC = () => {
             <Paper className={css.barkochbaManagePanel} elevation={0} sx={{ border: "1px solid", borderColor: "divider", borderRadius: { xs: 3, sm: 4 } }}>
                 <Typography variant="h5" sx={{ fontWeight: 700 }}>Új gyerek</Typography>
                 <div className={css.barkochbaManageFormStack}>
-                    <FormControl variant="standard" fullWidth>
+                    <FormControl variant="standard" fullWidth error={!!validationErrors.newPersonName}>
                         <TextField
                             variant="filled"
                             value={newPersonName}
@@ -170,6 +196,8 @@ export const BarkochbaManageScreen: React.FC = () => {
                             placeholder="Tóth János"
                             label="Név"
                             fullWidth
+                            error={!!validationErrors.newPersonName}
+                            helperText={validationErrors.newPersonName}
                         />
                     </FormControl>
                     {renderGroupSelector("newPersonGroup", newPersonGroup)}
@@ -188,7 +216,7 @@ export const BarkochbaManageScreen: React.FC = () => {
                 <Typography variant="h5" sx={{ fontWeight: 700 }}>Új tábor</Typography>
                 <div className={css.barkochbaManageFormStack}>
                     {renderGroupSelector("newCampGroup", newCampGroup)}
-                    <FormControl variant="standard" fullWidth>
+                    <FormControl variant="standard" fullWidth error={!!validationErrors.newCampNumber}>
                         <TextField
                             variant="filled"
                             value={newCampNumber}
@@ -196,10 +224,13 @@ export const BarkochbaManageScreen: React.FC = () => {
                             label="Sorszám"
                             placeholder="3"
                             type="number"
-                            error={isNewCampNumberError(newCampNumber)}
+                            error={isNewCampNumberError(newCampNumber) || !!validationErrors.newCampNumber}
+                            helperText={validationErrors.newCampNumber}
                             fullWidth
                         />
-                        <FormHelperText>Pl. "3", mint a "Beluga/3"-ban</FormHelperText>
+                        {!validationErrors.newCampNumber && (
+                            <FormHelperText>Pl. "3", mint a "Beluga/3"-ban</FormHelperText>
+                        )}
                     </FormControl>
                     <Button variant="contained" color="secondary" onClick={handleNewCampAdd} sx={{ alignSelf: { xs: "stretch", sm: "flex-start" } }}>
                         Létrehozás
@@ -216,6 +247,11 @@ export const BarkochbaManageScreen: React.FC = () => {
         return (
             <Paper className={css.barkochbaManagePanel} elevation={0} sx={{ border: "1px solid", borderColor: "divider", borderRadius: { xs: 3, sm: 4 } }}>
                 <Typography variant="h5" sx={{ fontWeight: 700 }}>Szobabeosztás</Typography>
+                {validationErrors.roomsSelection && (
+                    <Alert severity="error" sx={{ mt: 2 }} onClose={() => clearFieldError("roomsSelection")}>
+                        {validationErrors.roomsSelection}
+                    </Alert>
+                )}
                 <Typography className={css.barkochbaManageSubtitle} variant="subtitle1">
                     Melyik tábor?
                 </Typography>
@@ -271,7 +307,7 @@ export const BarkochbaManageScreen: React.FC = () => {
             </Paper>
         );
     };
-    
+
     return (
         <div className={css.barkochbaManageContainer}>
             {renderPersonAdd()}
