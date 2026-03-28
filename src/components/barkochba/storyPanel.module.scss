@@ -1,9 +1,17 @@
-div.peopleWhoKnow {
-    display: block;
+.storyPanel {
+    padding: 16px;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
 }
 
-.doneButton {
-    float: right;
+@media (min-width: 600px) {
+    .storyPanel {
+        padding: 24px;
+    }
+}
+
+div.peopleWhoKnow {
+    display: block;
 }
 
 .buttonIcon {
@@ -12,18 +20,50 @@ div.peopleWhoKnow {
 }
 
 .emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 40vh;
+    gap: 16px;
     padding: 20px;
+}
+
+.emptyStateIcon {
+    font-size: 80px;
+    color: rgba(0, 0, 0, 0.15);
+}
+
+.storyDescription {
+    padding: 16px;
+    background-color: #FAFAF7;
+    border-radius: 12px;
+    margin-bottom: 16px;
+}
+
+.storyTitleRow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 8px;
 }
 
 .peopleWhoKnowAdd {
     display: flex;
-    flex-direction: row;
-    margin-bottom: 20px
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+@media (min-width: 600px) {
+    .peopleWhoKnowAdd {
+        flex-direction: row;
+    }
 }
 
 .peopleWhoKnowAddSelector {
     flex-grow: 1;
-    margin-right: 20px;
 }
 
 .peopleWhoKnowAddButton {
