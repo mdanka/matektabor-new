@@ -35,10 +35,11 @@ export const AppHeader: React.FC = () => {
     const { authSignOut } = useFirebaseAuthService();
 
     // Detect save completion: pending writes just resolved
-    const justSaved = previousHasPendingWrites === true && hasPendingWrites === false;
-    if (justSaved && !isSaveSuccessfulMessageOpen) {
-        setIsSaveSuccessfulMessageOpen(true);
-    }
+    React.useEffect(() => {
+        if (previousHasPendingWrites === true && hasPendingWrites === false) {
+            setIsSaveSuccessfulMessageOpen(true);
+        }
+    }, [previousHasPendingWrites, hasPendingWrites]);
 
     const handleSignOutClick = async () => {
         await authSignOut();
