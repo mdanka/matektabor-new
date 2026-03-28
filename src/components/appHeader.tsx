@@ -110,7 +110,7 @@ export const AppHeader: React.FC = () => {
     };
 
     return (
-        <Box sx={(theme) => ({
+        <Box component="header" sx={(theme) => ({
             height: { xs: "56px", sm: "64px" },
             color: "text.primary",
             background: "linear-gradient(135deg, rgba(255,248,231,0.95) 0%, rgba(255,243,214,0.95) 100%)",
@@ -180,7 +180,7 @@ export const AppHeader: React.FC = () => {
             <Snackbar anchorOrigin={{ horizontal: "center", vertical: "bottom" }} open={hasPendingWrites}>
                 <SnackbarContent
                     message={<span>Mentés... (ha nem vagy online, csatlakozz)</span>}
-                    sx={{ backgroundColor: "primary.main", color: "text.primary" }}
+                    sx={{ backgroundColor: "primary.dark", color: "common.white" }}
                 />
             </Snackbar>
             <Snackbar

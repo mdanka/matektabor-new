@@ -80,6 +80,10 @@ When testing in a headless browser (e.g. Claude Preview), the Google sign-in pop
 
 > **Note:** The Vite chunk filename (`chunk-NF6UUSPI.js?v=325639f1`) may change after dependency updates. If the import fails, find the correct chunk by searching for `signInWithEmailAndPassword` in the browser's network/sources tab.
 
+## Do Not Modify
+
+- **Export screen** (`barkochbaExportScreen.tsx` and `barkochbaExportScreen.module.scss`): The export page uses intentionally different styling (Times New Roman, raw HTML tables) for legacy reasons. Do not restyle or "modernize" it.
+
 ## Deployment
 
 - Web app auto-deploys via GitHub Actions on merge to `main`

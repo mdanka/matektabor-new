@@ -28,13 +28,14 @@ service cloud.firestore {
           areSetsEqual(request.writeFields, ["usersWhoStarred"])
           && (
             // Adding yourself: new list is old list + your uid
-            (request.resource.data.usersWhoStarred.hasAll(resource.data.usersWhoStarred)
-              && request.resource.data.usersWhoStarred.size() == resource.data.usersWhoStarred.size() + 1
+            // Use get() with default [] to handle stories created before the starring feature
+            (request.resource.data.usersWhoStarred.hasAll(resource.data.get('usersWhoStarred', []))
+              && request.resource.data.usersWhoStarred.size() == resource.data.get('usersWhoStarred', []).size() + 1
               && request.resource.data.usersWhoStarred.hasAll([request.auth.uid]))
             ||
             // Removing yourself: new list is old list minus your uid
-            (resource.data.usersWhoStarred.hasAll(request.resource.data.usersWhoStarred)
-              && request.resource.data.usersWhoStarred.size() == resource.data.usersWhoStarred.size() - 1
+            (resource.data.get('usersWhoStarred', []).hasAll(request.resource.data.usersWhoStarred)
+              && request.resource.data.usersWhoStarred.size() == resource.data.get('usersWhoStarred', []).size() - 1
               && !request.resource.data.usersWhoStarred.hasAll([request.auth.uid]))
           )
         )

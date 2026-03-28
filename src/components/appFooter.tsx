@@ -4,10 +4,10 @@ import { CONTACT_HREF } from "../utils";
 
 export function AppFooter() {
     return (
-        <Box sx={{
+        <Box component="footer" sx={{
             height: "56px",
             color: "text.secondary",
-            backgroundColor: "#F5F5F0",
+            backgroundColor: "background.default",
             padding: "10px 20px",
             display: "flex",
             alignItems: "center",

@@ -16,7 +16,7 @@ import css from "./matektaborApp.module.scss";
 import { LoginPanel } from "./auth/LoginPanel";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useDataService } from "../hooks/useDataService";
-import { Container } from "@mui/material";
+import { Box, Container } from "@mui/material";
 
 export const MatektaborApp: FC = () => {
     useDataService(); // this is included to trigger fetching all the data
@@ -121,7 +121,31 @@ export const MatektaborApp: FC = () => {
                     <title>{getNavUrlSimpleTitle[Page.Home]}</title>
                 </Helmet>
                 <div className={css.matektaborApp}>
-                    <div className={css.appContent}>
+                    <Box
+                        component="a"
+                        href="#main-content"
+                        sx={{
+                            position: "absolute",
+                            left: "-9999px",
+                            top: "auto",
+                            width: "1px",
+                            height: "1px",
+                            overflow: "hidden",
+                            "&:focus": {
+                                position: "static",
+                                width: "auto",
+                                height: "auto",
+                                padding: "8px 16px",
+                                backgroundColor: "secondary.main",
+                                color: "common.white",
+                                zIndex: 9999,
+                                textAlign: "center",
+                            },
+                        }}
+                    >
+                        Ugrás a tartalomhoz
+                    </Box>
+                    <Box component="main" id="main-content" className={css.appContent}>
                         <Routes>
                             <Route path={getNavUrlTemplate[Page.Home]} element={renderHome()} />
                             <Route path={getNavUrlTemplate[Page.SignIn]} element={renderRouteAuth()} />
@@ -132,7 +156,7 @@ export const MatektaborApp: FC = () => {
                             <Route path={getNavUrlTemplate[Page.PrivacyPolicy]} element={renderPrivacyPolicy()} />
                             <Route path="*" element={renderRedirectToHome()} />
                         </Routes>
-                    </div>
+                    </Box>
                 </div>
             </HelmetProvider>
         </ScrollToTop>
