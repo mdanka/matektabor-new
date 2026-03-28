@@ -6,7 +6,7 @@ import {
     SwipeableDrawer,
     Button,
     Box,
-    CircularProgress,
+    Skeleton,
 } from "@mui/material";
 import { PersonsSelector } from "./personsSelector";
 import { ISelectOption } from "../../commons";
@@ -69,15 +69,21 @@ export function BarkochbaScreen() {
 
     if (hasViewerRole === undefined || !isAllDataLoaded) {
         return (
-            <Box className={css.barkochbaScreen} sx={{ padding: 5, display: "flex", justifyContent: "center" }}>
-                <CircularProgress />
+            <Box className={css.barkochbaScreen} sx={{ padding: { xs: 2, sm: 3 } }}>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2, width: "100%" }}>
+                    <Skeleton variant="rounded" height={56} sx={{ borderRadius: 3 }} />
+                    <Skeleton variant="rounded" height={200} sx={{ borderRadius: 3 }} />
+                    {[1, 2, 3].map(i => (
+                        <Skeleton key={i} variant="rounded" height={48} sx={{ borderRadius: 2 }} />
+                    ))}
+                </Box>
             </Box>
         )
     }
 
     return (
         <div className={css.barkochbaScreen}>
-            <Box component="div" sx={{ display: { xs: "none", sm: "block" } }}>
+            <Box component="div" sx={{ display: { xs: "none", sm: "block" }, width: 320, flexShrink: 0 }}>
                 <BarkochbaDrawer />
             </Box>
             <Box
@@ -107,15 +113,16 @@ export function BarkochbaScreen() {
                 >
                     <Button
                         className={css.barkochbaScreenDrawerToggleButton}
-                        variant="contained"
+                        variant="outlined"
+                        color="secondary"
                         onClick={handleDrawerToggle}
+                        startIcon={<MenuIcon />}
                     >
-                        <MenuIcon className={css.barkochbaScreenDrawerToggleButtonIcon} />
                         Navigáció és barkochbatörténetek
                     </Button>
                 </Box>
                 <div className={css.barkochbaScreenPersonSelector}>
-                    <Accordion elevation={2} defaultExpanded={true}>
+                    <Accordion elevation={0} defaultExpanded={true}>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography variant="subtitle1">{personSelectorTitle}</Typography>
                         </AccordionSummary>

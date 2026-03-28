@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { ICamp, IStory } from "../../commons";
 import { IAppState, selectStoriesOrderedByNumber, selectPersons } from "../../store";
 import { selectCamp, selectCampsListOrderedByNameAndNumber } from "../../store/selectors";
-import { Link, List, ListItemButton, ListItemText } from "@mui/material";
+import { Box, Link, List, ListItemButton, ListItemText, Paper, Typography } from "@mui/material";
 import { Link as RouterLink, useParams } from "react-router-dom";
 import { Page, getNavUrl } from "../../utils/navUtils";
 import css from "./barkochbaExportScreen.module.scss";
@@ -77,20 +77,38 @@ export function BarkochbaExportScreen() {
                 color="textPrimary"
                 component={RouterLink}
                 to={getNavUrl[Page.BarkochbaExport](id)}
-                underline="hover"
+                underline="none"
             >
-                <ListItemButton divider={true}>
-                    <ListItemText primary={`${group}/${number}`} />
-                </ListItemButton>
+                <Paper
+                    elevation={0}
+                    sx={{
+                        mb: 1,
+                        border: "1px solid",
+                        borderColor: "divider",
+                        borderRadius: 3,
+                        transition: "box-shadow 0.2s ease, border-color 0.2s ease",
+                        "&:hover": {
+                            boxShadow: 2,
+                            borderColor: "secondary.light",
+                        },
+                    }}
+                >
+                    <ListItemButton sx={{ borderRadius: 3 }}>
+                        <ListItemText primary={`${group}/${number}`} />
+                    </ListItemButton>
+                </Paper>
             </Link>
         );
     }, []);
 
     const renderCampSelector = useCallback(() => {
         return (
-            <List>
-                {camps.map(renderCampItem)}
-            </List>
+            <Box sx={{ padding: { xs: "16px", sm: "32px 24px" }, maxWidth: 600, margin: "0 auto" }}>
+                <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>Válassz tábort</Typography>
+                <List disablePadding>
+                    {camps.map(renderCampItem)}
+                </List>
+            </Box>
         );
     }, [camps, renderCampItem]);
 

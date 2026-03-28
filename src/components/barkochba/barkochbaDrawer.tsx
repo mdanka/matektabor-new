@@ -7,7 +7,7 @@ import { getNavUrl, Page } from "../../utils/navUtils";
 
 export function BarkochbaDrawer() {
     return (
-        <Box sx={{ display: "flex", flexDirection: "column", maxHeight: "100vh" }}>
+        <Box sx={{ display: "flex", flexDirection: "column", height: "100%", backgroundColor: "#FAFAF7", borderRight: "1px solid", borderColor: "divider" }}>
             <Box sx={{ width: 1, flexShrink: 0 }}>
                 <List>
                     <Link

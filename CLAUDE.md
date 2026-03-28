@@ -41,6 +41,45 @@ Node 18 required (see .nvmrc). Uses Yarn as package manager.
 - Unused variables prefixed with `_` are allowed
 - ESLint flat config in `eslint.config.js`
 
+## Local Testing with Firebase Emulator
+
+When testing in a headless browser (e.g. Claude Preview), the Google sign-in popup will be blocked. To sign in programmatically against the Firebase Auth emulator:
+
+1. Make sure the app is loaded from `localhost` (not `127.0.0.1`) so emulator connections work.
+2. The seed data includes two test users (see `seed-data/auth_export/accounts.json`):
+   - **Test User** (`test.user@email.com`, uid: `tZ9LlYdP4tvP3sbE4Hj3lsDNglrc`) — has viewer role
+   - **No Access** (`no.access@email.com`, uid: `0Zo5giDXGAW8q4w2nKHGcjOM3hYG`) — no access
+3. Sign in via the browser console using a fake Google credential (emulator accepts JSON as id_token):
+
+```js
+(async () => {
+  const authModule = await import('/node_modules/.vite/deps/chunk-NF6UUSPI.js?v=325639f1');
+  const auth = authModule.getAuth();
+  await authModule.signOut(auth);
+  const fakeIdToken = JSON.stringify({
+    sub: 'tZ9LlYdP4tvP3sbE4Hj3lsDNglrc',
+    email: 'test.user@email.com',
+    email_verified: true,
+    name: 'Test User'
+  });
+  await fetch('http://127.0.0.1:9099/identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=fake', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      postBody: 'id_token=' + encodeURIComponent(fakeIdToken) + '&providerId=google.com',
+      requestUri: 'http://localhost',
+      returnIdpCredential: true,
+      returnSecureToken: true
+    })
+  });
+  const credential = authModule.GoogleAuthProvider.credential(fakeIdToken);
+  const result = await authModule.signInWithCredential(auth, credential);
+  console.log('Signed in as:', result.user.email, 'uid:', result.user.uid);
+})();
+```
+
+> **Note:** The Vite chunk filename (`chunk-NF6UUSPI.js?v=325639f1`) may change after dependency updates. If the import fails, find the correct chunk by searching for `signInWithEmailAndPassword` in the browser's network/sources tab.
+
 ## Deployment
 
 - Web app auto-deploys via GitHub Actions on merge to `main`

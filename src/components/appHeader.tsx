@@ -5,7 +5,6 @@ import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import {
     Button,
     Link,
-    Icon,
     Avatar,
     IconButton,
     Menu,
@@ -16,14 +15,12 @@ import {
     Box,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import { CONTACT_HREF } from "../utils";
 import { singInAndReturn, getNavUrl, Page } from "../utils/navUtils";
-import { amber } from "@mui/material/colors";
-import { green } from "@mui/material/colors";
 import { useState } from "react";
 import { useFirebaseAuthService } from "../hooks/useFirebaseAuthService";
 import { usePrevious } from "../hooks/usePrevious";
-import { lighten } from "@mui/material/styles";
 
 export const AppHeader: React.FC = () => {
     const [userMenuAnchorEl, setUserMenuAnchorEl] = useState<HTMLElement | null>(null);
@@ -55,24 +52,25 @@ export const AppHeader: React.FC = () => {
     const renderContactButton = () => (
         <IconButton
             sx={{
-                width: "36px",
-                height: "36px",
-                fontSize: "16px",
-                color: "black",
+                color: "text.secondary",
+                "&:hover": {
+                    color: "text.primary",
+                    backgroundColor: "rgba(0,0,0,0.04)",
+                },
             }}
             href={CONTACT_HREF}
             disableRipple
             size="large"
         >
-            <Icon>email</Icon>
+            <EmailOutlinedIcon fontSize="small" />
         </IconButton>
     );
 
     const renderAvatar = (photoUrl: string | undefined, displayName?: string) => {
         const style = {
-            width: "30px",
-            height: "30px",
-            color: "black",
+            width: 32,
+            height: 32,
+            fontSize: 14,
         };
         if (photoUrl) {
             return <Avatar sx={style} src={photoUrl} />;
@@ -95,9 +93,12 @@ export const AppHeader: React.FC = () => {
         return (
             <IconButton
                 sx={{
-                    marginLeft: "10px",
-                    width: "36px",
-                    height: "36px",
+                    marginLeft: "8px",
+                    "&:hover": {
+                        outline: "2px solid",
+                        outlineColor: "secondary.light",
+                        outlineOffset: 1,
+                    },
                 }}
                 onClick={(e) => setUserMenuAnchorEl(userMenuAnchorEl ? null : e.currentTarget)}
                 disableRipple
@@ -110,17 +111,29 @@ export const AppHeader: React.FC = () => {
 
     return (
         <Box sx={(theme) => ({
-            height: "60px",
-            color: "black",
-            backgroundColor: lighten(theme.palette.primary.main, 0.5),
-            padding: "10px 20px 10px 20px",
+            height: { xs: "56px", sm: "64px" },
+            color: "text.primary",
+            background: "linear-gradient(135deg, rgba(255,248,231,0.95) 0%, rgba(255,243,214,0.95) 100%)",
+            backdropFilter: "blur(8px)",
+            padding: { xs: "8px 12px", sm: "10px 20px" },
             display: "flex",
             alignItems: "center",
-            borderBottom: "1px solid",
-            borderColor: theme.palette.divider,
+            boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+            position: "sticky",
+            top: 0,
+            zIndex: theme.zIndex.appBar,
         })}>
-            <Box sx={{ fontSize: "18px", flexGrow: 1 }}>
-                <Link component={RouterLink} to={getNavUrl[Page.Home]()} underline="hover" sx={{ color: "black", fontWeight: "bold", fontFamily: "Roboto" }}>
+            <Box sx={{ fontSize: { xs: "18px", sm: "20px" }, flexGrow: 1 }}>
+                <Link
+                    component={RouterLink}
+                    to={getNavUrl[Page.Home]()}
+                    underline="hover"
+                    sx={{
+                        color: "text.primary",
+                        fontWeight: 700,
+                        fontFamily: "Inter, system-ui, sans-serif",
+                    }}
+                >
                     Matektábor
                 </Link>
             </Box>
@@ -164,23 +177,30 @@ export const AppHeader: React.FC = () => {
                     </IconButton>
                 }
             />
-            <Snackbar anchorOrigin={{ horizontal: "right", vertical: "top" }} open={hasPendingWrites}>
+            <Snackbar anchorOrigin={{ horizontal: "center", vertical: "bottom" }} open={hasPendingWrites}>
                 <SnackbarContent
                     message={<span>Mentés... (ha nem vagy online, csatlakozz)</span>}
-                    style={{ backgroundColor: amber[200] }}
+                    sx={{ backgroundColor: "primary.main", color: "text.primary" }}
                 />
             </Snackbar>
             <Snackbar
                 autoHideDuration={3000}
-                anchorOrigin={{ horizontal: "right", vertical: "top" }}
+                anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
                 open={isSaveSuccessfulMessageOpen}
                 onClose={() => setIsSaveSuccessfulMessageOpen(false)}
-            >
-                <SnackbarContent
-                    message={<span>A mentés sikeres volt</span>}
-                    style={{ backgroundColor: green[200] }}
-                />
-            </Snackbar>
+                message="A mentés sikeres volt"
+                ContentProps={{ sx: { backgroundColor: "success.main", color: "white" } }}
+                action={
+                    <IconButton
+                        aria-label="Close"
+                        color="inherit"
+                        onClick={() => setIsSaveSuccessfulMessageOpen(false)}
+                        size="small"
+                    >
+                        <CloseIcon fontSize="small" />
+                    </IconButton>
+                }
+            />
         </Box>
     );
 };

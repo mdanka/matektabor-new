@@ -3,6 +3,7 @@
     display: flex;
     flex-direction: row;
     width: 100%;
+    overflow-x: hidden;
 }
 
 .barkochbaScreenContentArea {
@@ -10,10 +11,19 @@
     flex-direction: column;
     flex-grow: 1;
     max-width: 100%;
+    min-width: 0;
+    min-height: 0;
+    overflow-x: hidden;
 }
 
 .barkochbaScreenDrawerToggle {
-    padding: 20px 20px 0 20px;
+    padding: 16px 16px 0 16px;
+}
+
+@media (min-width: 600px) {
+    .barkochbaScreenDrawerToggle {
+        padding: 20px 24px 0 24px;
+    }
 }
 
 .barkochbaScreenDrawerToggleButton {
@@ -25,13 +35,26 @@
 }
 
 .barkochbaScreenPersonSelector {
-    padding: 20px;
+    padding: 16px;
+}
+
+@media (min-width: 600px) {
+    .barkochbaScreenPersonSelector {
+        padding: 24px;
+    }
 }
 
 .barkochbaScreenPanel {
-    max-height: 70vh;
+    flex: 1;
     overflow: auto;
-    padding: 0 20px 20px 20px;
+    min-height: 0;
+    padding: 0 16px 16px 16px;
+}
+
+@media (min-width: 600px) {
+    .barkochbaScreenPanel {
+        padding: 0 24px 24px 24px;
+    }
 }
 
 .personSelectorContent {
@@ -41,6 +64,7 @@
 // DRAWER
 
 .barkochbaScreenMobileDrawerPaper {
-    width: 80vw;
+    width: 85vw;
     height: 100%;
+    overflow: hidden;
 }

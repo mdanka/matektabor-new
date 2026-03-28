@@ -1,14 +1,40 @@
+.barkochbaManageContainer {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+@media (min-width: 600px) {
+    .barkochbaManageContainer {
+        padding: 32px 24px;
+        gap: 24px;
+        max-width: 768px;
+        margin: 0 auto;
+    }
+}
+
 .barkochbaManagePanel {
-    margin: 40px;
-    padding: 20px;
+    padding: 20px 16px;
+}
+
+@media (min-width: 600px) {
+    .barkochbaManagePanel {
+        padding: 32px;
+    }
 }
 
 .barkochbaManageSubtitle {
-    padding-top: 40px;
+    padding-top: 24px;
+}
+
+.barkochbaManageFormStack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
 }
 
 div.barkochbaManageInput {
-    margin-right: 20px;
-    display: inline-block;
-    min-width: 170px;
+    width: 100%;
 }

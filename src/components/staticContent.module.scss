@@ -1,3 +1,11 @@
 .staticContent {
-    padding: 20px 40px;
+    padding: 24px 16px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+@media (min-width: 600px) {
+    .staticContent {
+        padding: 32px 24px;
+    }
 }

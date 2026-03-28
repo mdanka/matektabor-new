@@ -15,7 +15,6 @@ import {
     ListItemButton,
     Chip,
     Tooltip,
-    Avatar,
     IconButton,
     Divider,
     ListSubheader,
@@ -92,28 +91,29 @@ export const StoryBrowser: FC = () => {
                 />
                 <Tooltip title="Ennyien hallották már" placement="bottom">
                     <Chip
-                        className={css.itemLabelHeardNumber}
-                        avatar={
-                            <Avatar>
-                                <PersonIcon />
-                            </Avatar>
-                        }
+                        size="small"
+                        variant="outlined"
+                        icon={<PersonIcon />}
                         label={personsWhoKnow.length.toString()}
                     />
                 </Tooltip>
                 <Tooltip title="Ennyien kedvelik" placement="bottom">
                     <Chip
-                        avatar={
-                            <Avatar>
-                                <StarRateIcon />
-                            </Avatar>
-                        }
+                        size="small"
+                        variant="outlined"
+                        icon={<StarRateIcon />}
                         label={numberWhoStarred.toString()}
+                        sx={{ ml: 0.5 }}
                     />
                 </Tooltip>
                 <IconButton
                     onClick={handleStarClick(storyId, !isStarredForCurrentUser)}
                     size="large"
+                    sx={{
+                        transition: "transform 0.15s ease",
+                        "&:active": { transform: "scale(0.9)" },
+                        color: isStarredForCurrentUser ? "primary.main" : "text.secondary",
+                    }}
                 >
                     {isStarredForCurrentUser ? <StarIcon /> : <StarBorderIcon />}
                 </IconButton>
@@ -123,20 +123,20 @@ export const StoryBrowser: FC = () => {
 
     return (
         <div className={css.storyBrowser}>
-            <List subheader={<ListSubheader disableSticky>Rendezés</ListSubheader>}>
+            <List subheader={<ListSubheader disableSticky sx={{ fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", color: "text.secondary" }}>Rendezés</ListSubheader>}>
                 <ListItem>
                     <BarkochbaSortingSelector />
                 </ListItem>
             </List>
             {starredStories.length > 0 && (
                 <div>
-                    <List subheader={<ListSubheader disableSticky>Kedvencek</ListSubheader>}>
+                    <List subheader={<ListSubheader disableSticky sx={{ fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", color: "text.secondary" }}>Kedvencek</ListSubheader>}>
                         {starredStories.map(renderStory)}
                     </List>
                     <Divider />
                 </div>
             )}
-            <List subheader={<ListSubheader disableSticky>Összes barkochbatörténet</ListSubheader>}>
+            <List subheader={<ListSubheader disableSticky sx={{ fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", color: "text.secondary" }}>Összes barkochbatörténet</ListSubheader>}>
                 {stories.map(renderStory)}
             </List>
         </div>

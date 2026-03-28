@@ -134,9 +134,8 @@ export const BarkochbaManageScreen: React.FC = () => {
     };
 
     const renderGroupSelector = (fieldName: keyof IBarkochbaManageState, value: string | null) => (
-        <FormControl variant="standard">
+        <FormControl variant="standard" fullWidth>
             <Autocomplete
-                className={css.barkochbaManageInput}
                 options={allGroupsAsOptions}
                 value={value == null ? null : stringToSelectOption(value)}
                 onChange={getAutoCompleteFieldUpdater(fieldName)}
@@ -160,22 +159,24 @@ export const BarkochbaManageScreen: React.FC = () => {
     const renderPersonAdd = () => {
         const { newPersonName, newPersonGroup } = manageState;
         return (
-            <Paper className={css.barkochbaManagePanel} elevation={2}>
-                <Typography variant="h5">Új gyerek</Typography>
-                <FormControl variant="standard">
-                    <TextField
-                        variant="filled"
-                        value={newPersonName}
-                        onChange={getTextFieldUpdater("newPersonName")}
-                        className={css.barkochbaManageInput}
-                        placeholder="Tóth János"
-                        label="Név"
-                    />
-                </FormControl>
-                {renderGroupSelector("newPersonGroup", newPersonGroup)}
-                <Button variant="contained" color="primary" onClick={handleNewPersonAdd}>
-                    Létrehozás
-                </Button>
+            <Paper className={css.barkochbaManagePanel} elevation={0} sx={{ border: "1px solid", borderColor: "divider", borderRadius: { xs: 3, sm: 4 } }}>
+                <Typography variant="h5" sx={{ fontWeight: 700 }}>Új gyerek</Typography>
+                <div className={css.barkochbaManageFormStack}>
+                    <FormControl variant="standard" fullWidth>
+                        <TextField
+                            variant="filled"
+                            value={newPersonName}
+                            onChange={getTextFieldUpdater("newPersonName")}
+                            placeholder="Tóth János"
+                            label="Név"
+                            fullWidth
+                        />
+                    </FormControl>
+                    {renderGroupSelector("newPersonGroup", newPersonGroup)}
+                    <Button variant="contained" color="secondary" onClick={handleNewPersonAdd} sx={{ alignSelf: { xs: "stretch", sm: "flex-start" } }}>
+                        Létrehozás
+                    </Button>
+                </div>
             </Paper>
         );
     };
@@ -183,25 +184,27 @@ export const BarkochbaManageScreen: React.FC = () => {
     const renderCampAdd = () => {
         const { newCampGroup, newCampNumber } = manageState;
         return (
-            <Paper className={css.barkochbaManagePanel} elevation={2}>
-                <Typography variant="h5">Új tábor</Typography>
-                {renderGroupSelector("newCampGroup", newCampGroup)}
-                <FormControl variant="standard">
-                    <TextField
-                        variant="filled"
-                        value={newCampNumber}
-                        onChange={getTextFieldUpdater("newCampNumber")}
-                        className={css.barkochbaManageInput}
-                        label="Sorszám"
-                        placeholder="3"
-                        type="number"
-                        error={isNewCampNumberError(newCampNumber)}
-                    />
-                    <FormHelperText>Pl. "3", mint a "Beluga/3"-ban</FormHelperText>
-                </FormControl>
-                <Button variant="contained" color="primary" onClick={handleNewCampAdd}>
-                    Létrehozás
-                </Button>
+            <Paper className={css.barkochbaManagePanel} elevation={0} sx={{ border: "1px solid", borderColor: "divider", borderRadius: { xs: 3, sm: 4 } }}>
+                <Typography variant="h5" sx={{ fontWeight: 700 }}>Új tábor</Typography>
+                <div className={css.barkochbaManageFormStack}>
+                    {renderGroupSelector("newCampGroup", newCampGroup)}
+                    <FormControl variant="standard" fullWidth>
+                        <TextField
+                            variant="filled"
+                            value={newCampNumber}
+                            onChange={getTextFieldUpdater("newCampNumber")}
+                            label="Sorszám"
+                            placeholder="3"
+                            type="number"
+                            error={isNewCampNumberError(newCampNumber)}
+                            fullWidth
+                        />
+                        <FormHelperText>Pl. "3", mint a "Beluga/3"-ban</FormHelperText>
+                    </FormControl>
+                    <Button variant="contained" color="secondary" onClick={handleNewCampAdd} sx={{ alignSelf: { xs: "stretch", sm: "flex-start" } }}>
+                        Létrehozás
+                    </Button>
+                </div>
             </Paper>
         );
     };
@@ -211,49 +214,46 @@ export const BarkochbaManageScreen: React.FC = () => {
         const currentCampOption = selectedCamp ? campToSelectOption(selectedCamp) : null;
         const currentRoomOption = roomsSelectionRoomName ? { value: roomsSelectionRoomName, label: roomsSelectionRoomName } : null;
         return (
-            <Paper className={css.barkochbaManagePanel} elevation={2}>
-                <Typography variant="h5">Szobabeosztás</Typography>
+            <Paper className={css.barkochbaManagePanel} elevation={0} sx={{ border: "1px solid", borderColor: "divider", borderRadius: { xs: 3, sm: 4 } }}>
+                <Typography variant="h5" sx={{ fontWeight: 700 }}>Szobabeosztás</Typography>
                 <Typography className={css.barkochbaManageSubtitle} variant="subtitle1">
                     Melyik tábor?
                 </Typography>
-                <div>
-                    <Autocomplete
-                        options={availableCampsAsOptions}
-                        value={currentCampOption}
-                        onChange={handleCampChange}
-                        renderInput={params => (
-                            <TextField {...params} label="Tábor" placeholder="Válassz tábort" variant="filled" />
-                        )}
-                        getOptionLabel={(option: ISelectOption) => option.label}
-                    />
-                </div>
+                <Autocomplete
+                    options={availableCampsAsOptions}
+                    value={currentCampOption}
+                    onChange={handleCampChange}
+                    renderInput={params => (
+                        <TextField {...params} label="Tábor" placeholder="Válassz tábort" variant="filled" />
+                    )}
+                    getOptionLabel={(option: ISelectOption) => option.label}
+                />
                 {currentCampOption && (
                     <div>
                         <Typography className={css.barkochbaManageSubtitle} variant="subtitle1">
                             Melyik szoba?
                         </Typography>
-                        <Typography variant="subtitle2">
+                        <Typography variant="subtitle2" color="text.secondary">
                             Új szoba létrehozásához csak gépeld be a szoba nevét.
                         </Typography>
-                        <div>
-                            <Autocomplete
-                                options={availableRoomsAsOptions}
-                                value={currentRoomOption}
-                                onChange={handleRoomChange}
-                                filterOptions={(options, params) => {
-                                    const filter = createFilterOptions<ISelectOption>();
-                                    const filtered = filter(options, params);
-                                    if (params.inputValue) {
-                                        filtered.push({ value: params.inputValue, label: `Új: "${params.inputValue}"` });
-                                    }
-                                    return filtered;
-                                }}
-                                renderInput={params => (
-                                    <TextField {...params} label="Szoba" placeholder="Válassz szobát" variant="filled" />
-                                )}
-                                getOptionLabel={(option: ISelectOption) => option.label}
-                            />
-                        </div>
+                        <Autocomplete
+                            sx={{ mt: 1 }}
+                            options={availableRoomsAsOptions}
+                            value={currentRoomOption}
+                            onChange={handleRoomChange}
+                            filterOptions={(options, params) => {
+                                const filter = createFilterOptions<ISelectOption>();
+                                const filtered = filter(options, params);
+                                if (params.inputValue) {
+                                    filtered.push({ value: params.inputValue, label: `Új: "${params.inputValue}"` });
+                                }
+                                return filtered;
+                            }}
+                            renderInput={params => (
+                                <TextField {...params} label="Szoba" placeholder="Válassz szobát" variant="filled" />
+                            )}
+                            getOptionLabel={(option: ISelectOption) => option.label}
+                        />
                     </div>
                 )}
                 {currentCampOption && currentRoomOption && (
@@ -261,13 +261,11 @@ export const BarkochbaManageScreen: React.FC = () => {
                         <Typography className={css.barkochbaManageSubtitle} variant="subtitle1">
                             A szoba lakói
                         </Typography>
-                        <div>
-                            <PersonsSelector
-                                allPersons={allPersonsAsOptions}
-                                selectedPersons={roomPeopleAsOptions}
-                                onChange={handleRoomPersonsChange}
-                            />
-                        </div>
+                        <PersonsSelector
+                            allPersons={allPersonsAsOptions}
+                            selectedPersons={roomPeopleAsOptions}
+                            onChange={handleRoomPersonsChange}
+                        />
                     </div>
                 )}
             </Paper>
@@ -275,7 +273,7 @@ export const BarkochbaManageScreen: React.FC = () => {
     };
     
     return (
-        <div>
+        <div className={css.barkochbaManageContainer}>
             {renderPersonAdd()}
             {renderCampAdd()}
             {renderRoomEdit()}

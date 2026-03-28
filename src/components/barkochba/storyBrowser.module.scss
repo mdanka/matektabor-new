@@ -1,27 +1,26 @@
 div.itemKnownBy {
-    border-left: 10px solid;
+    border-left: 4px solid;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 div.itemKnownBy0 {
-    border-color: #aeea00;
-    border-color: rgba(0, 0, 0, 0.0);
-    border-color: #81d4fa;
-    background-color: #e1f5fe;
+    border-color: #60A5FA;
+    background-color: #EFF6FF;
 }
 
 div.itemKnownBy1 {
-    border-color: #fff176;
-    background-color: #fffde7;
+    border-color: #FBBF24;
+    background-color: #FFFBEB;
 }
 
 div.itemKnownBy2 {
-    border-color: #fb8c00;
-    background-color: #fff3e0;
+    border-color: #F97316;
+    background-color: #FFF7ED;
 }
 
 div.itemKnownBy3 {
-    border-color: #e53935;
-    background-color: #ffebee;
+    border-color: #EF4444;
+    background-color: #FEF2F2;
 }
 
 .itemPrimaryLabel {
