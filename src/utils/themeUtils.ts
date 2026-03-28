@@ -82,7 +82,7 @@ export const LIGHT_THEME = createTheme({
         MuiButton: {
             styleOverrides: {
                 root: {
-                    borderRadius: 10,
+                    borderRadius: 12,
                     padding: "10px 20px",
                     minHeight: 44,
                     transition: "all 0.2s ease",
@@ -98,9 +98,9 @@ export const LIGHT_THEME = createTheme({
         },
         MuiAccordion: {
             styleOverrides: {
-                root: {
+                root: ({ theme }) => ({
                     borderRadius: "12px !important",
-                    border: "1px solid #E5E7EB",
+                    border: `1px solid ${theme.palette.divider}`,
                     "&:before": {
                         display: "none",
                     },
@@ -110,7 +110,7 @@ export const LIGHT_THEME = createTheme({
                     "&:last-of-type": {
                         borderRadius: "12px !important",
                     },
-                },
+                }),
             },
         },
         MuiAccordionSummary: {
@@ -131,40 +131,50 @@ export const LIGHT_THEME = createTheme({
         },
         MuiListItemButton: {
             styleOverrides: {
-                root: {
+                root: ({ theme }) => ({
                     borderRadius: 8,
                     margin: "2px 8px",
                     minHeight: 48,
                     transition: "background-color 0.15s ease, border-color 0.15s ease",
                     "&.Mui-selected": {
                         backgroundColor: "transparent",
-                        border: "2px solid #2563EB",
+                        border: `2px solid ${theme.palette.secondary.main}`,
                         "&:hover": {
                             backgroundColor: "transparent",
                         },
                     },
-                },
+                }),
             },
         },
         MuiSnackbarContent: {
             styleOverrides: {
                 root: {
-                    borderRadius: 10,
+                    borderRadius: 12,
                 },
             },
         },
         MuiMenu: {
             styleOverrides: {
                 paper: {
-                    borderRadius: 10,
+                    borderRadius: 12,
                 },
             },
         },
         MuiMenuItem: {
             styleOverrides: {
                 root: {
-                    borderRadius: 6,
+                    borderRadius: 8,
                     margin: "2px 6px",
+                },
+            },
+        },
+        MuiListSubheader: {
+            styleOverrides: {
+                root: {
+                    fontSize: 12,
+                    fontWeight: 600,
+                    textTransform: "uppercase" as const,
+                    letterSpacing: "0.05em",
                 },
             },
         },

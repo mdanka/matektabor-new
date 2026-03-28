@@ -84,11 +84,11 @@ export const StoryPanel: React.FC = () => {
                     </Button>
                 </div>
                 <Divider sx={{ mb: 2 }} />
-                <div className={css.storyDescription}>
+                <Box className={css.storyDescription} sx={{ backgroundColor: "background.default" }}>
                     <Typography variant="body2">
                         {description}
                     </Typography>
-                </div>
+                </Box>
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                     <Accordion elevation={0}>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -158,7 +158,7 @@ export const StoryPanel: React.FC = () => {
     };
 
     return (
-        <Paper className={css.storyPanel} elevation={0}>
+        <Paper className={css.storyPanel} elevation={0} sx={{ border: "1px solid", borderColor: "divider", borderRadius: "12px" }}>
             {story ? renderStory() : renderPlaceholder()}
         </Paper>
     );

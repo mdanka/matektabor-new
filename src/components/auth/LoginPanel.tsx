@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress, Paper, Typography } from "@mui/material";
+import { Button, CircularProgress, Typography } from "@mui/material";
 import { useCallback, useState } from "react";
 import { useAuth, useSigninCheck } from "reactfire";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
@@ -9,6 +9,7 @@ import { useNavigate } from "react-router";
 import { getNavUrl, Page } from "../../utils/navUtils";
 import { useSearchParams } from "react-router-dom";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import { CenteredCard } from "../common";
 
 const IS_EMAIL_LINK_SIGN_IN_ENABLED = false;
 
@@ -51,97 +52,73 @@ export function LoginPanel() {
     }, []);
 
     return (
-        <Box
-            sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                minHeight: "calc(100vh - 120px)",
-                padding: { xs: "24px 16px", sm: "40px" },
-            }}
-        >
-            <Paper
-                elevation={0}
-                sx={{
-                    maxWidth: 400,
-                    width: "100%",
-                    padding: { xs: "32px 24px", sm: "40px" },
-                    borderRadius: 4,
-                    border: "1px solid",
-                    borderColor: "divider",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                }}
-            >
-                {isLoggingIn && (
-                    <CircularProgress size={60} />
-                )}
-                {!isLoggingIn && (
-                    <>
-                        {signInCheckStatus === "loading" && <CircularProgress size={60} />}
-                        {signInCheckStatus === "success" && signInCheckResult.signedIn && (
-                            <>
-                                <Typography variant="body1" paragraph>
-                                    Már be vagy jelentkezve.
-                                </Typography>
-                                <Button onClick={handleGoToHome} variant="contained" color="secondary" fullWidth>
-                                    Tovább a kezdőlapra
-                                </Button>
-                            </>
-                        )}
-                        {signInCheckStatus === "success" && !signInCheckResult.signedIn && (
-                            <>
+        <CenteredCard>
+            {isLoggingIn && (
+                <CircularProgress size={60} />
+            )}
+            {!isLoggingIn && (
+                <>
+                    {signInCheckStatus === "loading" && <CircularProgress size={60} />}
+                    {signInCheckStatus === "success" && signInCheckResult.signedIn && (
+                        <>
+                            <Typography variant="body1" paragraph>
+                                Már be vagy jelentkezve.
+                            </Typography>
+                            <Button onClick={handleGoToHome} variant="contained" color="secondary" fullWidth>
+                                Tovább a kezdőlapra
+                            </Button>
+                        </>
+                    )}
+                    {signInCheckStatus === "success" && !signInCheckResult.signedIn && (
+                        <>
+                            {activatedFlow === undefined && (
+                                <>
+                                    <AutoAwesomeIcon sx={{ fontSize: 64, color: "primary.main", mb: 2 }} />
+                                    <Typography variant="h4" paragraph sx={{ textAlign: "center" }}>
+                                        Üdvözlünk!
+                                    </Typography>
+                                    <Typography variant="body1" paragraph color="text.secondary" sx={{ textAlign: "center" }}>
+                                        Kattints alább a bejelentkezéshez!
+                                    </Typography>
+                                </>
+                            )}
+                            <Grid2
+                                container
+                                direction="column"
+                                spacing={2}
+                                alignItems="stretch"
+                                sx={{ width: "100%" }}
+                            >
                                 {activatedFlow === undefined && (
-                                    <>
-                                        <AutoAwesomeIcon sx={{ fontSize: 64, color: "primary.main", mb: 2 }} />
-                                        <Typography variant="h4" paragraph sx={{ textAlign: "center" }}>
-                                            Üdvözlünk!
-                                        </Typography>
-                                        <Typography variant="body1" paragraph color="text.secondary" sx={{ textAlign: "center" }}>
-                                            Kattints alább a bejelentkezéshez!
-                                        </Typography>
-                                    </>
+                                    <Grid2>
+                                        <Button
+                                            onClick={handleInitGoogleLogin}
+                                            variant="contained"
+                                            color="secondary"
+                                            fullWidth
+                                            sx={{ height: 48 }}
+                                        >
+                                            Bejelentkezés Google fiókkal
+                                        </Button>
+                                    </Grid2>
                                 )}
-                                <Grid2
-                                    container
-                                    direction="column"
-                                    spacing={2}
-                                    alignItems="stretch"
-                                    sx={{ width: "100%" }}
-                                >
-                                    {activatedFlow === undefined && (
-                                        <Grid2>
-                                            <Button
-                                                onClick={handleInitGoogleLogin}
-                                                variant="contained"
-                                                color="secondary"
-                                                fullWidth
-                                                sx={{ height: 48 }}
-                                            >
-                                                Bejelentkezés Google fiókkal
-                                            </Button>
-                                        </Grid2>
-                                    )}
-                                    {IS_EMAIL_LINK_SIGN_IN_ENABLED && (
-                                        <Grid2>
-                                            <LoginWithEmailLink
-                                                authInfo={{
-                                                    auth,
-                                                    tenantLanguageCode: "hu",
-                                                }}
-                                                onFlowActivated={handleEmailWithLinkFlowActivated}
-                                                onAuthSuccess={handleAuthSuccess}
-                                            />
-                                        </Grid2>
-                                    )}
-                                </Grid2>
-                            </>
-                        )}
-                    </>
-                )}
-            </Paper>
-        </Box>
+                                {IS_EMAIL_LINK_SIGN_IN_ENABLED && (
+                                    <Grid2>
+                                        <LoginWithEmailLink
+                                            authInfo={{
+                                                auth,
+                                                tenantLanguageCode: "hu",
+                                            }}
+                                            onFlowActivated={handleEmailWithLinkFlowActivated}
+                                            onAuthSuccess={handleAuthSuccess}
+                                        />
+                                    </Grid2>
+                                )}
+                            </Grid2>
+                        </>
+                    )}
+                </>
+            )}
+        </CenteredCard>
     );
 }

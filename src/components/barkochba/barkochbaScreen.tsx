@@ -7,6 +7,7 @@ import {
     Button,
     Box,
     Skeleton,
+    IconButton,
 } from "@mui/material";
 import { PersonsSelector } from "./personsSelector";
 import { ISelectOption } from "../../commons";
@@ -25,6 +26,7 @@ import { ListeningCampRoomSelector } from "./listeningCampRoomSelector";
 import { BarkochbaDrawer } from "./barkochbaDrawer";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
 import css from "./barkochbaScreen.module.scss";
 
 export function BarkochbaScreen() {
@@ -101,7 +103,24 @@ export function BarkochbaScreen() {
                         className: css.barkochbaScreenMobileDrawerPaper,
                     }}
                 >
-                    <BarkochbaDrawer />
+                    <Box sx={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        padding: "8px",
+                        borderBottom: "1px solid",
+                        borderColor: "divider",
+                    }}>
+                        <IconButton
+                            onClick={handleDrawerClose}
+                            aria-label="Navigáció bezárása"
+                            size="large"
+                        >
+                            <CloseIcon />
+                        </IconButton>
+                    </Box>
+                    <Box sx={{ flexGrow: 1, overflow: "auto" }}>
+                        <BarkochbaDrawer />
+                    </Box>
                 </SwipeableDrawer>
             </Box>
 

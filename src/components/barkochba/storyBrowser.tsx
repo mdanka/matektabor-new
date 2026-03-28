@@ -20,7 +20,6 @@ import {
     ListSubheader,
 } from "@mui/material";
 import { IStory } from "../../commons";
-import classNames from "classnames";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import PersonIcon from "@mui/icons-material/Person";
@@ -29,6 +28,26 @@ import { BarkochbaSortingSelector } from "./barkochbaSortingSelector";
 import css from "./storyBrowser.module.scss";
 import { useDataService } from "../../hooks/useDataService";
 import { FC, MouseEvent } from "react";
+import { SxProps, Theme } from "@mui/material/styles";
+
+const KNOWN_BY_COLORS: Record<string, { borderColor: string; backgroundColor: string }> = {
+    "0": { borderColor: "#60A5FA", backgroundColor: "#EFF6FF" },
+    "1": { borderColor: "#FBBF24", backgroundColor: "#FFFBEB" },
+    "2": { borderColor: "#F97316", backgroundColor: "#FFF7ED" },
+    "3": { borderColor: "#EF4444", backgroundColor: "#FEF2F2" },
+};
+
+function getKnownBySx(numberWhoListening: number, numberWhoKnow: number): SxProps<Theme> {
+    if (!numberWhoListening) return {};
+    const key = numberWhoKnow === 0 ? "0" : numberWhoKnow === 1 ? "1" : numberWhoKnow === 2 ? "2" : "3";
+    const colors = KNOWN_BY_COLORS[key];
+    return {
+        borderLeft: "4px solid",
+        borderColor: colors.borderColor,
+        backgroundColor: colors.backgroundColor,
+        transition: "background-color 0.2s ease, border-color 0.2s ease",
+    };
+}
 
 export const StoryBrowser: FC = () => {
     const dispatch = useDispatch();
@@ -63,21 +82,14 @@ export const StoryBrowser: FC = () => {
         const numberWhoStarred = usersWhoStarredList.length;
         const isStarredForCurrentUser = currentUserId && usersWhoStarredList.includes(currentUserId);
         const secondaryLabel = numberWhoKnow ? `${numberWhoKnow} gyerek ismeri` : undefined;
-        const classes = classNames(css.item, {
-            [css.itemKnownBy]: numberWhoListening,
-            [css.itemKnownBy0]: numberWhoListening && !numberWhoKnow,
-            [css.itemKnownBy1]: numberWhoKnow === 1,
-            [css.itemKnownBy2]: numberWhoKnow === 2,
-            [css.itemKnownBy3]: numberWhoKnow >= 3,
-        });
 
         return (
             <ListItemButton
-                className={classes}
                 key={storyId}
                 selected={storyId === currentStoryId}
                 divider={false}
                 onClick={() => selectStory(storyId)}
+                sx={getKnownBySx(numberWhoListening, numberWhoKnow)}
             >
                 <ListItemText
                     primary={
@@ -122,21 +134,21 @@ export const StoryBrowser: FC = () => {
     };
 
     return (
-        <div className={css.storyBrowser}>
-            <List subheader={<ListSubheader disableSticky sx={{ fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", color: "text.secondary" }}>Rendezés</ListSubheader>}>
+        <div>
+            <List subheader={<ListSubheader disableSticky>Rendezés</ListSubheader>}>
                 <ListItem>
                     <BarkochbaSortingSelector />
                 </ListItem>
             </List>
             {starredStories.length > 0 && (
                 <div>
-                    <List subheader={<ListSubheader disableSticky sx={{ fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", color: "text.secondary" }}>Kedvencek</ListSubheader>}>
+                    <List subheader={<ListSubheader disableSticky>Kedvencek</ListSubheader>}>
                         {starredStories.map(renderStory)}
                     </List>
                     <Divider />
                 </div>
             )}
-            <List subheader={<ListSubheader disableSticky sx={{ fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", color: "text.secondary" }}>Összes barkochbatörténet</ListSubheader>}>
+            <List subheader={<ListSubheader disableSticky>Összes barkochbatörténet</ListSubheader>}>
                 {stories.map(renderStory)}
             </List>
         </div>
