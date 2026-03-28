@@ -1,5 +1,5 @@
 import { connectAuthEmulator, getAuth } from "firebase/auth";
-import { connectFirestoreEmulator, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
+import { connectFirestoreEmulator, getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
 import {
@@ -54,10 +54,15 @@ export function FirebaseComponents(props: { children: React.ReactNode }) {
     auth.languageCode = "hu";
     const functions = getFunctions(app, "europe-west1");
     const { status: firestoreInitStatus, data: firestore } = useInitFirestore(async (firebaseApp) => {
-        const tabManager = persistentMultipleTabManager();
-        const localCache = persistentLocalCache({ tabManager });
-        const db = initializeFirestore(firebaseApp, { localCache });
-        return db;
+        try {
+            const tabManager = persistentMultipleTabManager();
+            const localCache = persistentLocalCache({ tabManager });
+            const db = initializeFirestore(firebaseApp, { localCache });
+            return db;
+        } catch (_e) {
+            // initializeFirestore may have already been called (e.g. during HMR)
+            return getFirestore(firebaseApp);
+        }
     });
     if (firestoreInitStatus === "loading") {
         // TODO(mdanka): add a proper spinner or such here

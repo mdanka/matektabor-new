@@ -1,12 +1,15 @@
 // @import "~normalize.css";
-@import url('https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin-ext');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&subset=latin-ext&display=swap');
 
 html {
     box-sizing: border-box;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
 }
 
 body {
   margin: 0;
+  background-color: #FAFAF7;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Paper, Typography } from "@mui/material";
 import { useCallback, useState } from "react";
 import { useAuth, useSigninCheck } from "reactfire";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
@@ -8,6 +8,7 @@ import { LoginWithEmailLink } from "./LoginWithEmailLink";
 import { useNavigate } from "react-router";
 import { getNavUrl, Page } from "../../utils/navUtils";
 import { useSearchParams } from "react-router-dom";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 
 const IS_EMAIL_LINK_SIGN_IN_ENABLED = false;
 
@@ -56,69 +57,91 @@ export function LoginPanel() {
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                height: 1,
+                minHeight: "calc(100vh - 120px)",
+                padding: { xs: "24px 16px", sm: "40px" },
             }}
         >
-            {isLoggingIn && (
-                <CircularProgress size={60} />
-            )}
-            {!isLoggingIn && (
-                <>
-                    {signInCheckStatus === "loading" && <CircularProgress size={60} />}
-                    {signInCheckStatus === "success" && signInCheckResult.signedIn && (
-                        <>
-                            <Typography variant="body1" paragraph>
-                                Már be vagy jelentkezve.
-                            </Typography>
-                            <Button onClick={handleGoToHome} variant="contained">
-                                Tovább a kezdőlapra
-                            </Button>
-                        </>
-                    )}
-                    {signInCheckStatus === "success" && !signInCheckResult.signedIn && (
-                        <>
-                            {activatedFlow === undefined && (
-                                <>
-                                    <Typography variant="h4" paragraph>
-                                        Üdvözlünk!
-                                    </Typography>
-                                    <Typography variant="body1" paragraph>
-
-                                        Kattints alább a bejelentkezéshez!
-                                    </Typography>
-                                </>
-                            )}
-                            <Grid2
-                                container
-                                direction="column"
-                                spacing={2}
-                                alignItems="stretch"
-                                sx={{ padding: "2vh 0" }}
-                            >
+            <Paper
+                elevation={0}
+                sx={{
+                    maxWidth: 400,
+                    width: "100%",
+                    padding: { xs: "32px 24px", sm: "40px" },
+                    borderRadius: 4,
+                    border: "1px solid",
+                    borderColor: "divider",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                }}
+            >
+                {isLoggingIn && (
+                    <CircularProgress size={60} />
+                )}
+                {!isLoggingIn && (
+                    <>
+                        {signInCheckStatus === "loading" && <CircularProgress size={60} />}
+                        {signInCheckStatus === "success" && signInCheckResult.signedIn && (
+                            <>
+                                <Typography variant="body1" paragraph>
+                                    Már be vagy jelentkezve.
+                                </Typography>
+                                <Button onClick={handleGoToHome} variant="contained" color="secondary" fullWidth>
+                                    Tovább a kezdőlapra
+                                </Button>
+                            </>
+                        )}
+                        {signInCheckStatus === "success" && !signInCheckResult.signedIn && (
+                            <>
                                 {activatedFlow === undefined && (
-                                    <Grid2>
-                                        <Button onClick={handleInitGoogleLogin} variant="contained" fullWidth>
-                                            Bejelentkezés Google fiókkal
-                                        </Button>
-                                    </Grid2>
+                                    <>
+                                        <AutoAwesomeIcon sx={{ fontSize: 64, color: "primary.main", mb: 2 }} />
+                                        <Typography variant="h4" paragraph sx={{ textAlign: "center" }}>
+                                            Üdvözlünk!
+                                        </Typography>
+                                        <Typography variant="body1" paragraph color="text.secondary" sx={{ textAlign: "center" }}>
+                                            Kattints alább a bejelentkezéshez!
+                                        </Typography>
+                                    </>
                                 )}
-                                {IS_EMAIL_LINK_SIGN_IN_ENABLED && (
-                                    <Grid2>
-                                        <LoginWithEmailLink
-                                            authInfo={{
-                                                auth,
-                                                tenantLanguageCode: "hu",
-                                            }}
-                                            onFlowActivated={handleEmailWithLinkFlowActivated}
-                                            onAuthSuccess={handleAuthSuccess}
-                                        />
-                                    </Grid2>
-                                )}
-                            </Grid2>
-                        </>
-                    )}
-                </>
-            )}
+                                <Grid2
+                                    container
+                                    direction="column"
+                                    spacing={2}
+                                    alignItems="stretch"
+                                    sx={{ width: "100%" }}
+                                >
+                                    {activatedFlow === undefined && (
+                                        <Grid2>
+                                            <Button
+                                                onClick={handleInitGoogleLogin}
+                                                variant="contained"
+                                                color="secondary"
+                                                fullWidth
+                                                sx={{ height: 48 }}
+                                            >
+                                                Bejelentkezés Google fiókkal
+                                            </Button>
+                                        </Grid2>
+                                    )}
+                                    {IS_EMAIL_LINK_SIGN_IN_ENABLED && (
+                                        <Grid2>
+                                            <LoginWithEmailLink
+                                                authInfo={{
+                                                    auth,
+                                                    tenantLanguageCode: "hu",
+                                                }}
+                                                onFlowActivated={handleEmailWithLinkFlowActivated}
+                                                onAuthSuccess={handleAuthSuccess}
+                                            />
+                                        </Grid2>
+                                    )}
+                                </Grid2>
+                            </>
+                        )}
+                    </>
+                )}
+            </Paper>
         </Box>
     );
 }

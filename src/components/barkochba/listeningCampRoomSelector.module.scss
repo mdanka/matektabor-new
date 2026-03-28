@@ -1,14 +1,33 @@
 .listeningCampRoomSelector {
     display: flex;
-    flex-direction: row;
-    margin-bottom: 20px;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+@media (min-width: 600px) {
+    .listeningCampRoomSelector {
+        flex-direction: row;
+        gap: 16px;
+    }
 }
 
 .listeningCampRoomSelectorCamp {
-    width: 50%;
+    width: 100%;
+}
+
+@media (min-width: 600px) {
+    .listeningCampRoomSelectorCamp {
+        width: 50%;
+    }
 }
 
 .listeningCampRoomSelectorRoom {
-    padding-left: 20px;
-    width: 50%;
+    width: 100%;
+}
+
+@media (min-width: 600px) {
+    .listeningCampRoomSelectorRoom {
+        width: 50%;
+    }
 }
