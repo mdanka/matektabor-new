@@ -35,10 +35,17 @@ export const AppHeader: React.FC = () => {
     const { authSignOut } = useFirebaseAuthService();
 
     // Detect save completion: pending writes just resolved
-    const justSaved = previousHasPendingWrites === true && hasPendingWrites === false;
-    if (justSaved && !isSaveSuccessfulMessageOpen) {
-        setIsSaveSuccessfulMessageOpen(true);
-    }
+    // Use explicit setTimeout because MUI's autoHideDuration can stall on mobile
+    // (touch events trigger mouseenter without mouseleave, pausing the timer)
+    React.useEffect(() => {
+        if (previousHasPendingWrites === true && hasPendingWrites === false) {
+            setIsSaveSuccessfulMessageOpen(true);
+            const timer = setTimeout(() => {
+                setIsSaveSuccessfulMessageOpen(false);
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [hasPendingWrites, previousHasPendingWrites]);
 
     const handleSignOutClick = async () => {
         await authSignOut();
@@ -189,6 +196,7 @@ export const AppHeader: React.FC = () => {
                 open={isSaveSuccessfulMessageOpen}
                 onClose={() => setIsSaveSuccessfulMessageOpen(false)}
                 message="A mentés sikeres volt"
+                sx={{ bottom: { xs: 24, sm: 24 } }}
                 ContentProps={{ sx: { backgroundColor: "success.main", color: "white" } }}
                 action={
                     <IconButton
