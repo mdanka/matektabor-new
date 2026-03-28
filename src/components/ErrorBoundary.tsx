@@ -59,7 +59,7 @@ export class ErrorBoundary extends Component<Props, State> {
                             Hoppá! Valami hiba történt.
                         </Typography>
                         <Typography variant="body2" color="text.secondary" align="center">
-                            {this.state.error?.message}
+                            Kérjük, töltsd újra az oldalt. Ha a probléma fennáll, kérj segítséget.
                         </Typography>
                         <Button variant="contained" color="secondary" onClick={this.handleReload} fullWidth>
                             Oldal újratöltése

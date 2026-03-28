@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { AppHeader } from "./appHeader";
 import { AppFooter } from "./appFooter";
 import { Typography, Button, Paper, Box } from "@mui/material";
-import { selectCurrentUser } from "../store";
+import { selectCurrentUser, selectHasViewerRole } from "../store";
 import { Link as RouterLink } from "react-router-dom";
 import { getNavUrl, Page } from "../utils/navUtils";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -14,7 +14,8 @@ interface ILoginProtectorProps {
 
 export function LoginProtector({ children }: ILoginProtectorProps) {
     const currentUser = useSelector(selectCurrentUser);
-    const isLoggedIn = currentUser !== undefined;
+    const hasViewerRole = useSelector(selectHasViewerRole);
+    const isLoggedIn = currentUser !== undefined && hasViewerRole !== false;
 
     const renderNotLoggedInScreen = () => (
         <div>

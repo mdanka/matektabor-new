@@ -24,7 +24,7 @@ export function useFirebaseAuthService() {
     }, []);
 
     const handleAuthStateChange = useCallback((user: User | null) => {
-        console.log("[FirebaseAuthService] Auth state changed:", user);
+        console.log("[FirebaseAuthService] Auth state changed:", user ? user.uid : "signed out");
         const userOrUndefined = user === null ? undefined : user;
         setUserInStore(userOrUndefined);
         notifyAuthStateListeners(userOrUndefined);

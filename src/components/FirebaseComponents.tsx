@@ -15,16 +15,6 @@ import {
 
 // const APP_CHECK_TOKEN = "6LdzrQoqAAAAABwDfR1mb8Q8JArK5R1TvJ-xIOHz";
 
-function isLocalhost() {
-     
-    if (typeof window === "undefined") {
-        // TODO(mdanka): if using SSR, use context.req.headers.host
-        return false;
-    }
-    const hostName = window.location.hostname;
-    return hostName === "localhost" || hostName === "127.0.0.1";
-}
-
 export function FirebaseComponents(props: { children: React.ReactNode }) {
     const { children } = props;
     const app = useFirebaseApp(); // a parent component contains a `FirebaseAppProvider`
@@ -35,7 +25,7 @@ export function FirebaseComponents(props: { children: React.ReactNode }) {
     //     // TODO(mdanka): this is a bit hacky about the SSR...
     //     // In the local emulators Functions won't check the token itself, but they check for the presence of one,
     //     // so we create a fake token. See: https://stackoverflow.com/a/77870521/8759022
-    //     const attestationProvider = isLocalhost()
+    //     const attestationProvider = import.meta.env.DEV
     //         ? new CustomProvider({
     //               getToken: () => {
     //                   return Promise.resolve({
@@ -71,7 +61,7 @@ export function FirebaseComponents(props: { children: React.ReactNode }) {
     }
     // const storage = getStorage(app, `gs://${CLOUD_STORAGE_BUCKETS.Main}`);
     const storage = getStorage(app);
-    if (isLocalhost()) {
+    if (import.meta.env.DEV) {
         // Set up emulators
         // TODO(mdanka): remove this once we figure out why this is triggered with hot reloading
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

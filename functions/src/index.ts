@@ -3,7 +3,7 @@ import * as admin from "firebase-admin";
 import * as firestore from "@google-cloud/firestore"; 
 import { PROJECT_ID } from "./shared";
 
-admin.initializeApp(functions.config().firebase);
+admin.initializeApp();
 
 export const scheduledFirestoreExport = functions
     .region("europe-west1")

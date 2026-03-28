@@ -70,27 +70,38 @@ export const BarkochbaManageScreen: React.FC = () => {
 
     const handleNewPersonAdd = () => {
         const { newPersonName, newPersonGroup } = manageState;
-        if (!newPersonName || !newPersonGroup) {
+        const trimmedName = newPersonName.trim();
+        const trimmedGroup = newPersonGroup.trim();
+        if (!trimmedName || !trimmedGroup) {
             console.error("Nem lehet személyt létrehozni üres névvel vagy csoporttal.");
             return;
         }
-        const newPerson = { name: newPersonName, group: newPersonGroup };
+        if (trimmedName.length > 100 || trimmedGroup.length > 50) {
+            console.error("A név maximum 100, a csoport maximum 50 karakter lehet.");
+            return;
+        }
+        const newPerson = { name: trimmedName, group: trimmedGroup };
         createPerson(newPerson);
         update({ newPersonName: "", newPersonGroup: "" });
     };
 
     const handleNewCampAdd = () => {
         const { newCampGroup, newCampNumber } = manageState;
+        const trimmedGroup = newCampGroup.trim();
         const newCampNumberParsed = parseInt(newCampNumber);
         if (isNewCampNumberError(newCampNumber)) {
             console.error("A tábor számának - meglepetés - nem-negatív egész számnak kell lennie.");
             return;
         }
-        if (!newCampGroup || !newCampNumber) {
+        if (!trimmedGroup || !newCampNumber) {
             console.error("Nem lehet tábort létrehozni üres névvel vagy számmal");
             return;
         }
-        const newCamp = { group: newCampGroup, number: newCampNumberParsed, rooms: {} };
+        if (trimmedGroup.length > 50) {
+            console.error("A csoport maximum 50 karakter lehet.");
+            return;
+        }
+        const newCamp = { group: trimmedGroup, number: newCampNumberParsed, rooms: {} };
         createCamp(newCamp);
         update({ newCampGroup: "", newCampNumber: "" });
     };

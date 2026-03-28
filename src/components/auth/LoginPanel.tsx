@@ -23,7 +23,10 @@ export function LoginPanel() {
     const [activatedFlow, setActivatedFlow] = useState<"EMAIL_WITH_LINK" | undefined>(undefined);
 
     const handleAuthSuccess = useCallback(() => {
-        void navigate(redirectUrl ?? getNavUrl[Page.Home]());
+        const safeRedirect = redirectUrl && redirectUrl.startsWith("/") && !redirectUrl.startsWith("//")
+            ? redirectUrl
+            : getNavUrl[Page.Home]();
+        void navigate(safeRedirect);
     }, [navigate, redirectUrl]);
 
     const handleInitGoogleLogin = useCallback(() => {

@@ -43,13 +43,34 @@ service cloud.firestore {
     }
 
     match /persons/{document=**} {
-      allow read, create: if isSignedIn() && isViewer();
+      allow read: if isSignedIn() && isViewer();
+      allow create: if isSignedIn() && isViewer()
+        && request.resource.data.keys().hasOnly(["name", "group"])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 100
+        && request.resource.data.group is string
+        && request.resource.data.group.size() > 0
+        && request.resource.data.group.size() <= 50;
       allow update, delete: if false;
     }
 
     match /camps/{document=**} {
-      allow read, create, update: if isSignedIn() && isViewer();
+      allow read: if isSignedIn() && isViewer();
+      allow create: if isSignedIn() && isViewer()
+        && request.resource.data.keys().hasOnly(["group", "number", "rooms"])
+        && request.resource.data.group is string
+        && request.resource.data.group.size() > 0
+        && request.resource.data.group.size() <= 50
+        && request.resource.data.number is int
+        && request.resource.data.number >= 0;
+      allow update: if isSignedIn() && isViewer()
+        && request.resource.data.keys().hasOnly(["group", "number", "rooms"]);
       allow delete: if false;
+    }
+
+    match /admin/{document=**} {
+      allow read, write: if false;
     }
   }
 }

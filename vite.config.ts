@@ -39,7 +39,7 @@ export default defineConfig({
                 background_color: "#ffffff"
             },      
             devOptions: {
-                enabled: true
+                enabled: false
             },
         }),
     ],

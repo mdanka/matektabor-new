@@ -14,7 +14,7 @@ export enum Page {
 export const getNavUrl = {
     [Page.Home]: () => "/",
     [Page.SignIn]: (redirectUrl?: string) =>
-        `/signin${redirectUrl === undefined ? "" : `?redirectUrl=${redirectUrl}`}`,
+        `/signin${redirectUrl === undefined ? "" : `?redirectUrl=${encodeURIComponent(redirectUrl)}`}`,
     [Page.Barkochba]: () => "/barkochba",
     [Page.BarkochbaExport]: (campId?: string) => `/barkochba/export/${campId === undefined ? "" : `${campId}`}`,
     [Page.BarkochbaManage]: () => "/barkochba/manage",
