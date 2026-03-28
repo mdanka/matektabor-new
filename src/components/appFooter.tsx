@@ -1,12 +1,12 @@
-import { Box } from "@mui/material";
+import { Box, Link } from "@mui/material";
 import { CONTACT_HREF } from "../utils";
 import { lighten } from "@mui/material/styles";
 
 export function AppFooter() {
     return (
-        <Box sx={(theme) => ({
+        <Box component="footer" sx={(theme) => ({
             height: "80px",
-            color: "black",
+            color: "text.primary",
             backgroundColor: lighten(theme.palette.primary.main, 0.5),
             padding: "10px 20px 10px 20px",
             display: "flex",
@@ -15,10 +15,10 @@ export function AppFooter() {
             borderTop: "1px solid",
             borderColor: theme.palette.divider,
         })}>
-            <Box sx={{ display: "inline-block", fontFamily: "Roboto" }}>
-                <a className="underline inherit-color" href={CONTACT_HREF}>
+            <Box sx={{ display: "inline-block" }}>
+                <Link href={CONTACT_HREF} underline="hover" color="inherit">
                     Kérdésed van? Írj emailt!
-                </a>
+                </Link>
             </Box>
         </Box>
     );

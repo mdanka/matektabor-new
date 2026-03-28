@@ -14,9 +14,10 @@ import {
     Paper,
     Typography,
     Button,
-    Icon,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import DoneIcon from "@mui/icons-material/Done";
+import AddIcon from "@mui/icons-material/Add";
 import { ISelectOption } from "../../commons";
 import { PersonsSelector } from "./personsSelector";
 import css from "./storyPanel.module.scss";
@@ -72,7 +73,7 @@ export const StoryPanel: React.FC = () => {
                         onClick={handleDoneClicked}
                         disabled={currentListeningPersonIds.length === 0}
                     >
-                        <Icon className={css.buttonIcon}>done</Icon>
+                        <DoneIcon className={css.buttonIcon} />
                         Elmeséltem
                     </Button>
                 </p>
@@ -119,7 +120,7 @@ export const StoryPanel: React.FC = () => {
                                 onClick={handleAddClicked}
                                 disabled={personsToAdd.length === 0}
                             >
-                                <Icon className={css.buttonIcon}>add</Icon>
+                                <AddIcon className={css.buttonIcon} />
                                 Hozzáadom
                             </Button>
                         </div>

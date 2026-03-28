@@ -13,7 +13,22 @@ export const LIGHT_THEME = createTheme({
     typography: {
         fontFamily: [
             "Roboto",
-            "Times New Roman",
+            "-apple-system",
+            "BlinkMacSystemFont",
+            "\"Segoe UI\"",
+            "\"Helvetica Neue\"",
+            "Arial",
+            "sans-serif",
         ].join(","),
-    }
+    },
+    components: {
+        MuiIconButton: {
+            styleOverrides: {
+                root: {
+                    minWidth: 44,
+                    minHeight: 44,
+                },
+            },
+        },
+    },
 });

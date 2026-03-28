@@ -1,11 +1,9 @@
-import * as React from "react";
 import { useSelector } from "react-redux";
 import { selectCurrentUser, selectHasPendingWrites } from "../store";
 import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import {
     Button,
     Link,
-    Icon,
     Avatar,
     IconButton,
     Menu,
@@ -15,6 +13,7 @@ import {
     SnackbarContent,
     Box,
 } from "@mui/material";
+import EmailIcon from "@mui/icons-material/Email";
 import CloseIcon from "@mui/icons-material/Close";
 import { CONTACT_HREF } from "../utils";
 import { singInAndReturn, getNavUrl, Page } from "../utils/navUtils";
@@ -38,8 +37,7 @@ export const AppHeader: React.FC = () => {
     const { authSignOut } = useFirebaseAuthService();
 
     // Detect save completion: pending writes just resolved
-    const justSaved = previousHasPendingWrites === true && hasPendingWrites === false;
-    if (justSaved && !isSaveSuccessfulMessageOpen) {
+    if (previousHasPendingWrites === true && hasPendingWrites === false && !isSaveSuccessfulMessageOpen) {
         setIsSaveSuccessfulMessageOpen(true);
     }
 
@@ -55,16 +53,15 @@ export const AppHeader: React.FC = () => {
     const renderContactButton = () => (
         <IconButton
             sx={{
-                width: "36px",
-                height: "36px",
                 fontSize: "16px",
-                color: "black",
+                color: "text.primary",
             }}
             href={CONTACT_HREF}
             disableRipple
             size="large"
+            aria-label="Kapcsolat e-mailben"
         >
-            <Icon>email</Icon>
+            <EmailIcon />
         </IconButton>
     );
 
@@ -72,7 +69,7 @@ export const AppHeader: React.FC = () => {
         const style = {
             width: "30px",
             height: "30px",
-            color: "black",
+            color: "text.primary",
         };
         if (photoUrl) {
             return <Avatar sx={style} src={photoUrl} />;
@@ -96,12 +93,11 @@ export const AppHeader: React.FC = () => {
             <IconButton
                 sx={{
                     marginLeft: "10px",
-                    width: "36px",
-                    height: "36px",
                 }}
                 onClick={(e) => setUserMenuAnchorEl(userMenuAnchorEl ? null : e.currentTarget)}
                 disableRipple
                 size="large"
+                aria-label="Felhasználói menü"
             >
                 {avatar}
             </IconButton>
@@ -109,9 +105,9 @@ export const AppHeader: React.FC = () => {
     };
 
     return (
-        <Box sx={(theme) => ({
+        <Box component="header" sx={(theme) => ({
             height: "60px",
-            color: "black",
+            color: "text.primary",
             backgroundColor: lighten(theme.palette.primary.main, 0.5),
             padding: "10px 20px 10px 20px",
             display: "flex",
@@ -120,7 +116,7 @@ export const AppHeader: React.FC = () => {
             borderColor: theme.palette.divider,
         })}>
             <Box sx={{ fontSize: "18px", flexGrow: 1 }}>
-                <Link component={RouterLink} to={getNavUrl[Page.Home]()} underline="hover" sx={{ color: "black", fontWeight: "bold", fontFamily: "Roboto" }}>
+                <Link component={RouterLink} to={getNavUrl[Page.Home]()} underline="hover" sx={{ color: "text.primary", fontWeight: "bold" }}>
                     Matektábor
                 </Link>
             </Box>
@@ -155,7 +151,7 @@ export const AppHeader: React.FC = () => {
                 open={isSignedOutMessageOpen}
                 action={
                     <IconButton
-                        aria-label="Close"
+                        aria-label="Bezárás"
                         color="inherit"
                         onClick={() => setIsSignedOutMessageOpen(false)}
                         size="large"
@@ -167,7 +163,7 @@ export const AppHeader: React.FC = () => {
             <Snackbar anchorOrigin={{ horizontal: "right", vertical: "top" }} open={hasPendingWrites}>
                 <SnackbarContent
                     message={<span>Mentés... (ha nem vagy online, csatlakozz)</span>}
-                    style={{ backgroundColor: amber[200] }}
+                    style={{ backgroundColor: amber[200], color: "rgba(0,0,0,0.87)" }}
                 />
             </Snackbar>
             <Snackbar
@@ -178,7 +174,7 @@ export const AppHeader: React.FC = () => {
             >
                 <SnackbarContent
                     message={<span>A mentés sikeres volt</span>}
-                    style={{ backgroundColor: green[200] }}
+                    style={{ backgroundColor: green[200], color: "rgba(0,0,0,0.87)" }}
                 />
             </Snackbar>
         </Box>

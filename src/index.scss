@@ -17,12 +17,4 @@ body {
 
 a, a:hover, a:active, a:visited {
     text-decoration: none !important;
-
-    &.inherit-color {
-        color: inherit;
-    }
-}
-
-a.underline:hover, a.underline:active {
-    text-decoration: underline;
 }

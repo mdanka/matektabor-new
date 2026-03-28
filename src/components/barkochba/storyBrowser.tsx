@@ -72,6 +72,13 @@ export const StoryBrowser: FC = () => {
             [css.itemKnownBy3]: numberWhoKnow >= 3,
         });
 
+        const knownByBadgeClass = classNames(css.knownByBadge, {
+            [css.knownByBadge0]: numberWhoListening && !numberWhoKnow,
+            [css.knownByBadge1]: numberWhoKnow === 1,
+            [css.knownByBadge2]: numberWhoKnow === 2,
+            [css.knownByBadge3]: numberWhoKnow >= 3,
+        });
+
         return (
             <ListItemButton
                 className={classes}
@@ -86,6 +93,11 @@ export const StoryBrowser: FC = () => {
                             <span className={css.itemLabelTitle}>
                                 {number} - {title}
                             </span>
+                            {numberWhoListening > 0 && (
+                                <span className={knownByBadgeClass} title={`${numberWhoKnow} gyerek ismeri`}>
+                                    {numberWhoKnow}
+                                </span>
+                            )}
                         </div>
                     }
                     secondary={secondaryLabel}
@@ -114,6 +126,7 @@ export const StoryBrowser: FC = () => {
                 <IconButton
                     onClick={handleStarClick(storyId, !isStarredForCurrentUser)}
                     size="large"
+                    aria-label={isStarredForCurrentUser ? "Eltávolítom a kedvencekből" : "Hozzáadom a kedvencekhez"}
                 >
                     {isStarredForCurrentUser ? <StarIcon /> : <StarBorderIcon />}
                 </IconButton>

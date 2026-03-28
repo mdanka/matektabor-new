@@ -12,3 +12,19 @@
     padding-left: 20px;
     width: 50%;
 }
+
+@media (max-width: 600px) {
+    .listeningCampRoomSelector {
+        flex-direction: column;
+    }
+
+    .listeningCampRoomSelectorCamp {
+        width: 100%;
+    }
+
+    .listeningCampRoomSelectorRoom {
+        padding-left: 0;
+        width: 100%;
+        margin-top: 12px;
+    }
+}
