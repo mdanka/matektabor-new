@@ -18,9 +18,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import { CONTACT_HREF } from "../utils";
 import { singInAndReturn, getNavUrl, Page } from "../utils/navUtils";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useFirebaseAuthService } from "../hooks/useFirebaseAuthService";
-import { usePrevious } from "../hooks/usePrevious";
 
 export const AppHeader: React.FC = () => {
     const [userMenuAnchorEl, setUserMenuAnchorEl] = useState<HTMLElement | null>(null);
@@ -31,21 +30,24 @@ export const AppHeader: React.FC = () => {
 
     const currentUser = useSelector(selectCurrentUser);
     const hasPendingWrites = useSelector(selectHasPendingWrites);
-    const previousHasPendingWrites = usePrevious(hasPendingWrites);
+    const wasPendingRef = useRef(false);
     const { authSignOut } = useFirebaseAuthService();
 
-    // Detect save completion: pending writes just resolved
+    // Detect save completion: pending writes transitioned from true → false
+    // Use a ref instead of usePrevious to avoid render-time setState cascades.
     // Use explicit setTimeout because MUI's autoHideDuration can stall on mobile
-    // (touch events trigger mouseenter without mouseleave, pausing the timer)
+    // (touch events trigger mouseenter without mouseleave, pausing the timer).
     React.useEffect(() => {
-        if (previousHasPendingWrites === true && hasPendingWrites === false) {
+        if (wasPendingRef.current && !hasPendingWrites) {
             setIsSaveSuccessfulMessageOpen(true);
             const timer = setTimeout(() => {
                 setIsSaveSuccessfulMessageOpen(false);
             }, 3000);
+            wasPendingRef.current = false;
             return () => clearTimeout(timer);
         }
-    }, [hasPendingWrites, previousHasPendingWrites]);
+        wasPendingRef.current = hasPendingWrites;
+    }, [hasPendingWrites]);
 
     const handleSignOutClick = async () => {
         await authSignOut();
@@ -191,12 +193,9 @@ export const AppHeader: React.FC = () => {
                 />
             </Snackbar>
             <Snackbar
-                autoHideDuration={3000}
                 anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
                 open={isSaveSuccessfulMessageOpen}
-                onClose={() => setIsSaveSuccessfulMessageOpen(false)}
                 message="A mentés sikeres volt"
-                sx={{ bottom: { xs: 24, sm: 24 } }}
                 ContentProps={{ sx: { backgroundColor: "success.main", color: "white" } }}
                 action={
                     <IconButton
