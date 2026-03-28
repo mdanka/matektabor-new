@@ -59,8 +59,9 @@ export function FirebaseComponents(props: { children: React.ReactNode }) {
             const localCache = persistentLocalCache({ tabManager });
             const db = initializeFirestore(firebaseApp, { localCache });
             return db;
-        } catch (_e) {
+        } catch (e) {
             // initializeFirestore may have already been called (e.g. during HMR)
+            console.warn("initializeFirestore failed, falling back to getFirestore:", e);
             return getFirestore(firebaseApp);
         }
     });
