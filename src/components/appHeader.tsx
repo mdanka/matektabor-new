@@ -18,7 +18,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import { CONTACT_HREF } from "../utils";
 import { singInAndReturn, getNavUrl, Page } from "../utils/navUtils";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useFirebaseAuthService } from "../hooks/useFirebaseAuthService";
 import { usePrevious } from "../hooks/usePrevious";
 
@@ -33,17 +33,12 @@ export const AppHeader: React.FC = () => {
     const hasPendingWrites = useSelector(selectHasPendingWrites);
     const previousHasPendingWrites = usePrevious(hasPendingWrites);
     const { authSignOut } = useFirebaseAuthService();
-    const saveNotifiedRef = useRef(false);
 
     // Detect save completion: pending writes just resolved
-    useEffect(() => {
-        if (hasPendingWrites) {
-            saveNotifiedRef.current = false;
-        } else if (previousHasPendingWrites === true && !saveNotifiedRef.current) {
-            saveNotifiedRef.current = true;
-            setIsSaveSuccessfulMessageOpen(true);
-        }
-    }, [hasPendingWrites, previousHasPendingWrites]);
+    const justSaved = previousHasPendingWrites === true && hasPendingWrites === false;
+    if (justSaved && !isSaveSuccessfulMessageOpen) {
+        setIsSaveSuccessfulMessageOpen(true);
+    }
 
     const handleSignOutClick = async () => {
         await authSignOut();
