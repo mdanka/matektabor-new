@@ -3,6 +3,11 @@
 # our additions
 .vscode/
 .firebase/
+# This repository is public, so nothing holding children's names may be committed:
+# Firestore backups, and the alias/merge files the scripts/ tools are driven by.
+/backups/
+/scripts/*-aliases.json
+/scripts/*-merge-plan.json
 
 # dependencies
 /node_modules
