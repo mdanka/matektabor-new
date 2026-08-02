@@ -11,3 +11,19 @@
     display: flex;
     flex-direction: column;
 }
+
+// On desktop the app is a single screen: the header and footer are always
+// visible and the story list and story panel scroll independently inside.
+// On mobile the page scrolls as a whole instead.
+@media (min-width: 600px) {
+    .barkochbaRouteContainer {
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
+    }
+
+    .barkochbaRouteContainer > header,
+    .barkochbaRouteContainer > footer {
+        flex-shrink: 0;
+    }
+}

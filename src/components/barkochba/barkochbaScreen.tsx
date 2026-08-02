@@ -85,7 +85,10 @@ export function BarkochbaScreen() {
 
     return (
         <div className={css.barkochbaScreen}>
-            <Box component="div" sx={{ display: { xs: "none", sm: "block" }, width: 320, flexShrink: 0 }}>
+            <Box
+                component="div"
+                sx={{ display: { xs: "none", sm: "block" }, width: 320, flexShrink: 0, height: "100%", minHeight: 0 }}
+            >
                 <BarkochbaDrawer />
             </Box>
             <Box
