@@ -28,7 +28,7 @@ Node 18 required (see .nvmrc). Uses Yarn as package manager.
 - `src/hooks/` — Custom hooks: `useDataService.ts` (Firestore data fetching), `useFirebaseAuthService.ts` (auth operations)
 - `src/utils/` — Utilities for navigation, theming (MUI), authorization (role checking)
 - `functions/` — Firebase Cloud Functions (scheduled Firestore backups)
-- `seed-data/` — Test data imported by Firebase Emulator for safe local development
+- `seed-data/` — Test data imported by Firebase Emulator for safe local development. Entirely synthetic, and it must stay that way: this repository is public, so never commit a production export here. Regenerate with `yarn seed:generate` (see `scripts/generateSeedData.mjs`).
 
 **Data flow:** Firebase Auth → role-based access (`loginProtector.tsx`) → Firestore real-time sync via ReactFire → Redux store → React components via selectors
 
@@ -47,8 +47,8 @@ When testing in a headless browser (e.g. Claude Preview), the Google sign-in pop
 
 1. Make sure the app is loaded from `localhost` (not `127.0.0.1`) so emulator connections work.
 2. The seed data includes two test users (see `seed-data/auth_export/accounts.json`):
-   - **Test User** (`test.user@email.com`, uid: `tZ9LlYdP4tvP3sbE4Hj3lsDNglrc`) — has viewer role
-   - **No Access** (`no.access@email.com`, uid: `0Zo5giDXGAW8q4w2nKHGcjOM3hYG`) — no access
+   - **Test User** (`test.user@example.com`, uid: `tZ9LlYdP4tvP3sbE4Hj3lsDNglrc`) — has viewer role
+   - **No Access** (`no.access@example.com`, uid: `0Zo5giDXGAW8q4w2nKHGcjOM3hYG`) — no access
 3. Sign in via the browser console using a fake Google credential (emulator accepts JSON as id_token):
 
 ```js
@@ -58,7 +58,7 @@ When testing in a headless browser (e.g. Claude Preview), the Google sign-in pop
   await authModule.signOut(auth);
   const fakeIdToken = JSON.stringify({
     sub: 'tZ9LlYdP4tvP3sbE4Hj3lsDNglrc',
-    email: 'test.user@email.com',
+    email: 'test.user@example.com',
     email_verified: true,
     name: 'Test User'
   });

@@ -6,6 +6,7 @@
   "scripts": {
     "start": "concurrently 'firebase emulators:start --import=seed-data' 'vite'",
     "dev": "vite",
+    "seed:generate": "rm -rf seed-data && firebase emulators:exec --only auth,firestore,storage --export-on-exit=seed-data 'node scripts/generateSeedData.mjs'",
     "build": "tsc -b && vite build",
     "lint": "eslint src",
     "preview": "vite preview",
