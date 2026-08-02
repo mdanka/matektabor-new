@@ -8,7 +8,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint src",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "add-viewer": "node scripts/addViewer.mjs"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

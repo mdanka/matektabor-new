@@ -32,6 +32,32 @@ Builds the app for production to the `dist` folder.
 
 Runs ESLint. Make sure you fix linting errors because this is a required check before merging a pull request.
 
+### `yarn add-viewer`
+
+Grants someone access to the app by adding their email address to the viewers list (the `admin/roles` document in Firestore). This is what the Firestore security rules check, matched against the verified email of the signed-in Google account, so the address has to be the one they sign in with.
+
+The script is a dry run by default — it prints what it would change and writes nothing:
+
+```bash
+yarn add-viewer --email someone@example.com
+```
+
+Add `--commit` to actually write. Writing to production additionally needs `--confirm-prod`, and then asks you to retype the email address to confirm:
+
+```bash
+yarn add-viewer --email someone@example.com --commit --confirm-prod
+```
+
+To try it against the local emulator instead (start it with `yarn start` first):
+
+```bash
+yarn add-viewer --email someone@example.com --target emulator --commit
+```
+
+Adding an email that is already on the list does nothing, so it is safe to re-run.
+
+Production access uses your gcloud Application Default Credentials — run `gcloud auth application-default login` if the script reports a credentials error. The emulator needs no credentials.
+
 ## Preview
 
 When a pull request is opened, a temporary preview version of the web app is created for testing purposes. This is linked to from the pull request in a comment.
