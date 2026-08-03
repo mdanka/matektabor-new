@@ -1,16 +1,19 @@
 #!/usr/bin/env node
 /**
- * Adds an email address to the viewers list in Firestore (admin/roles).
+ * Adds an email address to the viewers or admins list in Firestore (admin/roles).
  *
  * Dry run by default — nothing is written unless you pass --commit.
  *
  *   node scripts/addViewer.mjs --email someone@example.com
+ *   node scripts/addViewer.mjs --email someone@example.com --role admin
  *   node scripts/addViewer.mjs --email someone@example.com --target emulator --commit
  *   node scripts/addViewer.mjs --email someone@example.com --commit --confirm-prod
  *
- * The viewers list is what firestore.rules checks (isViewer) to grant access to the app,
- * matched against the signed-in user's verified email address. Emails are stored lowercased
- * and the list is kept sorted; adding an email that is already there is a no-op.
+ * These lists are what firestore.rules checks (isViewer/isAdmin) to grant access, matched
+ * against the signed-in user's verified email address. Admins can manage both lists from
+ * the app's manage screen, but since only admins may write the lists from the client, the
+ * very first admin has to be added with this script. Emails are stored lowercased and the
+ * list is kept sorted; adding an email that is already there is a no-op.
  *
  * firebase-admin is not a dependency of the web app, so it is resolved from functions/node_modules.
  * Prod access uses gcloud Application Default Credentials; the emulator needs no credentials.
@@ -26,14 +29,14 @@ const PROJECT_ID = "barkochba-app";
 const EMULATOR_HOST = "127.0.0.1:8080";
 const ROLES_COLLECTION = "admin";
 const ROLES_DOC = "roles";
-const VIEWERS_FIELD = "viewers";
+const ROLE_FIELDS = { viewer: "viewers", admin: "admins" };
 
 // ---------------------------------------------------------------------------
 // Arguments
 // ---------------------------------------------------------------------------
 
 function parseArgs(argv) {
-    const args = { target: "prod", commit: false, confirmProd: false };
+    const args = { target: "prod", role: "viewer", commit: false, confirmProd: false };
     for (let i = 0; i < argv.length; i++) {
         const arg = argv[i];
         const next = () => {
@@ -45,6 +48,7 @@ function parseArgs(argv) {
         };
         switch (arg) {
             case "--email": args.email = next(); break;
+            case "--role": args.role = next(); break;
             case "--target": args.target = next(); break;
             case "--commit": args.commit = true; break;
             case "--confirm-prod": args.confirmProd = true; break;
@@ -64,7 +68,8 @@ const USAGE = `
 Usage: yarn add-viewer --email <address> [options]
        node scripts/addViewer.mjs --email <address> [options]
 
-  --email <address>  Email address to grant the viewer role to.
+  --email <address>  Email address to grant the role to.
+  --role <r>         "viewer" (default) or "admin".
   --target <t>       "prod" (default) or "emulator".
   --commit           Actually write. Without this the script is a dry run.
   --confirm-prod     Required in addition to --commit when --target prod.
@@ -129,6 +134,9 @@ async function main() {
     if (args.target !== "prod" && args.target !== "emulator") {
         fail(`--target must be "prod" or "emulator", got "${args.target}".`);
     }
+    if (!(args.role in ROLE_FIELDS)) {
+        fail(`--role must be "viewer" or "admin", got "${args.role}".`);
+    }
     if (args.commit && args.target === "prod" && !args.confirmProd) {
         fail("Writing to prod needs --confirm-prod in addition to --commit.");
     }
@@ -138,6 +146,7 @@ async function main() {
         fail(`"${args.email}" does not look like an email address.`);
     }
 
+    const roleField = ROLE_FIELDS[args.role];
     const { db } = await connect(args.target);
     const rolesRef = db.collection(ROLES_COLLECTION).doc(ROLES_DOC);
     const snapshot = await rolesRef.get();
@@ -145,25 +154,27 @@ async function main() {
         fail(`${ROLES_COLLECTION}/${ROLES_DOC} does not exist in ${args.target}. Refusing to create it — check the target.`);
     }
 
-    const viewers = snapshot.get(VIEWERS_FIELD);
-    if (!Array.isArray(viewers)) {
-        fail(`${ROLES_COLLECTION}/${ROLES_DOC}.${VIEWERS_FIELD} is not a list (got ${typeof viewers}). Refusing to overwrite it.`);
+    // The admins field may not exist yet on documents created before the admin role did.
+    const members = snapshot.get(roleField) ?? [];
+    if (!Array.isArray(members)) {
+        fail(`${ROLES_COLLECTION}/${ROLES_DOC}.${roleField} is not a list (got ${typeof members}). Refusing to overwrite it.`);
     }
 
     console.log(`\nTarget:  ${args.target} (${PROJECT_ID})`);
     console.log(`Email:   ${email}`);
-    console.log(`Viewers: ${viewers.length} currently`);
+    console.log(`Role:    ${args.role}`);
+    console.log(`Current: ${members.length} ${roleField}`);
 
     // Compare case-insensitively — the rules match the token email exactly, but an
     // existing entry differing only in case would still be a duplicate in practice.
-    const existing = viewers.find((viewer) => String(viewer).toLowerCase() === email);
+    const existing = members.find((member) => String(member).toLowerCase() === email);
     if (existing !== undefined) {
-        console.log(`\n"${existing}" is already a viewer. Nothing to do.\n`);
+        console.log(`\n"${existing}" is already in ${roleField}. Nothing to do.\n`);
         return;
     }
 
-    const updated = [...viewers, email].sort();
-    console.log(`\nWill add "${email}" -> ${updated.length} viewers.`);
+    const updated = [...members, email].sort();
+    console.log(`\nWill add "${email}" -> ${updated.length} ${roleField}.`);
 
     if (!args.commit) {
         console.log("\nDry run finished. Re-run with --commit to write.\n");
@@ -171,15 +182,15 @@ async function main() {
     }
 
     if (args.target === "prod") {
-        const answer = await confirm(`\nAbout to grant viewer access to ${email} in PRODUCTION (${PROJECT_ID}). Type "${email}" to continue: `);
+        const answer = await confirm(`\nAbout to grant ${args.role} access to ${email} in PRODUCTION (${PROJECT_ID}). Type "${email}" to continue: `);
         if (answer !== email) {
             fail("Aborted.");
         }
     }
 
     console.log("\nWriting…");
-    await rolesRef.update({ [VIEWERS_FIELD]: updated });
-    console.log(`  added ${email} to ${ROLES_COLLECTION}/${ROLES_DOC}.${VIEWERS_FIELD}`);
+    await rolesRef.update({ [roleField]: updated });
+    console.log(`  added ${email} to ${ROLES_COLLECTION}/${ROLES_DOC}.${roleField}`);
     console.log("\nDone.\n");
 }
 

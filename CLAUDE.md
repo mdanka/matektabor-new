@@ -32,7 +32,9 @@ Node 18 required (see .nvmrc). Uses Yarn as package manager.
 
 **Data flow:** Firebase Auth → role-based access (`loginProtector.tsx`) → Firestore real-time sync via ReactFire → Redux store → React components via selectors
 
-**Routing:** `/signin`, `/barkochba` (main, protected), `/barkochba/manage`, `/barkochba/export`, `/terms-of-service`, `/privacy-policy`. Home redirects to `/barkochba`.
+**Roles:** The `admin/roles` Firestore doc holds `viewers` and `admins` email lists, checked by `firestore.rules` against the signed-in user's verified email. Admins have viewer access too and can manage both lists on `/barkochba/admin`; the first admin must be added with `node scripts/addViewer.mjs --role admin`. The client infers roles from whether reads succeed (collections → viewer, `admin/roles` doc → admin).
+
+**Routing:** `/signin`, `/barkochba` (main, protected), `/barkochba/manage`, `/barkochba/admin` (admins only), `/barkochba/export`, `/terms-of-service`, `/privacy-policy`. Home redirects to `/barkochba`.
 
 ## Code Style
 
@@ -46,8 +48,9 @@ Node 18 required (see .nvmrc). Uses Yarn as package manager.
 When testing in a headless browser (e.g. Claude Preview), the Google sign-in popup will be blocked. To sign in programmatically against the Firebase Auth emulator:
 
 1. Make sure the app is loaded from `localhost` (not `127.0.0.1`) so emulator connections work.
-2. The seed data includes two test users (see `seed-data/auth_export/accounts.json`):
-   - **Test User** (`test.user@example.com`, uid: `tZ9LlYdP4tvP3sbE4Hj3lsDNglrc`) — has viewer role
+2. The seed data includes three test users (see `seed-data/auth_export/accounts.json`):
+   - **Test User** (`test.user@example.com`, uid: `tZ9LlYdP4tvP3sbE4Hj3lsDNglrc`) — has viewer and admin roles
+   - **Viewer Only** (`viewer.only@example.com`, uid: `vW2QmXhT7ubQ5rcD8Kj4mtEOhmsd`) — has viewer role only
    - **No Access** (`no.access@example.com`, uid: `0Zo5giDXGAW8q4w2nKHGcjOM3hYG`) — no access
 3. Sign in via the browser console using a fake Google credential (emulator accepts JSON as id_token):
 
@@ -78,7 +81,7 @@ When testing in a headless browser (e.g. Claude Preview), the Google sign-in pop
 })();
 ```
 
-> **Note:** The Vite chunk filename (`chunk-NF6UUSPI.js?v=325639f1`) may change after dependency updates. If the import fails, find the correct chunk by searching for `signInWithEmailAndPassword` in the browser's network/sources tab.
+> **Note:** The Vite chunk filename (`chunk-NF6UUSPI.js?v=325639f1`) may change after dependency updates. `/node_modules/.vite/deps/firebase_auth.js` also works, but only with the same `?v=` version the page itself loaded — without it you get a separate module instance and an `app/no-app` error. Find the current version with `performance.getEntriesByType('resource').map(e => e.name).filter(u => u.includes('.vite/deps'))`.
 
 ## Do Not Modify
 

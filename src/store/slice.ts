@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IUser } from "../commons";
+import { IUser, IRolesApi } from "../commons";
 import {
     IAppState,
     IPersonsState,
@@ -14,6 +14,8 @@ import {
 const initialState: IAppState = {
     currentUser: undefined,
     hasViewerRole: undefined,
+    hasAdminRole: undefined,
+    roles: undefined,
     persons: {},
     camps: {},
     stories: {},
@@ -50,6 +52,12 @@ export const appSlice = createSlice({
         },
         setHasViewerRole(state, action: PayloadAction<{ hasViewerRole: boolean }>) {
             state.hasViewerRole = action.payload.hasViewerRole;
+        },
+        setHasAdminRole(state, action: PayloadAction<{ hasAdminRole: boolean }>) {
+            state.hasAdminRole = action.payload.hasAdminRole;
+        },
+        setRoles(state, action: PayloadAction<{ roles: IRolesApi | undefined }>) {
+            state.roles = action.payload.roles;
         },
         setPersons(state, action: PayloadAction<{ persons: IPersonsState }>) {
             state.persons = action.payload.persons;
@@ -90,6 +98,8 @@ export const appSlice = createSlice({
 export const {
     setCurrentUser,
     setHasViewerRole,
+    setHasAdminRole,
+    setRoles,
     setPersons,
     setCamps,
     setStories,

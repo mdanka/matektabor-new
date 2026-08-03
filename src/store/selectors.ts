@@ -14,6 +14,10 @@ export const selectCurrentUserId = createSelector(
 
 export const selectHasViewerRole = (state: IAppState) => state.hasViewerRole;
 
+export const selectHasAdminRole = (state: IAppState) => state.hasAdminRole;
+
+export const selectRoles = (state: IAppState) => state.roles;
+
 export const selectBarkochbaOrdering = (state: IAppState) => state.barkochbaOrdering;
 
 export const selectStories = (state: IAppState) => state.stories;

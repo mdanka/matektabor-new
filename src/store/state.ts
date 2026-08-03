@@ -1,8 +1,10 @@
-import { IUser, IPersonApi, ICampApi, IStoryApi } from "../commons";
+import { IUser, IPersonApi, ICampApi, IStoryApi, IRolesApi } from "../commons";
 
 export interface IAppState {
     currentUser: IUser | undefined;
     hasViewerRole: boolean | undefined;
+    hasAdminRole: boolean | undefined;
+    roles: IRolesApi | undefined;
     persons: IPersonsState;
     camps: ICampsState;
     stories: IStoriesState;
