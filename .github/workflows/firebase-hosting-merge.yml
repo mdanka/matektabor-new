@@ -21,11 +21,13 @@ jobs:
       # Rules are project-global, so they are deployed on merge only (there is no
       # preview-channel equivalent) and before hosting, so that the new rules are
       # live by the time client code depending on them ships.
+      # Storage rules are not deployed here: nothing in the app uses Storage, so
+      # storage.rules is a static deny-all that is deployed by hand if it ever changes.
       - uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_BARKOCHBA_APP }}
-      - name: Deploy Firestore and Storage rules
-        run: npx firebase deploy --only firestore:rules,storage --project barkochba-app --non-interactive
+      - name: Deploy Firestore rules
+        run: npx firebase deploy --only firestore:rules --project barkochba-app --non-interactive
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
