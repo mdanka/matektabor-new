@@ -18,6 +18,14 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn lint
       - run: yarn build
+      # Rules are project-global, so they are deployed on merge only (there is no
+      # preview-channel equivalent) and before hosting, so that the new rules are
+      # live by the time client code depending on them ships.
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_BARKOCHBA_APP }}
+      - name: Deploy Firestore and Storage rules
+        run: npx firebase deploy --only firestore:rules,storage --project barkochba-app --non-interactive
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}

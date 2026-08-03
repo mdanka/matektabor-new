@@ -90,5 +90,6 @@ When testing in a headless browser (e.g. Claude Preview), the Google sign-in pop
 ## Deployment
 
 - Web app auto-deploys via GitHub Actions on merge to `main`
+- Firestore and Storage rules auto-deploy on merge to `main`, just before hosting. Rules are project-global, so PRs deliberately do not deploy them — a rules change is live for everyone the moment it merges.
 - Cloud Functions deployed manually via `firebase` CLI
 - PRs get automatic preview deployments
