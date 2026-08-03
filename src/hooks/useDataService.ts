@@ -143,6 +143,14 @@ export function useDataService() {
             );
     };
 
+    const removePersonsWhoKnowStory = (storyId: string, peopleIds: string[]) => {
+        const storyDocRef = doc(collection(firestore, CollectionId.Stories), storyId);
+        return updateDoc(storyDocRef, { personsWhoKnow: arrayRemove(...peopleIds) })
+            .catch((reason: unknown) =>
+                console.error(`[DataService] Failed to remove persons who know the story. ${reason}`),
+            );
+    };
+
     const updateStoryStarred = useCallback((storyId: string, isStarred: boolean) => {
         if (currentUserFromAuth == null) {
             return;
@@ -197,6 +205,7 @@ export function useDataService() {
 
     return {
         addPersonsWhoKnowStory,
+        removePersonsWhoKnowStory,
         updateStoryStarred,
         addRoleEmail,
         removeRoleEmail,

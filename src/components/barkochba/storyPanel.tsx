@@ -4,6 +4,7 @@ import {
     selectCurrentStory,
     selectPersonsAsSelectOptions,
     selectCurrentListeningPersonIds,
+    selectCurrentListeningPersonsAsSelectOptions,
     selectCurrentListeningPersonsWhoKnowStoryAsSelectOptions,
     selectCurrentStoryPersonsAsSelectOptions,
 } from "../../store";
@@ -15,9 +16,11 @@ import {
     Typography,
     Button,
     Box,
+    Chip,
     Divider,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import CheckIcon from "@mui/icons-material/Check";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import AddIcon from "@mui/icons-material/Add";
 import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
@@ -32,10 +35,11 @@ export const StoryPanel: React.FC = () => {
     const personsAsSelectOptions = useSelector(selectPersonsAsSelectOptions);
     const personsWhoKnowAsSelectOptions = useSelector(selectCurrentStoryPersonsAsSelectOptions);
     const currentListeningPersonIds = useSelector(selectCurrentListeningPersonIds);
+    const currentListeningPersonsAsSelectOptions = useSelector(selectCurrentListeningPersonsAsSelectOptions);
     const currentListeningPersonsWhoKnowStoryAsSelectOptions = useSelector(
         selectCurrentListeningPersonsWhoKnowStoryAsSelectOptions
     );
-    const { addPersonsWhoKnowStory } = useDataService();
+    const { addPersonsWhoKnowStory, removePersonsWhoKnowStory } = useDataService();
 
     const [personsToAdd, setPersonsToAdd] = useState<ISelectOption[]>([]);
 
@@ -59,11 +63,23 @@ export const StoryPanel: React.FC = () => {
         }
     };
 
+    const handleListenerChipClicked = (personId: string, knowsStory: boolean) => {
+        if (!story) {
+            return;
+        }
+        if (knowsStory) {
+            removePersonsWhoKnowStory(story.id, [personId]);
+        } else {
+            addPersonsWhoKnowStory(story.id, [personId]);
+        }
+    };
+
     const renderStory = () => {
         if (!story) return null;
 
-        const someoneListeningKnowsIt = currentListeningPersonsWhoKnowStoryAsSelectOptions.length > 0;
-        const isPluralListeningAndKnowing = currentListeningPersonsWhoKnowStoryAsSelectOptions.length > 1;
+        const listeningPersonIdsWhoKnow = new Set(
+            currentListeningPersonsWhoKnowStoryAsSelectOptions.map(option => option.value)
+        );
         const { title, description, solution, number } = story;
 
         return (
@@ -83,6 +99,29 @@ export const StoryPanel: React.FC = () => {
                         Elmeséltem
                     </Button>
                 </div>
+                {currentListeningPersonsAsSelectOptions.length > 0 && (
+                    <Box sx={{ mb: 1.5 }}>
+                        <Typography variant="caption" color="textSecondary" sx={{ display: "block", mb: 0.5 }}>
+                            Kattints a gyerek nevére, ha már ismeri a történetet!
+                        </Typography>
+                        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                            {currentListeningPersonsAsSelectOptions.map(option => {
+                                const knowsStory = listeningPersonIdsWhoKnow.has(option.value);
+                                return (
+                                    <Chip
+                                        key={option.value}
+                                        label={option.label}
+                                        clickable
+                                        color={knowsStory ? "secondary" : "default"}
+                                        variant={knowsStory ? "filled" : "outlined"}
+                                        icon={knowsStory ? <CheckIcon /> : undefined}
+                                        onClick={() => handleListenerChipClicked(option.value, knowsStory)}
+                                    />
+                                );
+                            })}
+                        </Box>
+                    </Box>
+                )}
                 <Divider sx={{ mb: 2 }} />
                 <Box className={css.storyDescription} sx={{ backgroundColor: "background.default" }}>
                     <Typography variant="body2">
@@ -103,17 +142,6 @@ export const StoryPanel: React.FC = () => {
                             <Typography variant="subtitle1">Kik ismerik?</Typography>
                         </AccordionSummary>
                         <AccordionDetails className={css.peopleWhoKnow}>
-                            {someoneListeningKnowsIt && (
-                                <Typography variant="body2" paragraph>
-                                    <b>
-                                        Ő{isPluralListeningAndKnowing ? "k" : ""} ismeri
-                                        {isPluralListeningAndKnowing ? "k" : ""} a mostani hallgatóságból:
-                                    </b>{" "}
-                                    {currentListeningPersonsWhoKnowStoryAsSelectOptions
-                                        .map(option => option.label)
-                                        .join(", ")}
-                                </Typography>
-                            )}
                             <div className={css.peopleWhoKnowAdd}>
                                 <PersonsSelector
                                     className={css.peopleWhoKnowAddSelector}
