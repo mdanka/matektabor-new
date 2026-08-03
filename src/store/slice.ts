@@ -10,6 +10,9 @@ import {
     IBarkochbaOrdering,
     IDataLoadingState,
 } from "./state";
+import { loadListeningSelection } from "./persistence";
+
+const persistedListeningSelection = loadListeningSelection();
 
 const initialState: IAppState = {
     currentUser: undefined,
@@ -25,8 +28,8 @@ const initialState: IAppState = {
         areStoriesLoaded: false,
     },
     currentStoryId: undefined,
-    currentListeningPersonIds: [],
-    currentListeningCampRoom: {
+    currentListeningPersonIds: persistedListeningSelection?.personIds ?? [],
+    currentListeningCampRoom: persistedListeningSelection?.campRoom ?? {
         campId: undefined,
         roomName: undefined,
     },
