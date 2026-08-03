@@ -1,0 +1,98 @@
+.flyingAnimalContainer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 2000;
+}
+
+.flyingAnimal {
+    position: absolute;
+    left: 0;
+    width: 110px;
+    will-change: transform;
+    animation-name: flyAcross;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+}
+
+.flyingAnimalReverse {
+    animation-name: flyAcrossReverse;
+}
+
+// The animal is drawn facing forward and speeding left-to-right; for
+// right-to-left flights the whole thing (tilt and trail included) is mirrored.
+.mirrored {
+    transform: scaleX(-1);
+}
+
+.bobbing {
+    position: relative;
+    animation: bob 0.6s ease-in-out infinite;
+}
+
+.animalSvg {
+    display: block;
+    width: 100%;
+    height: auto;
+    transform: rotate(8deg);
+}
+
+.trailLine {
+    position: absolute;
+    right: 92px;
+    height: 5px;
+    border-radius: 3px;
+}
+
+.trailLine1 {
+    top: 34%;
+    width: 70px;
+    background: linear-gradient(to left, rgba(249, 168, 201, 0.9), rgba(249, 168, 201, 0));
+}
+
+.trailLine2 {
+    top: 50%;
+    width: 95px;
+    background: linear-gradient(to left, rgba(147, 197, 253, 0.9), rgba(147, 197, 253, 0));
+}
+
+.trailLine3 {
+    top: 66%;
+    width: 60px;
+    background: linear-gradient(to left, rgba(252, 211, 77, 0.9), rgba(252, 211, 77, 0));
+}
+
+@keyframes flyAcross {
+    from {
+        transform: translateX(-220px);
+    }
+    to {
+        transform: translateX(calc(100vw + 120px));
+    }
+}
+
+@keyframes flyAcrossReverse {
+    from {
+        transform: translateX(calc(100vw + 120px));
+    }
+    to {
+        transform: translateX(-220px);
+    }
+}
+
+@keyframes bob {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .flyingAnimalContainer {
+        display: none;
+    }
+}
