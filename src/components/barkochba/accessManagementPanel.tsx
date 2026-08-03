@@ -1,13 +1,26 @@
 import * as React from "react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { Typography, TextField, Button, Paper, Chip, Box, FormControl } from "@mui/material";
+import {
+    Typography,
+    TextField,
+    Button,
+    Paper,
+    FormControl,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
+    Switch,
+    IconButton,
+    Tooltip,
+} from "@mui/material";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useSnackbar } from "notistack";
 import { selectCurrentUser, selectRoles } from "../../store";
 import { useDataService } from "../../hooks/useDataService";
 import css from "./barkochbaManageScreen.module.scss";
-
-type IRoleField = "viewers" | "admins";
 
 // A deliberately loose check: catch typos like a missing @ or stray whitespace,
 // without trying to out-guess what an email server will accept.
@@ -19,115 +32,145 @@ export const AccessManagementPanel: React.FC = () => {
     const currentUser = useSelector(selectCurrentUser);
     const { addRoleEmail, removeRoleEmail } = useDataService();
 
-    const [newEmails, setNewEmails] = useState<Record<IRoleField, string>>({ viewers: "", admins: "" });
-    const [validationErrors, setValidationErrors] = useState<Record<IRoleField, string | undefined>>({
-        viewers: undefined,
-        admins: undefined,
-    });
+    const [newEmail, setNewEmail] = useState("");
+    const [validationError, setValidationError] = useState<string | undefined>(undefined);
 
     if (roles === undefined) {
         return null;
     }
 
     const currentUserEmail = currentUser?.email?.toLowerCase();
-    const emailLists: Record<IRoleField, string[]> = {
-        viewers: [...roles.viewers].sort(),
-        admins: [...(roles.admins ?? [])].sort(),
+    const viewers = roles.viewers;
+    const admins = roles.admins ?? [];
+    const allEmails = [...new Set([...viewers, ...admins])].sort();
+
+    const showError = () =>
+        enqueueSnackbar("Nem sikerült a hozzáférés módosítása - kérjük próbáld újra!", { variant: "error" });
+
+    const handleNewEmailChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setNewEmail(event.target.value);
+        setValidationError(undefined);
     };
 
-    const handleNewEmailChange = (role: IRoleField) => (
-        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
-        setNewEmails(prev => ({ ...prev, [role]: event.target.value }));
-        setValidationErrors(prev => ({ ...prev, [role]: undefined }));
-    };
-
-    const handleAdd = (role: IRoleField) => {
-        const email = newEmails[role].trim().toLowerCase();
+    const handleAdd = () => {
+        const email = newEmail.trim().toLowerCase();
         if (!isPlausibleEmail(email)) {
-            setValidationErrors(prev => ({ ...prev, [role]: "Ez nem tűnik érvényes e-mail-címnek." }));
+            setValidationError("Ez nem tűnik érvényes e-mail-címnek.");
             return;
         }
-        if (emailLists[role].includes(email)) {
-            setValidationErrors(prev => ({ ...prev, [role]: "Ez a cím már szerepel a listán." }));
+        if (allEmails.includes(email)) {
+            setValidationError("Ez a cím már szerepel a listán.");
             return;
         }
-        addRoleEmail(role, email)
-            .then(() => setNewEmails(prev => ({ ...prev, [role]: "" })))
-            .catch(() => enqueueSnackbar("Nem sikerült a hozzáférés módosítása - kérjük próbáld újra!", { variant: "error" }));
+        addRoleEmail("viewers", email)
+            .then(() => setNewEmail(""))
+            .catch(showError);
     };
 
-    const handleRemove = (role: IRoleField, email: string) => {
-        removeRoleEmail(role, email)
-            .catch(() => enqueueSnackbar("Nem sikerült a hozzáférés módosítása - kérjük próbáld újra!", { variant: "error" }));
+    const handleAdminToggle = (email: string, makeAdmin: boolean) => {
+        const updates = makeAdmin
+            ? [addRoleEmail("admins", email)]
+            : [
+                // Keep them as a viewer so revoking admin doesn't silently revoke all access.
+                ...(viewers.includes(email) ? [] : [addRoleEmail("viewers", email)]),
+                removeRoleEmail("admins", email),
+            ];
+        Promise.all(updates).catch(showError);
     };
 
-    const renderRoleSection = (role: IRoleField, title: string, description: string) => (
-        <div>
-            <Typography className={css.barkochbaManageSubtitle} variant="subtitle1">
-                {title}
-            </Typography>
+    const handleRemove = (email: string) => {
+        const removals = [
+            ...(viewers.includes(email) ? [removeRoleEmail("viewers", email)] : []),
+            ...(admins.includes(email) ? [removeRoleEmail("admins", email)] : []),
+        ];
+        Promise.all(removals).catch(showError);
+    };
+
+    return (
+        <Paper className={css.barkochbaManagePanel} elevation={0} sx={{ border: "1px solid", borderColor: "divider", borderRadius: { xs: 3, sm: 4 } }}>
+            <Typography variant="h5" sx={{ fontWeight: 700 }}>Hozzáférések</Typography>
             <Typography variant="subtitle2" color="text.secondary">
-                {description}
+                A listán szereplők használhatják az appot: láthatják a történeteket és szerkeszthetik a táborokat.
+                Az adminok ezen felül a hozzáféréseket is kezelhetik.
             </Typography>
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1.5, mb: 1.5 }}>
-                {emailLists[role].length === 0 && (
-                    <Typography variant="body2" color="text.secondary">
-                        Még nincs senki a listán.
-                    </Typography>
-                )}
-                {emailLists[role].map(email => {
-                    // The rules refuse an admin removing themselves anyway; not offering
-                    // the delete button makes the lockout protection visible.
-                    const isSelfAsAdmin = role === "admins" && email === currentUserEmail;
-                    return (
-                        <Chip
-                            key={email}
-                            label={email}
-                            onDelete={isSelfAsAdmin ? undefined : () => handleRemove(role, email)}
-                        />
-                    );
-                })}
-            </Box>
             <div className={css.barkochbaManageFormStack}>
-                <FormControl variant="standard" fullWidth error={!!validationErrors[role]}>
+                <FormControl variant="standard" fullWidth error={!!validationError}>
                     <TextField
                         variant="filled"
-                        value={newEmails[role]}
-                        onChange={handleNewEmailChange(role)}
+                        value={newEmail}
+                        onChange={handleNewEmailChange}
                         label="E-mail-cím"
                         placeholder="valaki@gmail.com"
                         type="email"
                         fullWidth
-                        error={!!validationErrors[role]}
-                        helperText={validationErrors[role]}
+                        error={!!validationError}
+                        helperText={validationError}
                     />
                 </FormControl>
                 <Button
                     variant="contained"
                     color="secondary"
-                    onClick={() => handleAdd(role)}
+                    onClick={handleAdd}
                     sx={{ alignSelf: { xs: "stretch", sm: "flex-start" } }}
                 >
                     Hozzáadás
                 </Button>
             </div>
-        </div>
-    );
-
-    return (
-        <Paper className={css.barkochbaManagePanel} elevation={0} sx={{ border: "1px solid", borderColor: "divider", borderRadius: { xs: 3, sm: 4 } }}>
-            <Typography variant="h5" sx={{ fontWeight: 700 }}>Hozzáférések</Typography>
-            {renderRoleSection(
-                "viewers",
-                "Megtekintők",
-                "Ők használhatják az appot: láthatják a történeteket és szerkeszthetik a táborokat."
-            )}
-            {renderRoleSection(
-                "admins",
-                "Adminok",
-                "Ők ezen felül a hozzáféréseket is kezelhetik. Minden admin egyben megtekintő is."
-            )}
+            <Table size="small" sx={{ mt: 1.5, mb: 1.5 }}>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>E-mail-cím</TableCell>
+                        <TableCell align="center" sx={{ width: 80 }}>Admin</TableCell>
+                        <TableCell align="center" sx={{ width: 80 }}>Törlés</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {allEmails.length === 0 && (
+                        <TableRow>
+                            <TableCell colSpan={3}>
+                                <Typography variant="body2" color="text.secondary">
+                                    Még nincs senki a listán.
+                                </Typography>
+                            </TableCell>
+                        </TableRow>
+                    )}
+                    {allEmails.map(email => {
+                        // The rules refuse an admin removing themselves from admins anyway;
+                        // disabling the controls makes the lockout protection visible.
+                        const isSelfAsAdmin = admins.includes(email) && email === currentUserEmail;
+                        return (
+                            <TableRow key={email}>
+                                <TableCell sx={{ wordBreak: "break-all" }}>{email}</TableCell>
+                                <TableCell align="center">
+                                    <Tooltip title={isSelfAsAdmin ? "Saját magadat nem tudod eltávolítani az adminok közül." : ""}>
+                                        <span>
+                                            <Switch
+                                                checked={admins.includes(email)}
+                                                disabled={isSelfAsAdmin}
+                                                onChange={event => handleAdminToggle(email, event.target.checked)}
+                                                inputProps={{ "aria-label": `${email} admin` }}
+                                            />
+                                        </span>
+                                    </Tooltip>
+                                </TableCell>
+                                <TableCell align="center">
+                                    <Tooltip title={isSelfAsAdmin ? "Saját magadat nem tudod törölni." : ""}>
+                                        <span>
+                                            <IconButton
+                                                disabled={isSelfAsAdmin}
+                                                onClick={() => handleRemove(email)}
+                                                aria-label={`${email} törlése`}
+                                            >
+                                                <DeleteOutlineIcon />
+                                            </IconButton>
+                                        </span>
+                                    </Tooltip>
+                                </TableCell>
+                            </TableRow>
+                        );
+                    })}
+                </TableBody>
+            </Table>
         </Paper>
     );
 };
