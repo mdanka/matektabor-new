@@ -56,6 +56,12 @@ const USERS = [
         displayName: "No Access",
         rawId: "100000000000000000002",
     },
+    {
+        uid: "vW2QmXhT7ubQ5rcD8Kj4mtEOhmsd",
+        email: "viewer.only@example.com",
+        displayName: "Viewer Only",
+        rawId: "100000000000000000003",
+    },
 ];
 
 const GROUPS = ["Mókus", "Vidra", "Sündisznó"];
@@ -170,7 +176,10 @@ async function main() {
     );
 
     const batch = db.batch();
-    batch.set(db.collection("admin").doc("roles"), { viewers: [USERS[0].email] });
+    batch.set(db.collection("admin").doc("roles"), {
+        viewers: [USERS[0].email, USERS[2].email],
+        admins: [USERS[0].email],
+    });
     for (const { id, ...data } of persons) {
         batch.set(db.collection("persons").doc(id), data);
     }

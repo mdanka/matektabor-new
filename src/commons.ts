@@ -40,6 +40,19 @@ export interface IStoryApi {
     usersWhoStarred: string[] | undefined;
 }
 
+/**
+ * The admin/roles document. Access is granted by email address (matched against
+ * the signed-in user's verified email). Admins implicitly have viewer access too.
+ */
+export interface IRolesApi {
+    viewers: string[];
+
+    /**
+     * May be missing on documents created before the admin role existed.
+     */
+    admins: string[] | undefined;
+}
+
 export type IPerson = IPersonApi & IWithId;
 
 export type ICamp = ICampApi & IWithId;

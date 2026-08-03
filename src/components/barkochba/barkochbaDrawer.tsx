@@ -1,12 +1,16 @@
 import { List, ListItemText, ListItemButton, Divider, ListItemIcon, Link, Box } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import TableChartIcon from "@mui/icons-material/TableChart";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import { Link as RouterLink, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { StoryBrowser } from "./storyBrowser";
+import { selectHasAdminRole } from "../../store";
 import { getNavUrl, Page } from "../../utils/navUtils";
 
 export function BarkochbaDrawer() {
     const { pathname } = useLocation();
+    const hasAdminRole = useSelector(selectHasAdminRole);
 
     return (
         <Box component="nav" aria-label="Barkochba navigáció" sx={{ display: "flex", flexDirection: "column", height: "100%", backgroundColor: "background.default", borderRight: "1px solid", borderColor: "divider" }}>
@@ -40,6 +44,22 @@ export function BarkochbaDrawer() {
                             <ListItemText primary="Táborok szerkesztése" />
                         </ListItemButton>
                     </Link>
+                    {hasAdminRole && (
+                        <Link
+                            variant="body1"
+                            color="inherit"
+                            component={RouterLink}
+                            to={getNavUrl[Page.BarkochbaAdmin]()}
+                            underline="hover"
+                        >
+                            <ListItemButton selected={pathname === "/barkochba/admin"} sx={{ overflow: "hidden", whiteSpace: "nowrap" }}>
+                                <ListItemIcon>
+                                    <ManageAccountsIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Hozzáférések" />
+                            </ListItemButton>
+                        </Link>
+                    )}
                 </List>
                 <Divider />
             </Box>

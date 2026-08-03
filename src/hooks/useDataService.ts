@@ -1,6 +1,6 @@
-import { setStories, setPersons, setCamps, setHasPendingWrites, setHasViewerRole, setDataLoaded } from "../store";
-import { IStoryApi, IPersonApi, ICampApi, ICamp } from "../commons";
-import { CollectionId } from "../types/shared";
+import { setStories, setPersons, setCamps, setHasPendingWrites, setHasViewerRole, setHasAdminRole, setRoles, setDataLoaded } from "../store";
+import { IStoryApi, IPersonApi, ICampApi, ICamp, IRolesApi } from "../commons";
+import { CollectionId, DocId } from "../types/shared";
 import { addDoc, arrayRemove, arrayUnion, collection, doc, FirestoreError, onSnapshot, QuerySnapshot, updateDoc } from "firebase/firestore";
 import { User } from "firebase/auth";
 import { useAuth, useFirestore } from "reactfire";
@@ -64,11 +64,32 @@ export function useDataService() {
         );
     }, [firestore]);
 
+    // Only admins may read the roles document, so a successful read means the
+    // current user is an admin, the same way collection reads imply the viewer role.
+    const subscribeToRoles = useCallback(() => {
+        const rolesDocRef = doc(firestore, CollectionId.Admin, DocId.Roles);
+        return onSnapshot(
+            rolesDocRef,
+            snapshot => {
+                store.dispatch(setHasAdminRole({ hasAdminRole: true }));
+                store.dispatch(setRoles({ roles: snapshot.data() as IRolesApi | undefined }));
+            },
+            (error: FirestoreError) => {
+                store.dispatch(setHasAdminRole({ hasAdminRole: false }));
+                store.dispatch(setRoles({ roles: undefined }));
+                if (error.code !== "permission-denied") {
+                    console.error(`[DataService] Failed to subscribe to roles. ${error}`);
+                }
+            },
+        );
+    }, [firestore, store]);
+
     const subscribeToDataStore = useCallback((currentUser: User) => {
         // Unsubscribe previous listeners
         snapshotUnsubscribersRef.current.forEach(unsubscriber => unsubscriber());
         snapshotUnsubscribersRef.current = [];
         // Subscribe new listeners
+        snapshotUnsubscribersRef.current.push(subscribeToRoles());
         snapshotUnsubscribersRef.current.push(
             subscribeToCollection<IPersonApi>(currentUser, CollectionId.Persons, (documents, hasPendingWrites) => {
                 store.dispatch(setHasViewerRole({ hasViewerRole: true }))
@@ -102,7 +123,7 @@ export function useDataService() {
                 store.dispatch(setHasViewerRole({ hasViewerRole: false }))
             }),
         );
-    }, [setPendingWrite, store, subscribeToCollection]);
+    }, [setPendingWrite, store, subscribeToCollection, subscribeToRoles]);
 
     const subscribeToDataStoreIfLoggedIn = useCallback((currentUser: User | undefined | null) => {
         if (currentUser != null) {
@@ -140,6 +161,18 @@ export function useDataService() {
             );
     }, [currentUserFromAuth, firestore]);
 
+    // The rules only allow these writes for admins, and reject an admin removing
+    // their own email from the admins list.
+    const addRoleEmail = (role: "viewers" | "admins", email: string) => {
+        const rolesDocRef = doc(firestore, CollectionId.Admin, DocId.Roles);
+        return updateDoc(rolesDocRef, { [role]: arrayUnion(email.trim().toLowerCase()) });
+    };
+
+    const removeRoleEmail = (role: "viewers" | "admins", email: string) => {
+        const rolesDocRef = doc(firestore, CollectionId.Admin, DocId.Roles);
+        return updateDoc(rolesDocRef, { [role]: arrayRemove(email) });
+    };
+
     const createPerson = (newPerson: IPersonApi) => {
         const personsCollectionRef = collection(firestore, CollectionId.Persons);
         return addDoc(personsCollectionRef, newPerson);
@@ -165,6 +198,8 @@ export function useDataService() {
     return {
         addPersonsWhoKnowStory,
         updateStoryStarred,
+        addRoleEmail,
+        removeRoleEmail,
         createPerson,
         createCamp,
         createRoom,

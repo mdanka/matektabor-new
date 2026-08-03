@@ -6,12 +6,19 @@ service cloud.firestore {
       return request.auth.uid != null;
     }
 
+    // Admins are viewers too: everything a viewer may do, an admin may do.
     function isViewer() {
-      return request.auth.token.email_verified && getViewers().hasAll([request.auth.token.email]);
+      return request.auth.token.email_verified
+        && (getRoles().get('viewers', []).hasAll([request.auth.token.email])
+          || getRoles().get('admins', []).hasAll([request.auth.token.email]));
     }
 
-    function getViewers() {
-      return get(/databases/$(database)/documents/admin/roles).data.viewers;
+    function isAdmin() {
+      return request.auth.token.email_verified && getRoles().get('admins', []).hasAll([request.auth.token.email]);
+    }
+
+    function getRoles() {
+      return get(/databases/$(database)/documents/admin/roles).data;
     }
 
     function areSetsEqual(list1, list2) {
@@ -40,6 +47,19 @@ service cloud.firestore {
           )
         )
       );
+      allow create, delete: if false;
+    }
+
+    match /admin/roles {
+      allow read: if isSignedIn() && isAdmin();
+      // Admins may edit the viewers and admins lists, but cannot remove themselves
+      // from admins — that both prevents accidental lockout and guarantees the
+      // admins field cannot be dropped or emptied through the client.
+      allow update: if isSignedIn() && isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['viewers', 'admins'])
+        && request.resource.data.get('viewers', []) is list
+        && request.resource.data.get('admins', []) is list
+        && request.resource.data.get('admins', []).hasAll([request.auth.token.email]);
       allow create, delete: if false;
     }
 

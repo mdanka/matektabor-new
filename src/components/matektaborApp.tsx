@@ -2,7 +2,7 @@ import { FC, useCallback } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AppHeader } from "./appHeader";
 import { AppFooter } from "./appFooter";
-import { BarkochbaScreen, BarkochbaManageScreen, BarkochbaExportScreen } from "./barkochba";
+import { BarkochbaScreen, BarkochbaManageScreen, BarkochbaExportScreen, BarkochbaAdminScreen } from "./barkochba";
 import { StaticContent } from "./staticContent";
 import { ScrollToTop } from "./common";
 import { LoginProtector } from "./loginProtector";
@@ -112,6 +112,21 @@ export const MatektaborApp: FC = () => {
         </>
     ), []);
 
+    const renderBarkochbaAdmin = useCallback(() => (
+        <>
+            <Helmet>
+                <title>{getNavUrlSimpleTitle[Page.BarkochbaAdmin]}</title>
+            </Helmet>
+            <LoginProtector>
+                <div>
+                    <AppHeader />
+                    <BarkochbaAdminScreen />
+                    <AppFooter />
+                </div>
+            </LoginProtector>
+        </>
+    ), []);
+
     const renderRedirectToHome = useCallback(() => <Navigate to={getNavUrl[Page.Home]()} replace />, []);
 
     return (
@@ -152,6 +167,7 @@ export const MatektaborApp: FC = () => {
                             <Route path={getNavUrlTemplate[Page.Barkochba]} element={renderBarkochba()} />
                             <Route path={getNavUrlTemplate[Page.BarkochbaExport]} element={renderBarkochbaExport()} />
                             <Route path={getNavUrlTemplate[Page.BarkochbaManage]} element={renderBarkochbaManage()} />
+                            <Route path={getNavUrlTemplate[Page.BarkochbaAdmin]} element={renderBarkochbaAdmin()} />
                             <Route path={getNavUrlTemplate[Page.TermsOfService]} element={renderTermsOfService()} />
                             <Route path={getNavUrlTemplate[Page.PrivacyPolicy]} element={renderPrivacyPolicy()} />
                             <Route path="*" element={renderRedirectToHome()} />
