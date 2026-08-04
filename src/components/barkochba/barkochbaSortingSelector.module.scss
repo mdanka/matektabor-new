@@ -1,4 +1,10 @@
 .barkochbaSortingSelector {
-    flex-grow: 1;
     width: 100%;
+}
+
+.barkochbaSortingSelectorCaption {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 4px;
 }
