@@ -40,7 +40,6 @@ const initialState: IAppState = {
         newCampGroup: "",
         newCampNumber: "",
         roomsSelectionCampId: undefined,
-        roomsSelectionRoomName: undefined,
     },
     barkochbaDrawerIsOpen: false,
     barkochbaOrdering: "storyNumber",

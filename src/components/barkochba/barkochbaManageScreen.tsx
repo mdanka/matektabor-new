@@ -6,21 +6,18 @@ import {
     setBarkochbaManageState,
     selectCampsAsSelectOptions,
     selectCamp,
-    selectCampRoomPeopleAsOptions,
-    selectCampRoomsAsOptions,
     campToSelectOption,
-    selectPersonsAsSelectOptions,
     selectGroupsAsSelectOptions,
     stringToSelectOption,
 } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
-import { Typography, TextField, Button, Paper, FormControl, FormHelperText, Alert } from "@mui/material";
+import { Typography, TextField, Button, Paper, FormControl, FormHelperText } from "@mui/material";
 import { ISelectOption } from "../../commons";
-import { PersonsSelector } from "./personsSelector";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import css from "./barkochbaManageScreen.module.scss";
 import { useDataService } from "../../hooks/useDataService";
 import { useState } from "react";
+import { CampRoomsOverview } from "./campRoomsOverview";
 
 export const BarkochbaManageScreen: React.FC = () => {
     const dispatch = useDispatch();
@@ -33,23 +30,8 @@ export const BarkochbaManageScreen: React.FC = () => {
             ? selectCamp(state, manageState.roomsSelectionCampId)
             : undefined
     );
-    const availableRoomsAsOptions = useSelector((state: IAppState) =>
-        manageState.roomsSelectionCampId !== undefined
-            ? selectCampRoomsAsOptions(state, manageState.roomsSelectionCampId)
-            : []
-    );
-    const roomPeopleAsOptions = useSelector((state: IAppState) =>
-        manageState.roomsSelectionCampId !== undefined && manageState.roomsSelectionRoomName !== undefined
-            ? selectCampRoomPeopleAsOptions(
-                state,
-                manageState.roomsSelectionCampId,
-                manageState.roomsSelectionRoomName
-            )
-            : []
-    );
-    const allPersonsAsOptions = useSelector(selectPersonsAsSelectOptions);
     const allGroupsAsOptions = useSelector(selectGroupsAsSelectOptions);
-    const { createPerson, createCamp, createRoom, updateCampRoom } = useDataService();
+    const { createPerson, createCamp } = useDataService();
 
     const setFieldError = (field: string, message: string) => {
         setValidationErrors(prev => ({ ...prev, [field]: message }));
@@ -119,39 +101,9 @@ export const BarkochbaManageScreen: React.FC = () => {
         update({ newCampGroup: "", newCampNumber: "" });
     };
 
-    const handleNewRoomAdd = (newRoomName: string) => {
-        if (!selectedCamp) {
-            setFieldError("roomsSelection", "Előbb válassz tábort.");
-            return;
-        }
-        if (!newRoomName) {
-            setFieldError("roomsSelection", "Nem lehet szobát létrehozni üres névvel.");
-            return;
-        }
-        createRoom(selectedCamp, newRoomName);
-    };
-
     const handleCampChange = (_event: React.ChangeEvent<unknown>, value: ISelectOption | null) => {
         const newCampId = value ? value.value : undefined;
         update({ roomsSelectionCampId: newCampId });
-        clearFieldError("roomsSelection");
-    };
-
-    const handleRoomChange = (_event: React.ChangeEvent<unknown>, value: ISelectOption | null) => {
-        if (value && !availableRoomsAsOptions.includes(value)) {
-            handleNewRoomAdd(value.value);
-        }
-        const newRoomName = value ? value.value : undefined;
-        update({ roomsSelectionRoomName: newRoomName });
-        clearFieldError("roomsSelection");
-    };
-
-    const handleRoomPersonsChange = (values: ISelectOption[]) => {
-        if (!selectedCamp || !manageState.roomsSelectionRoomName) {
-            return;
-        }
-        const peopleIds = values.map(value => value.value);
-        updateCampRoom(selectedCamp, manageState.roomsSelectionRoomName, peopleIds);
     };
 
     const isNewCampNumberError = (value: string) => {
@@ -241,17 +193,10 @@ export const BarkochbaManageScreen: React.FC = () => {
     };
 
     const renderRoomEdit = () => {
-        const { roomsSelectionRoomName } = manageState;
         const currentCampOption = selectedCamp ? campToSelectOption(selectedCamp) : null;
-        const currentRoomOption = roomsSelectionRoomName ? { value: roomsSelectionRoomName, label: roomsSelectionRoomName } : null;
         return (
             <Paper className={css.barkochbaManagePanel} elevation={0} sx={{ border: "1px solid", borderColor: "divider", borderRadius: { xs: 3, sm: 4 } }}>
                 <Typography variant="h5" sx={{ fontWeight: 700 }}>Szobabeosztás</Typography>
-                {validationErrors.roomsSelection && (
-                    <Alert severity="error" sx={{ mt: 2 }} onClose={() => clearFieldError("roomsSelection")}>
-                        {validationErrors.roomsSelection}
-                    </Alert>
-                )}
                 <Typography className={css.barkochbaManageSubtitle} variant="subtitle1">
                     Melyik tábor?
                 </Typography>
@@ -264,46 +209,7 @@ export const BarkochbaManageScreen: React.FC = () => {
                     )}
                     getOptionLabel={(option: ISelectOption) => option.label}
                 />
-                {currentCampOption && (
-                    <div>
-                        <Typography className={css.barkochbaManageSubtitle} variant="subtitle1">
-                            Melyik szoba?
-                        </Typography>
-                        <Typography variant="subtitle2" color="text.secondary">
-                            Új szoba létrehozásához csak gépeld be a szoba nevét.
-                        </Typography>
-                        <Autocomplete
-                            sx={{ mt: 1 }}
-                            options={availableRoomsAsOptions}
-                            value={currentRoomOption}
-                            onChange={handleRoomChange}
-                            filterOptions={(options, params) => {
-                                const filter = createFilterOptions<ISelectOption>();
-                                const filtered = filter(options, params);
-                                if (params.inputValue) {
-                                    filtered.push({ value: params.inputValue, label: `Új: "${params.inputValue}"` });
-                                }
-                                return filtered;
-                            }}
-                            renderInput={params => (
-                                <TextField {...params} label="Szoba" placeholder="Válassz szobát" variant="filled" />
-                            )}
-                            getOptionLabel={(option: ISelectOption) => option.label}
-                        />
-                    </div>
-                )}
-                {currentCampOption && currentRoomOption && (
-                    <div>
-                        <Typography className={css.barkochbaManageSubtitle} variant="subtitle1">
-                            A szoba lakói
-                        </Typography>
-                        <PersonsSelector
-                            allPersons={allPersonsAsOptions}
-                            selectedPersons={roomPeopleAsOptions}
-                            onChange={handleRoomPersonsChange}
-                        />
-                    </div>
-                )}
+                {selectedCamp && <CampRoomsOverview camp={selectedCamp} />}
             </Paper>
         );
     };

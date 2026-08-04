@@ -1,7 +1,7 @@
 import { setStories, setPersons, setCamps, setHasPendingWrites, setHasViewerRole, setHasAdminRole, setRoles, setDataLoaded } from "../store";
-import { IStoryApi, IPersonApi, ICampApi, ICamp, IRolesApi } from "../commons";
+import { IStoryApi, IPersonApi, ICampApi, ICamp, IRolesApi, IRoomsApi } from "../commons";
 import { CollectionId, DocId } from "../types/shared";
-import { addDoc, arrayRemove, arrayUnion, collection, doc, FirestoreError, onSnapshot, QuerySnapshot, updateDoc } from "firebase/firestore";
+import { addDoc, arrayRemove, arrayUnion, collection, doc, FirestoreError, onSnapshot, QuerySnapshot, updateDoc, writeBatch } from "firebase/firestore";
 import { User } from "firebase/auth";
 import { useAuth, useFirestore } from "reactfire";
 import { useEffect, useCallback, useRef } from "react";
@@ -203,6 +203,34 @@ export function useDataService() {
         return updateDoc(campDocRef, { rooms: newRooms });
     };
 
+    const setCampRooms = (camp: ICamp, rooms: IRoomsApi) => {
+        const campDocRef = doc(collection(firestore, CollectionId.Camps), camp.id);
+        return updateDoc(campDocRef, { rooms });
+    };
+
+    const deleteRoom = (camp: ICamp, roomName: string) => {
+        const newRooms = { ...camp.rooms };
+        delete newRooms[roomName];
+        return setCampRooms(camp, newRooms);
+    };
+
+    const renameRoom = (camp: ICamp, oldRoomName: string, newRoomName: string) => {
+        const newRooms = { ...camp.rooms, [newRoomName]: camp.rooms[oldRoomName] ?? [] };
+        delete newRooms[oldRoomName];
+        return setCampRooms(camp, newRooms);
+    };
+
+    const createPersons = (newPersons: IPersonApi[]) => {
+        const personsCollectionRef = collection(firestore, CollectionId.Persons);
+        const batch = writeBatch(firestore);
+        const ids = newPersons.map(newPerson => {
+            const personDocRef = doc(personsCollectionRef);
+            batch.set(personDocRef, newPerson);
+            return personDocRef.id;
+        });
+        return batch.commit().then(() => ids);
+    };
+
     return {
         addPersonsWhoKnowStory,
         removePersonsWhoKnowStory,
@@ -210,8 +238,12 @@ export function useDataService() {
         addRoleEmail,
         removeRoleEmail,
         createPerson,
+        createPersons,
         createCamp,
         createRoom,
         updateCampRoom,
+        setCampRooms,
+        deleteRoom,
+        renameRoom,
     }
 }

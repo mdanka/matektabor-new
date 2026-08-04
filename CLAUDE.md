@@ -13,6 +13,7 @@ yarn start        # Start Firebase Emulators + Vite dev server with HMR (http://
 yarn dev          # Start Vite dev server only (no emulators)
 yarn build        # TypeScript compile + Vite production build (tsc -b && vite build)
 yarn lint         # ESLint on src/ — must pass before merging PRs
+yarn test         # Vitest unit tests
 yarn preview      # Preview production build locally
 ```
 

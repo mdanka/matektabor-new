@@ -1,0 +1,54 @@
+.exampleTable {
+    margin-top: 16px;
+    border-collapse: collapse;
+
+    th,
+    td {
+        border: 1px solid;
+        border-color: inherit;
+        padding: 4px 12px;
+        text-align: left;
+        font-weight: normal;
+        white-space: nowrap;
+    }
+
+    th {
+        font-weight: bold;
+    }
+}
+
+.reviewRoom {
+    margin-top: 16px;
+}
+
+.reviewRoomHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+}
+
+.reviewRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+}
+
+.reviewRawName {
+    flex: 0 0 35%;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.reviewPicker {
+    flex: 1;
+    min-width: 0;
+}
+
+.reviewStatus {
+    flex: 0 0 auto;
+}
