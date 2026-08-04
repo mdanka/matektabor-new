@@ -9,9 +9,9 @@ import {
     selectStarredStoriesOrdered,
 } from "../../store";
 import {
+    Box,
     List,
     ListItemText,
-    ListItem,
     ListItemButton,
     Chip,
     Tooltip,
@@ -135,11 +135,20 @@ export const StoryBrowser: FC = () => {
 
     return (
         <div>
-            <List subheader={<ListSubheader disableSticky>Rendezés</ListSubheader>}>
-                <ListItem>
-                    <BarkochbaSortingSelector />
-                </ListItem>
-            </List>
+            <Box
+                sx={{
+                    position: "sticky",
+                    top: 0,
+                    zIndex: 2,
+                    backgroundColor: "background.default",
+                    borderBottom: "1px solid",
+                    borderColor: "divider",
+                    px: 2,
+                    py: 1,
+                }}
+            >
+                <BarkochbaSortingSelector />
+            </Box>
             {starredStories.length > 0 && (
                 <div>
                     <List subheader={<ListSubheader disableSticky>Kedvencek</ListSubheader>}>
