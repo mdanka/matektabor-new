@@ -35,7 +35,9 @@ Node 18 required (see .nvmrc). Uses Yarn as package manager.
 
 **Roles:** The `admin/roles` Firestore doc holds `viewers` and `admins` email lists, checked by `firestore.rules` against the signed-in user's verified email. Admins have viewer access too and can manage both lists on `/barkochba/admin`; the first admin must be added with `node scripts/addViewer.mjs --role admin`. The client infers roles from whether reads succeed (collections → viewer, `admin/roles` doc → admin).
 
-**Routing:** `/signin`, `/barkochba` (main, protected), `/barkochba/manage`, `/barkochba/admin` (admins only), `/barkochba/export`, `/terms-of-service`, `/privacy-policy`. Home redirects to `/barkochba`.
+**Routing:** `/signin`, `/barkochba` (main, protected), `/barkochba/manage`, `/barkochba/stories` (admins only), `/barkochba/admin` (admins only), `/barkochba/export`, `/terms-of-service`, `/privacy-policy`. Home redirects to `/barkochba`.
+
+**Stories:** Only admins may create or edit stories, on `/barkochba/stories`. Stories are never deleted — `isArchived` hides them from the story browser and the export tables, and it can be undone. Everything outside that page reads stories through `selectActiveStoriesList`, which filters archived ones out.
 
 ## Code Style
 

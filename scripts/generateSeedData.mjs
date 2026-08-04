@@ -153,6 +153,8 @@ const stories = STORY_SEEDS.map((seed, index) => ({
     personsWhoKnow: persons.filter((_p, i) => i % (index + 2) === 0).map((p) => p.id),
     // Only the synthetic seed accounts ever appear here.
     usersWhoStarred: index % 3 === 0 ? [USERS[0].uid] : [],
+    // One archived story, so the admin story editor has something to show in that section.
+    isArchived: index === STORY_SEEDS.length - 1,
 }));
 
 async function main() {
