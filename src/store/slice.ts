@@ -35,10 +35,6 @@ const initialState: IAppState = {
     },
     hasPendingWrites: false,
     barkochbaManageState: {
-        newPersonName: "",
-        newPersonGroup: "",
-        newCampGroup: "",
-        newCampNumber: "",
         roomsSelectionCampId: undefined,
     },
     barkochbaDrawerIsOpen: false,

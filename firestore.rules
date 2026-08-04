@@ -65,7 +65,14 @@ service cloud.firestore {
 
     match /persons/{document=**} {
       allow read, create: if isSignedIn() && isViewer();
-      allow update, delete: if false;
+      // Viewers may fix a child's name or group, but nothing else.
+      allow update: if isSignedIn() && isViewer()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'group'])
+        && request.resource.data.name is string
+        && request.resource.data.name != ''
+        // Some old person docs have no group; get() tolerates its absence.
+        && request.resource.data.get('group', '') is string;
+      allow delete: if false;
     }
 
     match /camps/{document=**} {

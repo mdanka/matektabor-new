@@ -35,6 +35,8 @@ interface IReviewEntry {
     rawName: string;
     selectedPersonId: string | undefined;
     status: IEntryStatus;
+    /** Person IDs of the similar names offered for a "suggestion" entry. */
+    candidateIds: string[];
 }
 
 interface IReviewRoom {
@@ -45,7 +47,7 @@ interface IReviewRoom {
 const STATUS_CHIPS: { [status in IEntryStatus]: { label: string; color: "success" | "warning" | "info" } } = {
     match: { label: "Megtalálva", color: "success" },
     confirmed: { label: "Kiválasztva", color: "success" },
-    suggestion: { label: "Ellenőrizd!", color: "warning" },
+    suggestion: { label: "Válassz!", color: "warning" },
     none: { label: "Új gyerek lesz", color: "info" },
 };
 
@@ -72,14 +74,21 @@ export const RoomImportDialog: React.FC<IRoomImportDialogProps> = ({ camp, open,
         const newReviewRooms = parsedRooms.map(parsedRoom => ({
             roomName: parsedRoom.roomName,
             entries: parsedRoom.names.map((rawName): IReviewEntry => {
-                const match = matchNameToPerson(rawName, allPersons, camp.group);
+                const match = matchNameToPerson(rawName, allPersons);
                 if (match.status === "match") {
-                    return { rawName, selectedPersonId: match.person.id, status: "match" };
+                    return { rawName, selectedPersonId: match.person.id, status: "match", candidateIds: [] };
                 }
                 if (match.status === "suggestion") {
-                    return { rawName, selectedPersonId: match.candidates[0].person.id, status: "suggestion" };
+                    // Similar names are only offered, never pre-selected: the
+                    // user has to click one (or decide it is a new child).
+                    return {
+                        rawName,
+                        selectedPersonId: undefined,
+                        status: "suggestion",
+                        candidateIds: match.candidates.map(candidate => candidate.id),
+                    };
                 }
-                return { rawName, selectedPersonId: undefined, status: "none" };
+                return { rawName, selectedPersonId: undefined, status: "none", candidateIds: [] };
             }),
         }));
         setReviewRooms(newReviewRooms);
@@ -115,7 +124,13 @@ export const RoomImportDialog: React.FC<IRoomImportDialogProps> = ({ camp, open,
         .filter(([, count]) => count > 1)
         .map(([personId]) => personOptionsById.get(personId)?.label ?? personId);
     const newPersonCount = reviewRooms.reduce(
-        (count, room) => count + room.entries.filter(entry => entry.selectedPersonId === undefined).length,
+        (count, room) =>
+            count +
+            room.entries.filter(entry => entry.selectedPersonId === undefined && entry.status !== "suggestion").length,
+        0,
+    );
+    const unresolvedCount = reviewRooms.reduce(
+        (count, room) => count + room.entries.filter(entry => entry.status === "suggestion").length,
         0,
     );
 
@@ -215,35 +230,76 @@ export const RoomImportDialog: React.FC<IRoomImportDialogProps> = ({ camp, open,
         const selectedOption =
             entry.selectedPersonId === undefined ? null : personOptionsById.get(entry.selectedPersonId) ?? null;
         return (
-            <div key={`${entry.rawName}-${entryIndex}`} className={css.reviewRow}>
-                <Typography variant="body2" className={css.reviewRawName} title={entry.rawName}>
-                    {entry.rawName}
-                </Typography>
-                <Autocomplete
-                    className={css.reviewPicker}
-                    size="small"
-                    options={allPersonsAsOptions}
-                    value={selectedOption}
-                    onChange={(_event, value) =>
-                        updateEntry(roomIndex, entryIndex, {
-                            ...entry,
-                            selectedPersonId: value === null ? undefined : value.value,
-                            status: value === null ? "none" : "confirmed",
-                        })
-                    }
-                    renderInput={params => (
-                        <TextField {...params} placeholder="Új gyerekként jön létre" variant="standard" />
-                    )}
-                    getOptionLabel={(option: ISelectOption) => option.label}
-                />
-                <Chip className={css.reviewStatus} size="small" color={chip.color} label={chip.label} />
-                <IconButton
-                    size="small"
-                    aria-label="Név kihagyása"
-                    onClick={() => updateEntry(roomIndex, entryIndex, undefined)}
-                >
-                    <CloseIcon fontSize="small" />
-                </IconButton>
+            <div key={`${entry.rawName}-${entryIndex}`}>
+                <div className={css.reviewRow}>
+                    <Typography variant="body2" className={css.reviewRawName} title={entry.rawName}>
+                        {entry.rawName}
+                    </Typography>
+                    <Autocomplete
+                        className={css.reviewPicker}
+                        size="small"
+                        options={allPersonsAsOptions}
+                        value={selectedOption}
+                        onChange={(_event, value) =>
+                            updateEntry(roomIndex, entryIndex, {
+                                ...entry,
+                                selectedPersonId: value === null ? undefined : value.value,
+                                status: value === null ? "none" : "confirmed",
+                            })
+                        }
+                        renderInput={params => (
+                            <TextField
+                                {...params}
+                                placeholder={entry.status === "suggestion" ? "Válassz gyereket" : "Új gyerekként jön létre"}
+                                variant="standard"
+                            />
+                        )}
+                        getOptionLabel={(option: ISelectOption) => option.label}
+                    />
+                    <Chip className={css.reviewStatus} size="small" color={chip.color} label={chip.label} />
+                    <IconButton
+                        size="small"
+                        aria-label="Név kihagyása"
+                        onClick={() => updateEntry(roomIndex, entryIndex, undefined)}
+                    >
+                        <CloseIcon fontSize="small" />
+                    </IconButton>
+                </div>
+                {entry.status === "suggestion" && (
+                    <div className={css.reviewSuggestions}>
+                        <Typography variant="body2" color="text.secondary">
+                            Erre gondoltál?
+                        </Typography>
+                        {entry.candidateIds.map(candidateId => (
+                            <Chip
+                                key={candidateId}
+                                size="small"
+                                color="primary"
+                                variant="outlined"
+                                label={personOptionsById.get(candidateId)?.label ?? candidateId}
+                                onClick={() =>
+                                    updateEntry(roomIndex, entryIndex, {
+                                        ...entry,
+                                        selectedPersonId: candidateId,
+                                        status: "confirmed",
+                                    })
+                                }
+                            />
+                        ))}
+                        <Chip
+                            size="small"
+                            variant="outlined"
+                            label="Egyik sem, új gyerek"
+                            onClick={() =>
+                                updateEntry(roomIndex, entryIndex, {
+                                    ...entry,
+                                    selectedPersonId: undefined,
+                                    status: "none",
+                                })
+                            }
+                        />
+                    </div>
+                )}
             </div>
         );
     };
@@ -257,6 +313,12 @@ export const RoomImportDialog: React.FC<IRoomImportDialogProps> = ({ camp, open,
             {duplicatedPersonLabels.length > 0 && (
                 <Alert severity="error" sx={{ mt: 2 }}>
                     Ugyanaz a gyerek több helyen is szerepel: {duplicatedPersonLabels.join(", ")}
+                </Alert>
+            )}
+            {unresolvedCount > 0 && (
+                <Alert severity="warning" sx={{ mt: 2 }}>
+                    {unresolvedCount} névnél hasonló nevű gyereket találtunk. A mentéshez a &quot;Válassz!&quot;
+                    jelölésű soroknál kattints a megfelelő gyerekre, vagy jelöld, hogy új gyerekről van szó.
                 </Alert>
             )}
             {reviewRooms.map((room, roomIndex) => {
@@ -307,7 +369,7 @@ export const RoomImportDialog: React.FC<IRoomImportDialogProps> = ({ camp, open,
                         <Button
                             variant="contained"
                             onClick={handleSave}
-                            disabled={isSaving || duplicatedPersonLabels.length > 0}
+                            disabled={isSaving || duplicatedPersonLabels.length > 0 || unresolvedCount > 0}
                         >
                             {newPersonCount > 0 ? `Mentés (${newPersonCount} új gyerek)` : "Mentés"}
                         </Button>

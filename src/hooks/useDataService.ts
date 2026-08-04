@@ -191,6 +191,16 @@ export function useDataService() {
         return addDoc(campsCollectionRef, newCamp);
     };
 
+    const updatePerson = (personId: string, fields: { name: string; group: string }) => {
+        const personDocRef = doc(collection(firestore, CollectionId.Persons), personId);
+        return updateDoc(personDocRef, fields);
+    };
+
+    const updateCamp = (campId: string, fields: Pick<ICampApi, "group" | "number">) => {
+        const campDocRef = doc(collection(firestore, CollectionId.Camps), campId);
+        return updateDoc(campDocRef, fields);
+    };
+
     const createRoom = (camp: ICamp, roomName: string) => {
         return updateCampRoom(camp, roomName, []);
     };
@@ -240,6 +250,8 @@ export function useDataService() {
         createPerson,
         createPersons,
         createCamp,
+        updatePerson,
+        updateCamp,
         createRoom,
         updateCampRoom,
         setCampRooms,
