@@ -1,25 +1,55 @@
 import { FC, useCallback, useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "../../store";
 import css from "./flyingAnimal.module.scss";
 
 /**
- * A rare easter egg: every once in a while a cute animal zips across the
- * screen, Asana-celebration style. Purely decorative — hidden from screen
- * readers, ignores pointer events, and disabled entirely for users who prefer
- * reduced motion.
+ * A rare easter egg: every once in a while a cute animal glides across the
+ * screen, Asana-celebration style. Only shown to signed-in users. Purely
+ * decorative — hidden from screen readers, ignores pointer events, and
+ * disabled entirely for users who prefer reduced motion.
  */
 
-type AnimalKind = "bear" | "hippo" | "mammoth" | "clownfish" | "dog" | "cat" | "polarBear" | "cheetah";
+type AnimalKind =
+    | "bear"
+    | "hippo"
+    | "mammoth"
+    | "clownfish"
+    | "dog"
+    | "cat"
+    | "polarBear"
+    | "cheetah"
+    | "deer"
+    | "rabbit"
+    | "tortoise"
+    | "giraffe";
 
-const ANIMALS: AnimalKind[] = ["bear", "hippo", "mammoth", "clownfish", "dog", "cat", "polarBear", "cheetah"];
+const ANIMALS: AnimalKind[] = [
+    "bear",
+    "hippo",
+    "mammoth",
+    "clownfish",
+    "dog",
+    "cat",
+    "polarBear",
+    "cheetah",
+    "deer",
+    "rabbit",
+    "tortoise",
+    "giraffe",
+];
 
 // A welcome flight shortly after the page loads, then randomly roughly every
-// 10-30 minutes of an open session.
-const INITIAL_DELAY_MS = 2500;
-const MIN_DELAY_MS = 10 * 60 * 1000;
-const MAX_DELAY_MS = 30 * 60 * 1000;
+// 3-8 minutes of an open session. Every delay is drawn fresh, so no two
+// sessions have the same rhythm.
+const MIN_INITIAL_DELAY_MS = 2000;
+const MAX_INITIAL_DELAY_MS = 6000;
+const MIN_DELAY_MS = 3 * 60 * 1000;
+const MAX_DELAY_MS = 8 * 60 * 1000;
 
-const MIN_FLIGHT_DURATION_MS = 1500;
-const MAX_FLIGHT_DURATION_MS = 2500;
+// A leisurely glide: slow enough to notice and follow across the screen.
+const MIN_FLIGHT_DURATION_MS = 5000;
+const MAX_FLIGHT_DURATION_MS = 8000;
 
 interface Flight {
     id: number;
@@ -258,6 +288,135 @@ const Mammoth: FC = () => (
     </svg>
 );
 
+const Deer: FC = () => (
+    <svg className={css.animalSvg} viewBox="0 0 120 110" aria-hidden="true">
+        <path
+            d="M50 30 L44 12 M45 20 L35 15 M44 12 L37 5 M70 30 L76 12 M75 20 L85 15 M76 12 L83 5"
+            stroke="#8a5a2b"
+            strokeWidth="3"
+            fill="none"
+            strokeLinecap="round"
+        />
+        <ellipse cx="34" cy="40" rx="9" ry="5.5" fill="#b5793f" transform="rotate(-18 34 40)" />
+        <ellipse cx="86" cy="40" rx="9" ry="5.5" fill="#b5793f" transform="rotate(18 86 40)" />
+        <ellipse cx="35" cy="40" rx="5" ry="2.8" fill="#e8b58a" transform="rotate(-18 35 40)" />
+        <ellipse cx="85" cy="40" rx="5" ry="2.8" fill="#e8b58a" transform="rotate(18 85 40)" />
+        <ellipse cx="60" cy="80" rx="23" ry="17" fill="#c08a4e" />
+        <ellipse cx="60" cy="85" rx="12" ry="8.5" fill="#f0d9b5" />
+        <circle cx="49" cy="73" r="2.4" fill="#f0d9b5" />
+        <circle cx="71" cy="73" r="2.4" fill="#f0d9b5" />
+        <circle cx="60" cy="69" r="2.4" fill="#f0d9b5" />
+        <circle cx="43" cy="90" r="6.5" fill="#a97239" />
+        <circle cx="77" cy="90" r="6.5" fill="#a97239" />
+        <circle cx="60" cy="50" r="24" fill="#c08a4e" />
+        <ellipse cx="60" cy="60" rx="10" ry="7.5" fill="#f0d9b5" />
+        <ellipse cx="60" cy="56" rx="4" ry="3" fill="#3f2a16" />
+        <path d="M54 61 Q60 66 66 61" stroke="#3f2a16" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+        <circle cx="49" cy="47" r="3" fill="#2f2013" />
+        <circle cx="71" cy="47" r="3" fill="#2f2013" />
+        <circle cx="50" cy="46" r="1" fill="#ffffff" />
+        <circle cx="72" cy="46" r="1" fill="#ffffff" />
+        <ellipse cx="42" cy="56" rx="4" ry="2.5" fill="#e88a8a" opacity="0.5" />
+        <ellipse cx="78" cy="56" rx="4" ry="2.5" fill="#e88a8a" opacity="0.5" />
+    </svg>
+);
+
+const Rabbit: FC = () => (
+    <svg className={css.animalSvg} viewBox="0 0 120 110" aria-hidden="true">
+        <ellipse cx="50" cy="26" rx="6.5" ry="19" fill="#dcd7e4" transform="rotate(-10 50 26)" />
+        <ellipse cx="70" cy="26" rx="6.5" ry="19" fill="#dcd7e4" transform="rotate(10 70 26)" />
+        <ellipse cx="50" cy="27" rx="3.4" ry="14" fill="#f3c3cf" transform="rotate(-10 50 27)" />
+        <ellipse cx="70" cy="27" rx="3.4" ry="14" fill="#f3c3cf" transform="rotate(10 70 27)" />
+        <ellipse cx="60" cy="80" rx="23" ry="17" fill="#dcd7e4" />
+        <ellipse cx="60" cy="85" rx="12" ry="8.5" fill="#f5f2f8" />
+        <circle cx="43" cy="90" r="6.5" fill="#c9c3d4" />
+        <circle cx="77" cy="90" r="6.5" fill="#c9c3d4" />
+        <circle cx="60" cy="52" r="24" fill="#dcd7e4" />
+        <ellipse cx="53" cy="60" rx="8" ry="6.5" fill="#f5f2f8" />
+        <ellipse cx="67" cy="60" rx="8" ry="6.5" fill="#f5f2f8" />
+        <path d="M56.5 55 L63.5 55 L60 59 Z" fill="#e87b90" />
+        <path
+            d="M60 59 L60 62 M60 62 Q56.5 65 53.5 62 M60 62 Q63.5 65 66.5 62"
+            stroke="#8d86a0"
+            strokeWidth="1.5"
+            fill="none"
+            strokeLinecap="round"
+        />
+        <rect x="56.4" y="63.5" width="3.2" height="5" rx="1.2" fill="#ffffff" />
+        <rect x="60.4" y="63.5" width="3.2" height="5" rx="1.2" fill="#ffffff" />
+        <path
+            d="M46 58 L34 55 M46 62 L35 65 M74 58 L86 55 M74 62 L85 65"
+            stroke="#b8b1c6"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+        />
+        <circle cx="49" cy="47" r="3" fill="#3b2f4a" />
+        <circle cx="71" cy="47" r="3" fill="#3b2f4a" />
+        <circle cx="50" cy="46" r="1" fill="#ffffff" />
+        <circle cx="72" cy="46" r="1" fill="#ffffff" />
+        <ellipse cx="42" cy="55" rx="4" ry="2.5" fill="#e88a8a" opacity="0.5" />
+        <ellipse cx="78" cy="55" rx="4" ry="2.5" fill="#e88a8a" opacity="0.5" />
+    </svg>
+);
+
+const Tortoise: FC = () => (
+    <svg className={css.animalSvg} viewBox="0 0 120 110" aria-hidden="true">
+        <ellipse cx="32" cy="76" rx="9" ry="5.5" fill="#8fbf63" transform="rotate(-14 32 76)" />
+        <ellipse cx="88" cy="76" rx="9" ry="5.5" fill="#8fbf63" transform="rotate(14 88 76)" />
+        <circle cx="36" cy="94" r="6.5" fill="#7dab52" />
+        <circle cx="84" cy="94" r="6.5" fill="#7dab52" />
+        <ellipse cx="60" cy="78" rx="31" ry="23" fill="#c78c3f" />
+        <ellipse cx="60" cy="85" rx="26" ry="12" fill="#e2b878" />
+        <polygon points="60,60 71,67 71,80 60,87 49,80 49,67" fill="#a26f2a" opacity="0.75" />
+        <polygon points="37,71 47,66 47,79 39,82" fill="#a26f2a" opacity="0.75" />
+        <polygon points="83,71 73,66 73,79 81,82" fill="#a26f2a" opacity="0.75" />
+        <ellipse cx="60" cy="78" rx="31" ry="23" fill="none" stroke="#8a5c22" strokeWidth="2" />
+        <circle cx="60" cy="38" r="19" fill="#8fbf63" />
+        <ellipse cx="60" cy="45" rx="8.5" ry="6" fill="#bcdd93" />
+        <circle cx="56.5" cy="43" r="1.4" fill="#4f6b2c" />
+        <circle cx="63.5" cy="43" r="1.4" fill="#4f6b2c" />
+        <path d="M55 48 Q60 52 65 48" stroke="#4f6b2c" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+        <circle cx="52" cy="34" r="2.8" fill="#2f3d1c" />
+        <circle cx="68" cy="34" r="2.8" fill="#2f3d1c" />
+        <circle cx="53" cy="33" r="1" fill="#ffffff" />
+        <circle cx="69" cy="33" r="1" fill="#ffffff" />
+        <ellipse cx="45" cy="42" rx="3.5" ry="2.2" fill="#e88a8a" opacity="0.5" />
+        <ellipse cx="75" cy="42" rx="3.5" ry="2.2" fill="#e88a8a" opacity="0.5" />
+    </svg>
+);
+
+const Giraffe: FC = () => (
+    <svg className={css.animalSvg} viewBox="0 0 120 110" aria-hidden="true">
+        <circle cx="44" cy="96" r="6.5" fill="#d9a441" />
+        <circle cx="76" cy="96" r="6.5" fill="#d9a441" />
+        <ellipse cx="60" cy="84" rx="24" ry="18" fill="#f0bf5f" />
+        <circle cx="46" cy="76" r="4" fill="#b5762a" opacity="0.65" />
+        <circle cx="74" cy="78" r="4.5" fill="#b5762a" opacity="0.65" />
+        <circle cx="60" cy="72" r="3.5" fill="#b5762a" opacity="0.65" />
+        <ellipse cx="60" cy="89" rx="12" ry="8.5" fill="#fbe6bb" />
+        <rect x="51" y="36" width="18" height="44" rx="9" fill="#f0bf5f" />
+        <circle cx="56" cy="48" r="3.4" fill="#b5762a" opacity="0.65" />
+        <circle cx="65" cy="58" r="3.4" fill="#b5762a" opacity="0.65" />
+        <circle cx="55" cy="68" r="3" fill="#b5762a" opacity="0.65" />
+        <ellipse cx="42" cy="26" rx="7" ry="4" fill="#e2ab45" transform="rotate(-20 42 26)" />
+        <ellipse cx="78" cy="26" rx="7" ry="4" fill="#e2ab45" transform="rotate(20 78 26)" />
+        <path d="M53 18 L51 9 M67 18 L69 9" stroke="#c9902f" strokeWidth="3" fill="none" strokeLinecap="round" />
+        <circle cx="51" cy="8" r="3.5" fill="#8a5a24" />
+        <circle cx="69" cy="8" r="3.5" fill="#8a5a24" />
+        <ellipse cx="60" cy="30" rx="16" ry="14" fill="#f0bf5f" />
+        <ellipse cx="60" cy="38" rx="10" ry="7" fill="#fbe6bb" />
+        <ellipse cx="56.5" cy="36" rx="1.6" ry="2" fill="#b5762a" />
+        <ellipse cx="63.5" cy="36" rx="1.6" ry="2" fill="#b5762a" />
+        <path d="M55 41 Q60 45 65 41" stroke="#8a5a24" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+        <circle cx="52" cy="26" r="2.8" fill="#4a3312" />
+        <circle cx="68" cy="26" r="2.8" fill="#4a3312" />
+        <circle cx="53" cy="25" r="1" fill="#ffffff" />
+        <circle cx="69" cy="25" r="1" fill="#ffffff" />
+        <ellipse cx="46" cy="34" rx="3.5" ry="2.2" fill="#e88a8a" opacity="0.5" />
+        <ellipse cx="74" cy="34" rx="3.5" ry="2.2" fill="#e88a8a" opacity="0.5" />
+    </svg>
+);
+
 const ANIMAL_COMPONENTS: Record<AnimalKind, FC> = {
     bear: Bear,
     hippo: Hippo,
@@ -267,9 +426,15 @@ const ANIMAL_COMPONENTS: Record<AnimalKind, FC> = {
     cat: Cat,
     polarBear: PolarBear,
     cheetah: Cheetah,
+    deer: Deer,
+    rabbit: Rabbit,
+    tortoise: Tortoise,
+    giraffe: Giraffe,
 };
 
 export const FlyingAnimal: FC = () => {
+    const currentUser = useSelector(selectCurrentUser);
+    const isLoggedIn = currentUser !== undefined;
     const [flight, setFlight] = useState<Flight | null>(null);
     const scheduleTimeoutRef = useRef<number | undefined>(undefined);
     const flightTimeoutRef = useRef<number | undefined>(undefined);
@@ -291,23 +456,27 @@ export const FlyingAnimal: FC = () => {
     }, []);
 
     useEffect(() => {
+        if (!isLoggedIn) {
+            return;
+        }
         const scheduleNext = (delayMs: number) => {
             scheduleTimeoutRef.current = window.setTimeout(() => {
                 startFlight();
                 scheduleNext(randomBetween(MIN_DELAY_MS, MAX_DELAY_MS));
             }, delayMs);
         };
-        scheduleNext(INITIAL_DELAY_MS);
+        scheduleNext(randomBetween(MIN_INITIAL_DELAY_MS, MAX_INITIAL_DELAY_MS));
         // Secret manual trigger, e.g. matektaborFlyingAnimal("hippo") in the console.
         (window as { matektaborFlyingAnimal?: (animal?: AnimalKind) => void }).matektaborFlyingAnimal = startFlight;
         return () => {
             window.clearTimeout(scheduleTimeoutRef.current);
             window.clearTimeout(flightTimeoutRef.current);
             delete (window as { matektaborFlyingAnimal?: (animal?: AnimalKind) => void }).matektaborFlyingAnimal;
+            setFlight(null);
         };
-    }, [startFlight]);
+    }, [isLoggedIn, startFlight]);
 
-    if (flight === null) {
+    if (!isLoggedIn || flight === null) {
         return null;
     }
 
