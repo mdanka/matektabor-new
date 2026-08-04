@@ -2,6 +2,7 @@ import { List, ListItemText, ListItemButton, Divider, ListItemIcon, Link, Box } 
 import EditIcon from "@mui/icons-material/Edit";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { StoryBrowser } from "./storyBrowser";
@@ -44,6 +45,22 @@ export function BarkochbaDrawer() {
                             <ListItemText primary="Táborok szerkesztése" />
                         </ListItemButton>
                     </Link>
+                    {hasAdminRole && (
+                        <Link
+                            variant="body1"
+                            color="inherit"
+                            component={RouterLink}
+                            to={getNavUrl[Page.BarkochbaStories]()}
+                            underline="hover"
+                        >
+                            <ListItemButton selected={pathname === "/barkochba/stories"} sx={{ overflow: "hidden", whiteSpace: "nowrap" }}>
+                                <ListItemIcon>
+                                    <MenuBookIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Történetek szerkesztése" />
+                            </ListItemButton>
+                        </Link>
+                    )}
                     {hasAdminRole && (
                         <Link
                             variant="body1"

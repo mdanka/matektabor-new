@@ -2,7 +2,13 @@ import { FC, useCallback } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AppHeader } from "./appHeader";
 import { AppFooter } from "./appFooter";
-import { BarkochbaScreen, BarkochbaManageScreen, BarkochbaExportScreen, BarkochbaAdminScreen } from "./barkochba";
+import {
+    BarkochbaScreen,
+    BarkochbaManageScreen,
+    BarkochbaExportScreen,
+    BarkochbaAdminScreen,
+    BarkochbaStoriesScreen,
+} from "./barkochba";
 import { StaticContent } from "./staticContent";
 import { ScrollToTop, FlyingAnimal } from "./common";
 import { LoginProtector } from "./loginProtector";
@@ -112,6 +118,21 @@ export const MatektaborApp: FC = () => {
         </>
     ), []);
 
+    const renderBarkochbaStories = useCallback(() => (
+        <>
+            <Helmet>
+                <title>{getNavUrlSimpleTitle[Page.BarkochbaStories]}</title>
+            </Helmet>
+            <LoginProtector>
+                <div>
+                    <AppHeader />
+                    <BarkochbaStoriesScreen />
+                    <AppFooter />
+                </div>
+            </LoginProtector>
+        </>
+    ), []);
+
     const renderBarkochbaAdmin = useCallback(() => (
         <>
             <Helmet>
@@ -167,6 +188,7 @@ export const MatektaborApp: FC = () => {
                             <Route path={getNavUrlTemplate[Page.Barkochba]} element={renderBarkochba()} />
                             <Route path={getNavUrlTemplate[Page.BarkochbaExport]} element={renderBarkochbaExport()} />
                             <Route path={getNavUrlTemplate[Page.BarkochbaManage]} element={renderBarkochbaManage()} />
+                            <Route path={getNavUrlTemplate[Page.BarkochbaStories]} element={renderBarkochbaStories()} />
                             <Route path={getNavUrlTemplate[Page.BarkochbaAdmin]} element={renderBarkochbaAdmin()} />
                             <Route path={getNavUrlTemplate[Page.TermsOfService]} element={renderTermsOfService()} />
                             <Route path={getNavUrlTemplate[Page.PrivacyPolicy]} element={renderPrivacyPolicy()} />

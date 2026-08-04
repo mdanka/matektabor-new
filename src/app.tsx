@@ -5,6 +5,7 @@ import { LIGHT_THEME } from "./utils";
 import { FirebaseAppProvider } from "reactfire";
 import { FirebaseComponents } from "./components/FirebaseComponents";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { SnackbarProvider } from "notistack";
 import { AppStore } from "./store";
 
 const FIREBASE_APP_CONFIG = {
@@ -28,7 +29,10 @@ function App({ store }: IAppProps) {
                     <FirebaseComponents>
                         <StyledEngineProvider injectFirst>
                             <ThemeProvider theme={LIGHT_THEME}>
-                                <MatektaborApp />
+                                {/* Without this the `useSnackbar` calls across the app hit notistack's no-op default. */}
+                                <SnackbarProvider anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
+                                    <MatektaborApp />
+                                </SnackbarProvider>
                             </ThemeProvider>
                         </StyledEngineProvider>
                     </FirebaseComponents>

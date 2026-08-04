@@ -38,6 +38,13 @@ export interface IStoryApi {
      * List of user IDs of users who starred this story.
      */
     usersWhoStarred: string[] | undefined;
+
+    /**
+     * Archived stories are kept forever (stories are never deleted), but they are
+     * hidden everywhere outside the admin story editor. Missing on stories created
+     * before archiving existed, which means the same as `false`.
+     */
+    isArchived: boolean | undefined;
 }
 
 /**
@@ -52,6 +59,12 @@ export interface IRolesApi {
      */
     admins: string[] | undefined;
 }
+
+/**
+ * The parts of a story an admin edits by hand. `personsWhoKnow` and `usersWhoStarred`
+ * are maintained by the app itself, so they are deliberately not editable here.
+ */
+export type IStoryEditableFields = Pick<IStoryApi, "title" | "description" | "solution" | "number">;
 
 export type IPerson = IPersonApi & IWithId;
 
