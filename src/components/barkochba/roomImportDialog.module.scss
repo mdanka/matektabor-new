@@ -50,7 +50,11 @@
 }
 
 .reviewStatus {
-    flex: 0 0 auto;
+    flex: 0 0 130px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
 }
 
 .reviewSuggestions {

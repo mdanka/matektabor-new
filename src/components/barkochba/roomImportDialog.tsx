@@ -15,7 +15,10 @@ import {
     Typography,
 } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CloseIcon from "@mui/icons-material/Close";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import { useSnackbar } from "notistack";
 import { ICamp, IRoomsApi, ISelectOption } from "../../commons";
 import { selectPersonsAsSelectOptions, selectPersonsList } from "../../store";
@@ -44,11 +47,18 @@ interface IReviewRoom {
     entries: IReviewEntry[];
 }
 
-const STATUS_CHIPS: { [status in IEntryStatus]: { label: string; color: "success" | "warning" | "info" } } = {
-    match: { label: "Megtalálva", color: "success" },
-    confirmed: { label: "Kiválasztva", color: "success" },
-    suggestion: { label: "Válassz!", color: "warning" },
-    none: { label: "Új gyerek lesz", color: "info" },
+/**
+ * Statuses are rendered as plain icon + text, not as chips: only the
+ * suggestion chips below a row are clickable, so nothing else in the review
+ * list should look pressable.
+ */
+const STATUS_LABELS: {
+    [status in IEntryStatus]: { label: string; color: string; icon: React.ReactNode };
+} = {
+    match: { label: "Megtaláltuk", color: "success.main", icon: <CheckCircleOutlineIcon fontSize="inherit" /> },
+    confirmed: { label: "Kiválasztva", color: "success.main", icon: <CheckCircleOutlineIcon fontSize="inherit" /> },
+    suggestion: { label: "Válassz!", color: "warning.main", icon: <HelpOutlineIcon fontSize="inherit" /> },
+    none: { label: "Új gyerek lesz", color: "info.main", icon: <PersonAddAltIcon fontSize="inherit" /> },
 };
 
 export const RoomImportDialog: React.FC<IRoomImportDialogProps> = ({ camp, open, onClose }) => {
@@ -226,7 +236,7 @@ export const RoomImportDialog: React.FC<IRoomImportDialogProps> = ({ camp, open,
     );
 
     const renderReviewEntry = (roomIndex: number, entryIndex: number, entry: IReviewEntry) => {
-        const chip = STATUS_CHIPS[entry.status];
+        const status = STATUS_LABELS[entry.status];
         const selectedOption =
             entry.selectedPersonId === undefined ? null : personOptionsById.get(entry.selectedPersonId) ?? null;
         return (
@@ -250,13 +260,21 @@ export const RoomImportDialog: React.FC<IRoomImportDialogProps> = ({ camp, open,
                         renderInput={params => (
                             <TextField
                                 {...params}
-                                placeholder={entry.status === "suggestion" ? "Válassz gyereket" : "Új gyerekként jön létre"}
+                                placeholder="Keresés a gyerekek között"
                                 variant="standard"
                             />
                         )}
                         getOptionLabel={(option: ISelectOption) => option.label}
                     />
-                    <Chip className={css.reviewStatus} size="small" color={chip.color} label={chip.label} />
+                    <Typography
+                        variant="body2"
+                        component="div"
+                        className={css.reviewStatus}
+                        sx={{ color: status.color }}
+                    >
+                        {status.icon}
+                        {status.label}
+                    </Typography>
                     <IconButton
                         size="small"
                         aria-label="Név kihagyása"
@@ -268,14 +286,13 @@ export const RoomImportDialog: React.FC<IRoomImportDialogProps> = ({ camp, open,
                 {entry.status === "suggestion" && (
                     <div className={css.reviewSuggestions}>
                         <Typography variant="body2" color="text.secondary">
-                            Erre gondoltál?
+                            Rá gondoltál?
                         </Typography>
                         {entry.candidateIds.map(candidateId => (
                             <Chip
                                 key={candidateId}
                                 size="small"
                                 color="primary"
-                                variant="outlined"
                                 label={personOptionsById.get(candidateId)?.label ?? candidateId}
                                 onClick={() =>
                                     updateEntry(roomIndex, entryIndex, {
