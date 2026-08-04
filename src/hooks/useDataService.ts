@@ -1,5 +1,5 @@
 import { setStories, setPersons, setCamps, setHasPendingWrites, setHasViewerRole, setHasAdminRole, setRoles, setDataLoaded } from "../store";
-import { IStoryApi, IPersonApi, ICampApi, ICamp, IRolesApi, IRoomsApi } from "../commons";
+import { IStoryApi, IPersonApi, ICampApi, ICamp, IRolesApi, IRoomsApi, IStoryEditableFields } from "../commons";
 import { CollectionId, DocId } from "../types/shared";
 import { addDoc, arrayRemove, arrayUnion, collection, doc, FirestoreError, onSnapshot, QuerySnapshot, updateDoc, writeBatch } from "firebase/firestore";
 import { User } from "firebase/auth";
@@ -169,6 +169,23 @@ export function useDataService() {
             );
     }, [currentUserFromAuth, firestore]);
 
+    // The story writes below are admin-only in the rules. Stories are never deleted;
+    // `isArchived` hides them everywhere outside the admin story editor.
+    const createStory = (newStory: IStoryApi) => {
+        const storiesCollectionRef = collection(firestore, CollectionId.Stories);
+        return addDoc(storiesCollectionRef, newStory);
+    };
+
+    const updateStory = (storyId: string, fields: IStoryEditableFields) => {
+        const storyDocRef = doc(collection(firestore, CollectionId.Stories), storyId);
+        return updateDoc(storyDocRef, { ...fields });
+    };
+
+    const setStoryArchived = (storyId: string, isArchived: boolean) => {
+        const storyDocRef = doc(collection(firestore, CollectionId.Stories), storyId);
+        return updateDoc(storyDocRef, { isArchived });
+    };
+
     // The rules only allow these writes for admins, and reject an admin removing
     // their own email from the admins list.
     const addRoleEmail = (role: "viewers" | "admins", email: string) => {
@@ -235,6 +252,9 @@ export function useDataService() {
         addPersonsWhoKnowStory,
         removePersonsWhoKnowStory,
         updateStoryStarred,
+        createStory,
+        updateStory,
+        setStoryArchived,
         addRoleEmail,
         removeRoleEmail,
         createPerson,

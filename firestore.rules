@@ -25,8 +25,24 @@ service cloud.firestore {
       return list1.hasAll(list2) && list2.hasAll(list1);
     }
 
+    // Admins may write any story field, but the document still has to keep its shape:
+    // no unknown keys, and no dropping the fields the app relies on.
+    function isValidStory(data) {
+      return data.keys().hasOnly(['title', 'description', 'solution', 'number', 'personsWhoKnow', 'usersWhoStarred', 'isArchived'])
+        && data.title is string && data.title.size() > 0
+        && data.description is string
+        && data.solution is string
+        && data.number is int && data.number >= 0
+        && data.personsWhoKnow is list
+        && data.get('usersWhoStarred', []) is list
+        && data.get('isArchived', false) is bool;
+    }
+
     match /stories/{storyId} {
       allow read: if isSignedIn() && isViewer();
+      // Admins create stories; the app never deletes them, it archives them instead.
+      allow create: if isSignedIn() && isAdmin() && isValidStory(request.resource.data);
+      allow update: if isSignedIn() && isAdmin() && isValidStory(request.resource.data);
       allow update: if isSignedIn() && isViewer() && (
         // Allow updating personsWhoKnow
         areSetsEqual(request.writeFields, ["personsWhoKnow"])
@@ -47,7 +63,7 @@ service cloud.firestore {
           )
         )
       );
-      allow create, delete: if false;
+      allow delete: if false;
     }
 
     match /admin/roles {

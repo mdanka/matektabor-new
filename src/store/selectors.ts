@@ -29,8 +29,19 @@ export const selectStoriesList = createSelector(
     },
 );
 
-export const selectStoriesOrdered = createSelector(
+/**
+ * Archived stories only ever show up in the admin story editor, so every other
+ * story selector is built on this one rather than on the full list.
+ */
+export const selectActiveStoriesList = createSelector(
     selectStoriesList,
+    (stories: IStory[]): IStory[] => {
+        return stories.filter(story => !story.isArchived);
+    },
+);
+
+export const selectStoriesOrdered = createSelector(
+    selectActiveStoriesList,
     selectBarkochbaOrdering,
     (stories: IStory[], ordering: IBarkochbaOrdering) => {
         const sorter =
@@ -44,9 +55,17 @@ export const selectStoriesOrdered = createSelector(
 );
 
 export const selectStoriesOrderedByNumber = createSelector(
-    selectStoriesList,
+    selectActiveStoriesList,
     (stories: IStory[]) => {
         return stories.sort(storyByNumberOrderer);
+    },
+);
+
+/** Includes archived stories — only the admin story editor should need this. */
+export const selectAllStoriesOrderedByNumber = createSelector(
+    selectStoriesList,
+    (stories: IStory[]) => {
+        return stories.slice(0).sort(storyByNumberOrderer);
     },
 );
 
