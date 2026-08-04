@@ -1,11 +1,13 @@
 import { FC, useCallback, useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "../../store";
 import css from "./flyingAnimal.module.scss";
 
 /**
- * A rare easter egg: every once in a while a cute animal zips across the
- * screen, Asana-celebration style. Purely decorative — hidden from screen
- * readers, ignores pointer events, and disabled entirely for users who prefer
- * reduced motion.
+ * A rare easter egg: every once in a while a cute animal glides across the
+ * screen, Asana-celebration style. Only shown to signed-in users. Purely
+ * decorative — hidden from screen readers, ignores pointer events, and
+ * disabled entirely for users who prefer reduced motion.
  */
 
 type AnimalKind = "bear" | "hippo" | "mammoth" | "clownfish" | "dog" | "cat" | "polarBear" | "cheetah";
@@ -13,13 +15,16 @@ type AnimalKind = "bear" | "hippo" | "mammoth" | "clownfish" | "dog" | "cat" | "
 const ANIMALS: AnimalKind[] = ["bear", "hippo", "mammoth", "clownfish", "dog", "cat", "polarBear", "cheetah"];
 
 // A welcome flight shortly after the page loads, then randomly roughly every
-// 10-30 minutes of an open session.
-const INITIAL_DELAY_MS = 2500;
-const MIN_DELAY_MS = 10 * 60 * 1000;
-const MAX_DELAY_MS = 30 * 60 * 1000;
+// 3-8 minutes of an open session. Every delay is drawn fresh, so no two
+// sessions have the same rhythm.
+const MIN_INITIAL_DELAY_MS = 2000;
+const MAX_INITIAL_DELAY_MS = 6000;
+const MIN_DELAY_MS = 3 * 60 * 1000;
+const MAX_DELAY_MS = 8 * 60 * 1000;
 
-const MIN_FLIGHT_DURATION_MS = 1500;
-const MAX_FLIGHT_DURATION_MS = 2500;
+// A leisurely glide: slow enough to notice and follow across the screen.
+const MIN_FLIGHT_DURATION_MS = 5000;
+const MAX_FLIGHT_DURATION_MS = 8000;
 
 interface Flight {
     id: number;
@@ -270,6 +275,8 @@ const ANIMAL_COMPONENTS: Record<AnimalKind, FC> = {
 };
 
 export const FlyingAnimal: FC = () => {
+    const currentUser = useSelector(selectCurrentUser);
+    const isLoggedIn = currentUser !== undefined;
     const [flight, setFlight] = useState<Flight | null>(null);
     const scheduleTimeoutRef = useRef<number | undefined>(undefined);
     const flightTimeoutRef = useRef<number | undefined>(undefined);
@@ -291,23 +298,27 @@ export const FlyingAnimal: FC = () => {
     }, []);
 
     useEffect(() => {
+        if (!isLoggedIn) {
+            return;
+        }
         const scheduleNext = (delayMs: number) => {
             scheduleTimeoutRef.current = window.setTimeout(() => {
                 startFlight();
                 scheduleNext(randomBetween(MIN_DELAY_MS, MAX_DELAY_MS));
             }, delayMs);
         };
-        scheduleNext(INITIAL_DELAY_MS);
+        scheduleNext(randomBetween(MIN_INITIAL_DELAY_MS, MAX_INITIAL_DELAY_MS));
         // Secret manual trigger, e.g. matektaborFlyingAnimal("hippo") in the console.
         (window as { matektaborFlyingAnimal?: (animal?: AnimalKind) => void }).matektaborFlyingAnimal = startFlight;
         return () => {
             window.clearTimeout(scheduleTimeoutRef.current);
             window.clearTimeout(flightTimeoutRef.current);
             delete (window as { matektaborFlyingAnimal?: (animal?: AnimalKind) => void }).matektaborFlyingAnimal;
+            setFlight(null);
         };
-    }, [startFlight]);
+    }, [isLoggedIn, startFlight]);
 
-    if (flight === null) {
+    if (!isLoggedIn || flight === null) {
         return null;
     }
 
