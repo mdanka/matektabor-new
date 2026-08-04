@@ -43,7 +43,6 @@ export interface IBarkochbaManageState {
     newCampGroup: string;
     newCampNumber: string;
     roomsSelectionCampId: string | undefined;
-    roomsSelectionRoomName: string | undefined;
 }
 
 interface IMapState<T> {
