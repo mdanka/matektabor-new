@@ -28,13 +28,9 @@
     padding-top: 24px;
 }
 
-.barkochbaManageFormStack {
+.barkochbaManageCampRow {
     display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-top: 16px;
-}
-
-div.barkochbaManageInput {
-    width: 100%;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
 }

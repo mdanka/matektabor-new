@@ -5,14 +5,9 @@ export interface IParsedRoom {
     names: string[];
 }
 
-export interface IMatchCandidate {
-    person: IPerson;
-    score: number;
-}
-
 export type IMatchResult =
     | { status: "match"; person: IPerson }
-    | { status: "suggestion"; candidates: IMatchCandidate[] }
+    | { status: "suggestion"; candidates: IPerson[] }
     | { status: "none" };
 
 const EMPTY_CELL_VALUES = new Set(["", "-", "--", "–", "—", "x", "X"]);
@@ -75,99 +70,60 @@ export function normalizeName(name: string): string {
         .trim();
 }
 
-function levenshtein(a: string, b: string): number {
-    if (a === b) {
-        return 0;
-    }
-    let previousRow = Array.from({ length: b.length + 1 }, (_unused, i) => i);
-    for (let i = 0; i < a.length; i++) {
-        const currentRow = [i + 1];
-        for (let j = 0; j < b.length; j++) {
-            currentRow.push(Math.min(
-                previousRow[j + 1] + 1,
-                currentRow[j] + 1,
-                previousRow[j] + (a[i] === b[j] ? 0 : 1),
-            ));
+/**
+ * Key for exact-match comparison: the normalized name with spaces removed too,
+ * so that "Nagy-Kovács Anna", "Nagy Kovács Anna" and "Nagykovács Anna" all
+ * compare equal.
+ */
+export function normalizeNameKey(name: string): string {
+    return normalizeName(name).replace(/ /g, "");
+}
+
+const MAX_SUGGESTIONS = 5;
+
+/**
+ * True if every token of `shorter` appears in `longer` (with multiplicity).
+ */
+function isTokenSubset(shorter: string[], longer: string[]): boolean {
+    const remaining = [...longer];
+    return shorter.every(token => {
+        const index = remaining.indexOf(token);
+        if (index === -1) {
+            return false;
         }
-        previousRow = currentRow;
-    }
-    return previousRow[b.length];
-}
-
-function levenshteinSimilarity(a: string, b: string): number {
-    const maxLength = Math.max(a.length, b.length);
-    return maxLength === 0 ? 1 : 1 - levenshtein(a, b) / maxLength;
+        remaining.splice(index, 1);
+        return true;
+    });
 }
 
 /**
- * Similarity of two name tokens. Besides edit distance, a shared prefix counts
- * a lot, because Hungarian nicknames are usually prefixes of the full name
- * ("András" ~ "Andris", "Benedek" ~ "Beni").
+ * Finds the person a pasted name refers to. Only a unique normalized-exact hit
+ * is a confident "match"; everything else needs a human decision. The
+ * "suggestion" tier is deliberately narrow: multiple exact hits, a word-order
+ * swap, or one name missing a token of the other (e.g. a middle name), with at
+ * least two tokens in common — a shared first name alone never suggests.
  */
-function tokenSimilarity(a: string, b: string): number {
-    if (a === b) {
-        return 1;
-    }
-    let commonPrefixLength = 0;
-    while (commonPrefixLength < Math.min(a.length, b.length) && a[commonPrefixLength] === b[commonPrefixLength]) {
-        commonPrefixLength++;
-    }
-    const prefixScore = commonPrefixLength >= 3 ? 0.7 + 0.05 * Math.min(commonPrefixLength - 3, 4) : 0;
-    return Math.max(levenshteinSimilarity(a, b), prefixScore);
-}
-
-/**
- * Similarity of two full names, comparing each token of the shorter name to
- * its best counterpart in the other one. Word order does not matter, and extra
- * tokens on one side (e.g. a middle name only recorded in one place) only
- * apply a mild penalty.
- */
-function nameSimilarity(a: string, b: string): number {
-    const tokensA = a.split(" ").filter(token => token !== "");
-    const tokensB = b.split(" ").filter(token => token !== "");
-    if (tokensA.length === 0 || tokensB.length === 0) {
-        return 0;
-    }
-    const [shorter, longer] = tokensA.length <= tokensB.length ? [tokensA, tokensB] : [tokensB, tokensA];
-    const scores = shorter.map(token => Math.max(...longer.map(other => tokenSimilarity(token, other))));
-    const meanScore = scores.reduce((sum, score) => sum + score, 0) / scores.length;
-    const lengthPenalty = 1 - 0.05 * (longer.length - shorter.length);
-    return meanScore * lengthPenalty;
-}
-
-const SUGGESTION_THRESHOLD = 0.6;
-const MAX_SUGGESTIONS = 3;
-
-/**
- * Finds the person a pasted name refers to. Returns a confident "match" only
- * for a unique normalized-exact hit; close names come back as "suggestion"
- * candidates for the user to confirm. People in `preferredGroup` (the camp's
- * group) rank slightly higher, since campers usually come from that group.
- */
-export function matchNameToPerson(rawName: string, persons: IPerson[], preferredGroup?: string): IMatchResult {
-    const normalized = normalizeName(rawName);
-    if (normalized === "") {
+export function matchNameToPerson(rawName: string, persons: IPerson[]): IMatchResult {
+    const key = normalizeNameKey(rawName);
+    if (key === "") {
         return { status: "none" };
     }
-    const exactMatches = persons.filter(person => normalizeName(person.name) === normalized);
+    const exactMatches = persons.filter(person => normalizeNameKey(person.name) === key);
     if (exactMatches.length === 1) {
         return { status: "match", person: exactMatches[0] };
     }
     if (exactMatches.length > 1) {
-        const preferred = exactMatches.filter(person => person.group === preferredGroup);
-        if (preferred.length === 1) {
-            return { status: "match", person: preferred[0] };
-        }
-        return { status: "suggestion", candidates: exactMatches.map(person => ({ person, score: 1 })) };
+        return { status: "suggestion", candidates: exactMatches };
     }
+    const rawTokens = normalizeName(rawName).split(" ");
     const candidates = persons
-        .map(person => {
-            const baseScore = nameSimilarity(normalizeName(person.name), normalized);
-            const groupBonus = preferredGroup !== undefined && person.group === preferredGroup ? 0.05 : 0;
-            return { person, score: baseScore + groupBonus };
+        .filter(person => {
+            const personTokens = normalizeName(person.name).split(" ");
+            const [shorter, longer] =
+                rawTokens.length <= personTokens.length ? [rawTokens, personTokens] : [personTokens, rawTokens];
+            return shorter.length >= 2 && isTokenSubset(shorter, longer);
         })
-        .filter(candidate => candidate.score >= SUGGESTION_THRESHOLD)
-        .sort((a, b) => b.score - a.score)
+        .sort((a, b) => a.name.localeCompare(b.name, "hu"))
         .slice(0, MAX_SUGGESTIONS);
     return candidates.length === 0 ? { status: "none" } : { status: "suggestion", candidates };
 }

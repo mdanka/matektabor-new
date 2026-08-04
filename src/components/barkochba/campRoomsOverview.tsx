@@ -20,10 +20,11 @@ import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AddIcon from "@mui/icons-material/Add";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
-import { ICamp, ISelectOption } from "../../commons";
+import { ICamp, IPerson, ISelectOption } from "../../commons";
 import { selectPersonsList } from "../../store";
 import { useDataService } from "../../hooks/useDataService";
 import { RoomImportDialog } from "./roomImportDialog";
+import { GroupSelector } from "./groupSelector";
 import css from "./campRoomsOverview.module.scss";
 
 interface ICampRoomsOverviewProps {
@@ -43,9 +44,17 @@ interface IRoomMenuState {
 
 const personAddFilter = createFilterOptions<ISelectOption>();
 
+interface IPersonEditState {
+    person: IPerson;
+    name: string;
+    group: string | undefined;
+    nameError: string | undefined;
+    groupError: string | undefined;
+}
+
 export const CampRoomsOverview: React.FC<ICampRoomsOverviewProps> = ({ camp }) => {
     const allPersons = useSelector(selectPersonsList);
-    const { createPerson, createRoom, updateCampRoom, setCampRooms, deleteRoom, renameRoom } = useDataService();
+    const { createPerson, updatePerson, createRoom, updateCampRoom, setCampRooms, deleteRoom, renameRoom } = useDataService();
 
     const [memberMenu, setMemberMenu] = useState<IMemberMenuState | undefined>(undefined);
     const [roomMenu, setRoomMenu] = useState<IRoomMenuState | undefined>(undefined);
@@ -55,6 +64,7 @@ export const CampRoomsOverview: React.FC<ICampRoomsOverviewProps> = ({ camp }) =
     const [newRoomName, setNewRoomName] = useState("");
     const [roomError, setRoomError] = useState<string | undefined>(undefined);
     const [isImportOpen, setIsImportOpen] = useState(false);
+    const [personEdit, setPersonEdit] = useState<IPersonEditState | undefined>(undefined);
 
     const { rooms } = camp;
     const roomNames = Object.keys(rooms).sort((a, b) => a.localeCompare(b, "hu"));
@@ -132,6 +142,38 @@ export const CampRoomsOverview: React.FC<ICampRoomsOverviewProps> = ({ camp }) =
             deleteRoom(camp, roomToDelete);
         }
         setRoomToDelete(undefined);
+    };
+
+    const handlePersonEditOpen = (personId: string) => {
+        const person = personsById.get(personId);
+        setMemberMenu(undefined);
+        if (person === undefined) {
+            return;
+        }
+        setPersonEdit({
+            person,
+            name: person.name,
+            group: person.group,
+            nameError: undefined,
+            groupError: undefined,
+        });
+    };
+
+    const handlePersonEditSubmit = () => {
+        if (personEdit === undefined) {
+            return;
+        }
+        const name = personEdit.name.trim();
+        if (name === "") {
+            setPersonEdit({ ...personEdit, nameError: "A név megadása kötelező." });
+            return;
+        }
+        if (personEdit.group === undefined || personEdit.group === "") {
+            setPersonEdit({ ...personEdit, groupError: "A csoport megadása kötelező." });
+            return;
+        }
+        updatePerson(personEdit.person.id, { name, group: personEdit.group });
+        setPersonEdit(undefined);
     };
 
     const handleRenameSubmit = () => {
@@ -257,6 +299,9 @@ export const CampRoomsOverview: React.FC<ICampRoomsOverviewProps> = ({ camp }) =
                 onClose={() => setMemberMenu(undefined)}
             >
                 {memberMenu !== undefined && [
+                    <MenuItem key="edit" onClick={() => handlePersonEditOpen(memberMenu.personId)}>
+                        Adatok szerkesztése
+                    </MenuItem>,
                     ...roomNames
                         .filter(roomName => roomName !== memberMenu.roomName)
                         .map(roomName => (
@@ -317,6 +362,46 @@ export const CampRoomsOverview: React.FC<ICampRoomsOverviewProps> = ({ camp }) =
                     <Button onClick={() => setRoomToDelete(undefined)}>Mégse</Button>
                     <Button color="error" onClick={handleDeleteRoomConfirm}>
                         Törlés
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={personEdit !== undefined} onClose={() => setPersonEdit(undefined)} fullWidth maxWidth="xs">
+                <DialogTitle>Gyerek szerkesztése</DialogTitle>
+                <DialogContent>
+                    <div className={css.personEditStack}>
+                        <TextField
+                            autoFocus
+                            variant="filled"
+                            label="Név"
+                            fullWidth
+                            value={personEdit?.name ?? ""}
+                            error={personEdit?.nameError !== undefined}
+                            helperText={personEdit?.nameError}
+                            onChange={event =>
+                                setPersonEdit(current =>
+                                    current === undefined
+                                        ? undefined
+                                        : { ...current, name: event.target.value, nameError: undefined },
+                                )
+                            }
+                        />
+                        <GroupSelector
+                            value={personEdit?.group}
+                            error={personEdit?.groupError}
+                            onChange={newGroup =>
+                                setPersonEdit(current =>
+                                    current === undefined
+                                        ? undefined
+                                        : { ...current, group: newGroup, groupError: undefined },
+                                )
+                            }
+                        />
+                    </div>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setPersonEdit(undefined)}>Mégse</Button>
+                    <Button variant="contained" onClick={handlePersonEditSubmit}>
+                        Mentés
                     </Button>
                 </DialogActions>
             </Dialog>

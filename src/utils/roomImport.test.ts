@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { matchNameToPerson, normalizeName, parsePastedRooms } from "./roomImport";
+import { matchNameToPerson, normalizeName, normalizeNameKey, parsePastedRooms } from "./roomImport";
 import { IPerson } from "../commons";
 
 const person = (id: string, name: string, group?: string): IPerson => ({ id, name, group });
@@ -62,6 +62,13 @@ describe("normalizeName", () => {
     });
 });
 
+describe("normalizeNameKey", () => {
+    it("also ignores spaces and dashes", () => {
+        expect(normalizeNameKey("Kovács-Nagy Péter")).toBe("kovacsnagypeter");
+        expect(normalizeNameKey("Kovácsnagy Péter")).toBe("kovacsnagypeter");
+    });
+});
+
 describe("matchNameToPerson", () => {
     const persons = [
         person("1", "Tajti András", "Vacskamati"),
@@ -71,6 +78,7 @@ describe("matchNameToPerson", () => {
         person("5", "Nagy Péter", "Beluga"),
         person("6", "Nagy Péter", "Vacskamati"),
         person("7", "Teljesen Máshogyhívják"),
+        person("8", "Kovács-Nagy Anna", "Beluga"),
     ];
 
     it("finds a unique exact match ignoring accents and case", () => {
@@ -83,24 +91,16 @@ describe("matchNameToPerson", () => {
         expect(result).toEqual({ status: "match", person: persons[2] });
     });
 
-    it("disambiguates exact duplicates by the camp group", () => {
-        const result = matchNameToPerson("Nagy Péter", persons, "Beluga");
-        expect(result).toEqual({ status: "match", person: persons[4] });
+    it("matches exactly across spacing and dash differences", () => {
+        const result = matchNameToPerson("Kovácsnagy Anna", persons);
+        expect(result).toEqual({ status: "match", person: persons[7] });
     });
 
-    it("returns both exact duplicates as suggestions without a deciding group", () => {
+    it("returns exact duplicates as suggestions instead of picking one", () => {
         const result = matchNameToPerson("Nagy Péter", persons);
         expect(result.status).toBe("suggestion");
         if (result.status === "suggestion") {
-            expect(result.candidates.map(c => c.person.id).sort()).toEqual(["5", "6"]);
-        }
-    });
-
-    it("suggests the full name for a nickname variant", () => {
-        const result = matchNameToPerson("Tajti Andris", persons);
-        expect(result.status).toBe("suggestion");
-        if (result.status === "suggestion") {
-            expect(result.candidates[0].person.id).toBe("1");
+            expect(result.candidates.map(candidate => candidate.id).sort()).toEqual(["5", "6"]);
         }
     });
 
@@ -108,8 +108,25 @@ describe("matchNameToPerson", () => {
         const result = matchNameToPerson("Kiss Villő", persons);
         expect(result.status).toBe("suggestion");
         if (result.status === "suggestion") {
-            expect(result.candidates[0].person.id).toBe("4");
+            expect(result.candidates.map(candidate => candidate.id)).toEqual(["4"]);
         }
+    });
+
+    it("suggests a match for a word-order swap", () => {
+        const result = matchNameToPerson("Botond Kellermann", persons);
+        expect(result.status).toBe("suggestion");
+        if (result.status === "suggestion") {
+            expect(result.candidates.map(candidate => candidate.id)).toEqual(["2"]);
+        }
+    });
+
+    it("does not match on a nickname variant", () => {
+        expect(matchNameToPerson("Tajti Andris", persons)).toEqual({ status: "none" });
+    });
+
+    it("does not match on a shared single name alone", () => {
+        expect(matchNameToPerson("Péter", persons)).toEqual({ status: "none" });
+        expect(matchNameToPerson("Villő", persons)).toEqual({ status: "none" });
     });
 
     it("returns none for an unknown name or empty cell", () => {

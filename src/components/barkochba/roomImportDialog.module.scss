@@ -52,3 +52,11 @@
 .reviewStatus {
     flex: 0 0 auto;
 }
+
+.reviewSuggestions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 0 0 8px calc(35% + 8px);
+}

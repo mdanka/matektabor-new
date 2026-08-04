@@ -38,10 +38,6 @@ export interface ICampRoomState {
 }
 
 export interface IBarkochbaManageState {
-    newPersonName: string;
-    newPersonGroup: string;
-    newCampGroup: string;
-    newCampNumber: string;
     roomsSelectionCampId: string | undefined;
 }
 
