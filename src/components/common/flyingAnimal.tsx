@@ -1,11 +1,12 @@
 import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../../store";
+import { selectIsFlyingAnimalEnabled } from "../../store";
 import css from "./flyingAnimal.module.scss";
 
 /**
  * A rare easter egg: every once in a while a cute animal glides across the
- * screen, Asana-celebration style. Only shown to signed-in users. Purely
+ * screen, Asana-celebration style. Only shown to signed-in users, and each
+ * user can turn it off for themselves from the user menu. Purely
  * decorative — hidden from screen readers, ignores pointer events, and
  * disabled entirely for users who prefer reduced motion.
  */
@@ -433,8 +434,7 @@ const ANIMAL_COMPONENTS: Record<AnimalKind, FC> = {
 };
 
 export const FlyingAnimal: FC = () => {
-    const currentUser = useSelector(selectCurrentUser);
-    const isLoggedIn = currentUser !== undefined;
+    const isEnabled = useSelector(selectIsFlyingAnimalEnabled);
     const [flight, setFlight] = useState<Flight | null>(null);
     const scheduleTimeoutRef = useRef<number | undefined>(undefined);
     const flightTimeoutRef = useRef<number | undefined>(undefined);
@@ -456,7 +456,7 @@ export const FlyingAnimal: FC = () => {
     }, []);
 
     useEffect(() => {
-        if (!isLoggedIn) {
+        if (!isEnabled) {
             return;
         }
         const scheduleNext = (delayMs: number) => {
@@ -474,9 +474,9 @@ export const FlyingAnimal: FC = () => {
             delete (window as { matektaborFlyingAnimal?: (animal?: AnimalKind) => void }).matektaborFlyingAnimal;
             setFlight(null);
         };
-    }, [isLoggedIn, startFlight]);
+    }, [isEnabled, startFlight]);
 
-    if (!isLoggedIn || flight === null) {
+    if (!isEnabled || flight === null) {
         return null;
     }
 

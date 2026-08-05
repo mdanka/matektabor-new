@@ -10,7 +10,7 @@ import {
     BarkochbaStoriesScreen,
 } from "./barkochba";
 import { StaticContent } from "./staticContent";
-import { ScrollToTop } from "./common";
+import { ScrollToTop, FlyingAnimal } from "./common";
 import { LoginProtector } from "./loginProtector";
 import {
     getNavUrlSimpleTitle,
@@ -195,6 +195,7 @@ export const MatektaborApp: FC = () => {
                             <Route path="*" element={renderRedirectToHome()} />
                         </Routes>
                     </Box>
+                    <FlyingAnimal />
                 </div>
             </HelmetProvider>
         </ScrollToTop>

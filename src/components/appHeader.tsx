@@ -1,6 +1,11 @@
 import * as React from "react";
-import { useSelector } from "react-redux";
-import { selectCurrentUser, selectHasPendingWrites } from "../store";
+import { useDispatch, useSelector } from "react-redux";
+import {
+    selectCurrentUser,
+    selectHasPendingWrites,
+    selectIsFlyingAnimalEnabled,
+    setFlyingAnimalEnabledForUser,
+} from "../store";
 import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import {
     Button,
@@ -13,6 +18,7 @@ import {
     Snackbar,
     SnackbarContent,
     Box,
+    Switch,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
@@ -29,8 +35,10 @@ export const AppHeader: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    const dispatch = useDispatch();
     const currentUser = useSelector(selectCurrentUser);
     const hasPendingWrites = useSelector(selectHasPendingWrites);
+    const isFlyingAnimalEnabled = useSelector(selectIsFlyingAnimalEnabled);
     const previousHasPendingWrites = usePrevious(hasPendingWrites);
     const { authSignOut } = useFirebaseAuthService();
 
@@ -48,6 +56,16 @@ export const AppHeader: React.FC = () => {
 
     const handleSignInClick = () => {
         singInAndReturn(navigate, location.pathname);
+    };
+
+    const handleFlyingAnimalToggle = () => {
+        if (!currentUser) return;
+        dispatch(
+            setFlyingAnimalEnabledForUser({
+                userId: currentUser.uid,
+                isEnabled: !isFlyingAnimalEnabled,
+            }),
+        );
     };
 
     const renderContactButton = () => (
@@ -146,6 +164,17 @@ export const AppHeader: React.FC = () => {
                     onClose={() => setUserMenuAnchorEl(null)}
                     anchorEl={userMenuAnchorEl}
                 >
+                    <MenuItem onClick={handleFlyingAnimalToggle}>
+                        <ListItemText primary="Repülő állatok" sx={{ marginRight: 2 }} />
+                        <Switch
+                            edge="end"
+                            size="small"
+                            checked={isFlyingAnimalEnabled}
+                            onClick={event => event.stopPropagation()}
+                            onChange={handleFlyingAnimalToggle}
+                            inputProps={{ "aria-label": "Repülő állatok mutatása" }}
+                        />
+                    </MenuItem>
                     <MenuItem onClick={handleSignOutClick}>
                         <ListItemText primary="Kijelentkezés" />
                     </MenuItem>

@@ -16,6 +16,8 @@ export interface IAppState {
     barkochbaManageState: IBarkochbaManageState;
     barkochbaDrawerIsOpen: boolean;
     barkochbaOrdering: IBarkochbaOrdering;
+    /** User ids that opted out of the flying animal easter egg. */
+    flyingAnimalDisabledUserIds: string[];
 }
 
 export type IBarkochbaOrdering = "storyNumber" | "knowNumber" | "starNumber";

@@ -10,9 +10,10 @@ import {
     IBarkochbaOrdering,
     IDataLoadingState,
 } from "./state";
-import { loadListeningSelection } from "./persistence";
+import { loadListeningSelection, loadFlyingAnimalDisabledUserIds } from "./persistence";
 
 const persistedListeningSelection = loadListeningSelection();
+const persistedFlyingAnimalDisabledUserIds = loadFlyingAnimalDisabledUserIds();
 
 const initialState: IAppState = {
     currentUser: undefined,
@@ -39,6 +40,7 @@ const initialState: IAppState = {
     },
     barkochbaDrawerIsOpen: false,
     barkochbaOrdering: "storyNumber",
+    flyingAnimalDisabledUserIds: persistedFlyingAnimalDisabledUserIds,
 };
 
 export const appSlice = createSlice({
@@ -90,6 +92,11 @@ export const appSlice = createSlice({
         setBarkochbaOrdering(state, action: PayloadAction<{ barkochbaOrdering: IBarkochbaOrdering }>) {
             state.barkochbaOrdering = action.payload.barkochbaOrdering;
         },
+        setFlyingAnimalEnabledForUser(state, action: PayloadAction<{ userId: string; isEnabled: boolean }>) {
+            const { userId, isEnabled } = action.payload;
+            const withoutUser = state.flyingAnimalDisabledUserIds.filter(disabledUserId => disabledUserId !== userId);
+            state.flyingAnimalDisabledUserIds = isEnabled ? withoutUser : [...withoutUser, userId];
+        },
     },
 });
 
@@ -109,6 +116,7 @@ export const {
     setBarkochbaManageState,
     setBarkochbaDrawerIsOpen,
     setBarkochbaOrdering,
+    setFlyingAnimalEnabledForUser,
 } = appSlice.actions;
 
 export const appReducer = appSlice.reducer;

@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { appReducer } from "./slice";
-import { saveListeningSelection } from "./persistence";
+import { saveListeningSelection, saveFlyingAnimalDisabledUserIds } from "./persistence";
 
 export function createAppStore() {
     const store = configureStore({
@@ -17,17 +17,21 @@ export function createAppStore() {
 
     let previousCampRoom = store.getState().currentListeningCampRoom;
     let previousPersonIds = store.getState().currentListeningPersonIds;
+    let previousFlyingAnimalDisabledUserIds = store.getState().flyingAnimalDisabledUserIds;
     store.subscribe(() => {
-        const { currentListeningCampRoom, currentListeningPersonIds } = store.getState();
-        if (currentListeningCampRoom === previousCampRoom && currentListeningPersonIds === previousPersonIds) {
-            return;
+        const { currentListeningCampRoom, currentListeningPersonIds, flyingAnimalDisabledUserIds } = store.getState();
+        if (currentListeningCampRoom !== previousCampRoom || currentListeningPersonIds !== previousPersonIds) {
+            previousCampRoom = currentListeningCampRoom;
+            previousPersonIds = currentListeningPersonIds;
+            saveListeningSelection({
+                campRoom: currentListeningCampRoom,
+                personIds: currentListeningPersonIds,
+            });
         }
-        previousCampRoom = currentListeningCampRoom;
-        previousPersonIds = currentListeningPersonIds;
-        saveListeningSelection({
-            campRoom: currentListeningCampRoom,
-            personIds: currentListeningPersonIds,
-        });
+        if (flyingAnimalDisabledUserIds !== previousFlyingAnimalDisabledUserIds) {
+            previousFlyingAnimalDisabledUserIds = flyingAnimalDisabledUserIds;
+            saveFlyingAnimalDisabledUserIds(flyingAnimalDisabledUserIds);
+        }
     });
 
     return store;
