@@ -20,6 +20,20 @@ export const selectRoles = (state: IAppState) => state.roles;
 
 export const selectBarkochbaOrdering = (state: IAppState) => state.barkochbaOrdering;
 
+export const selectFlyingAnimalDisabledUserIds = (state: IAppState) => state.flyingAnimalDisabledUserIds;
+
+/**
+ * The flying animal easter egg is on by default for every signed-in user,
+ * and each user can opt out for themselves from the user menu.
+ */
+export const selectIsFlyingAnimalEnabled = createSelector(
+    selectCurrentUserId,
+    selectFlyingAnimalDisabledUserIds,
+    (userId, disabledUserIds): boolean => {
+        return userId !== undefined && !disabledUserIds.includes(userId);
+    },
+);
+
 export const selectStories = (state: IAppState) => state.stories;
 
 export const selectStoriesList = createSelector(
