@@ -20,7 +20,11 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn lint
       - run: yarn build
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      # Dependabot runs get GitHub's separate Dependabot secret store, so the
+      # service account secret is empty and the deploy action hard-fails. Lint
+      # and build above are what matter for a dependency bump anyway.
+      - if: ${{ github.event.pull_request.user.login != 'dependabot[bot]' }}
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_BARKOCHBA_APP }}
