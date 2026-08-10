@@ -65,4 +65,4 @@ When a pull request is opened, a temporary preview version of the web app is cre
 ## Deployment
 
 - The web app is automatically deployed using Github Actions when new code is merged into the `main` branch.
-- The functions need to be manually deployed from the command line using `firebase`. The functions are only used for the scheduled backups.
+- The project uses no Cloud Functions. Firestore is backed up by a GCP-native daily backup schedule, configured in the Google Cloud console rather than in this repository.
