@@ -1,5 +1,5 @@
 import { FC, useCallback } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router";
 import { AppHeader } from "./appHeader";
 import { AppFooter } from "./appFooter";
 import {

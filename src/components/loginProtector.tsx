@@ -4,7 +4,7 @@ import { AppHeader } from "./appHeader";
 import { AppFooter } from "./appFooter";
 import { Typography, Button } from "@mui/material";
 import { selectCurrentUser } from "../store";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink } from "react-router";
 import { getNavUrl, Page } from "../utils/navUtils";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { CenteredCard } from "./common";

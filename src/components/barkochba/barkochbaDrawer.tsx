@@ -3,7 +3,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
-import { Link as RouterLink, useLocation } from "react-router-dom";
+import { Link as RouterLink, useLocation } from "react-router";
 import { useSelector } from "react-redux";
 import { StoryBrowser } from "./storyBrowser";
 import { selectHasAdminRole } from "../../store";
