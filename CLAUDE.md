@@ -17,7 +17,7 @@ yarn test         # Vitest unit tests
 yarn preview      # Preview production build locally
 ```
 
-Node 18 required (see .nvmrc). Uses Yarn as package manager.
+Node 24 required (see .nvmrc). Uses Yarn as package manager.
 
 ## Architecture
 
