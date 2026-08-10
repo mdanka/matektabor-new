@@ -12,7 +12,7 @@
  *
  * Backups hold children's names, so backups/ is git-ignored. Keep it that way.
  *
- * firebase-admin is not a dependency of the web app, so it is resolved from functions/node_modules.
+ * firebase-admin is a devDependency at the repo root, used only by these scripts.
  * Prod access uses gcloud Application Default Credentials; the emulator needs no credentials.
  */
 
@@ -47,16 +47,10 @@ function parseArgs(argv) {
 async function connect(target) {
     const require = createRequire(import.meta.url);
     let adminPath;
-    for (const candidate of ["firebase-admin", resolvePath(REPO_ROOT, "functions/node_modules/firebase-admin")]) {
-        try {
-            adminPath = require.resolve(candidate);
-            break;
-        } catch {
-            // try the next location
-        }
-    }
-    if (adminPath === undefined) {
-        fail("Could not find firebase-admin. Run `npm install` in functions/.");
+    try {
+        adminPath = require.resolve("firebase-admin");
+    } catch {
+        fail("Could not find firebase-admin. Run `yarn install` at the repo root.");
     }
     const admin = require(adminPath);
     if (target === "emulator") {

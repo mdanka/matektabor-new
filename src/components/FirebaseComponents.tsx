@@ -1,10 +1,8 @@
 import { connectAuthEmulator, getAuth } from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
-import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
 import {
     AuthProvider,
-    FunctionsProvider,
     useFirebaseApp,
     StorageProvider,
     FirestoreProvider,
@@ -52,7 +50,6 @@ export function FirebaseComponents(props: { children: React.ReactNode }) {
     // }
     const auth = getAuth(app);
     auth.languageCode = "hu";
-    const functions = getFunctions(app, "europe-west1");
     const { status: firestoreInitStatus, data: firestore } = useInitFirestore(async (firebaseApp) => {
         try {
             const tabManager = persistentMultipleTabManager();
@@ -78,7 +75,6 @@ export function FirebaseComponents(props: { children: React.ReactNode }) {
         (auth as unknown as any)._canInitEmulator = true;
         try {
             connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true });
-            connectFunctionsEmulator(functions, "127.0.0.1", 5001);
             connectFirestoreEmulator(firestore, "127.0.0.1", 8080);
             connectStorageEmulator(storage, "127.0.0.1", 9199);
         } catch (e) {
@@ -89,13 +85,11 @@ export function FirebaseComponents(props: { children: React.ReactNode }) {
 
     const childrenWithProviders = (
         <AuthProvider sdk={auth}>
-            <FunctionsProvider sdk={functions}>
-                <FirestoreProvider sdk={firestore}>
-                    <StorageProvider sdk={storage}>
-                        {children}
-                    </StorageProvider>
-                </FirestoreProvider>
-            </FunctionsProvider>
+            <FirestoreProvider sdk={firestore}>
+                <StorageProvider sdk={storage}>
+                    {children}
+                </StorageProvider>
+            </FirestoreProvider>
         </AuthProvider>
     );
     return appCheck !== undefined ? (

@@ -15,16 +15,13 @@
  * very first admin has to be added with this script. Emails are stored lowercased and the
  * list is kept sorted; adding an email that is already there is a no-op.
  *
- * firebase-admin is not a dependency of the web app, so it is resolved from functions/node_modules.
+ * firebase-admin is a devDependency at the repo root, used only by these scripts.
  * Prod access uses gcloud Application Default Credentials; the emulator needs no credentials.
  */
 
 import { createRequire } from "node:module";
-import { dirname, resolve as resolvePath } from "node:path";
-import { fileURLToPath } from "node:url";
 import readline from "node:readline";
 
-const REPO_ROOT = resolvePath(dirname(fileURLToPath(import.meta.url)), "..");
 const PROJECT_ID = "barkochba-app";
 const EMULATOR_HOST = "127.0.0.1:8080";
 const ROLES_COLLECTION = "admin";
@@ -88,16 +85,10 @@ function isPlausibleEmail(email) {
 async function connect(target) {
     const require = createRequire(import.meta.url);
     let adminPath;
-    for (const candidate of ["firebase-admin", resolvePath(REPO_ROOT, "functions/node_modules/firebase-admin")]) {
-        try {
-            adminPath = require.resolve(candidate);
-            break;
-        } catch {
-            // try the next location
-        }
-    }
-    if (adminPath === undefined) {
-        fail("Could not find firebase-admin. Run `npm install` in functions/, or `yarn add -D firebase-admin` at the repo root.");
+    try {
+        adminPath = require.resolve("firebase-admin");
+    } catch {
+        fail("Could not find firebase-admin. Run `yarn install` at the repo root.");
     }
     const admin = require(adminPath);
 

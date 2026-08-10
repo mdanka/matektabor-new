@@ -21,14 +21,13 @@ Node 24 required (see .nvmrc). Uses Yarn as package manager.
 
 ## Architecture
 
-**Stack:** TypeScript, React 18, Vite, Firebase (Firestore, Auth, Storage, Functions), MUI v5, Redux (via redoodle)
+**Stack:** TypeScript, React 18, Vite, Firebase (Firestore, Auth, Storage), MUI v5, Redux (via redoodle)
 
 **Key directories:**
 - `src/components/` — React components. `matektaborApp.tsx` handles routing. `barkochba/` contains the main feature screens.
 - `src/store/` — Redux state management using redoodle for type-safe actions. State shape defined in `state.ts`, selectors use reselect/re-reselect for memoization.
 - `src/hooks/` — Custom hooks: `useDataService.ts` (Firestore data fetching), `useFirebaseAuthService.ts` (auth operations)
 - `src/utils/` — Utilities for navigation, theming (MUI), authorization (role checking)
-- `functions/` — Firebase Cloud Functions (scheduled Firestore backups)
 - `seed-data/` — Test data imported by Firebase Emulator for safe local development. Entirely synthetic, and it must stay that way: this repository is public, so never commit a production export here. Regenerate with `yarn seed:generate` (see `scripts/generateSeedData.mjs`).
 
 **Data flow:** Firebase Auth → role-based access (`loginProtector.tsx`) → Firestore real-time sync via ReactFire → Redux store → React components via selectors
@@ -95,5 +94,5 @@ When testing in a headless browser (e.g. Claude Preview), the Google sign-in pop
 - Web app auto-deploys via GitHub Actions on merge to `main`
 - Firestore rules auto-deploy on merge to `main`, just before hosting. Rules are project-global, so PRs deliberately do not deploy them — a rules change is live for everyone the moment it merges.
 - Storage rules are **not** deployed by CI. Nothing in the app uses Storage (`storage.rules` is a deny-all), so the CI service account is not granted Storage permissions; deploy `storage.rules` by hand if it ever changes.
-- Cloud Functions deployed manually via `firebase` CLI
+- The project uses no Cloud Functions. Firestore is backed up by a GCP-native daily backup schedule, configured outside this repository.
 - PRs get automatic preview deployments
