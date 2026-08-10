@@ -20,10 +20,20 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn lint
       - run: yarn build
-      # Dependabot runs get GitHub's separate Dependabot secret store, so the
-      # service account secret is empty and the deploy action hard-fails. Lint
-      # and build above are what matter for a dependency bump anyway.
-      - if: ${{ github.event.pull_request.user.login != 'dependabot[bot]' }}
+      # Dependabot-triggered runs get GitHub's separate Dependabot secret store,
+      # so the service account secret is empty and the deploy action hard-fails.
+      # Lint and build above are what matter for a dependency bump anyway.
+      #
+      # This keys off github.actor, the actor that triggered the run, rather than
+      # the pull request author: which secret store a run gets depends on who
+      # triggered it, not on who opened the pull request. Once a human pushes to
+      # a Dependabot branch the real secret is available, and skipping the
+      # preview there would deny a review of exactly the commits a person wrote.
+      # github.actor is deliberate over github.triggering_actor: on a manual
+      # re-run of a Dependabot run the former stays dependabot[bot] while the
+      # latter becomes the human, and such a re-run still gets Dependabot's
+      # secrets, so github.actor is the one that keeps the step skipped.
+      - if: ${{ github.actor != 'dependabot[bot]' }}
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
