@@ -1,4 +1,4 @@
-import { matchPath, NavigateFunction } from "react-router";
+import { NavigateFunction } from "react-router";
 
 export enum Page {
     Home = "home",
@@ -47,19 +47,6 @@ const pageTitleEnding = "";
 function getPageTitle(title?: string) {
     const titlePrefix = title === undefined ? "" : `${title} - `;
     return `${titlePrefix}${pageTitleBase}${pageTitleEnding}`;
-}
-
-export function pathToPage(path: string) {
-    const pages = [Page.Home, Page.SignIn, Page.Barkochba, Page.TermsOfService, Page.PrivacyPolicy];
-    return pages.find(page => pageToMatch(path, page) !== null);
-}
-
-function pageToMatch(path: string, page: Page) {
-    return matchPath({
-        path: getNavUrlTemplate[page],
-        end: true,
-        caseSensitive: false,
-    }, path);
 }
 
 export const getNavUrlSimpleTitle = {
