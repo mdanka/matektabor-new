@@ -4,7 +4,7 @@ import { ICamp, IStory } from "../../commons";
 import { IAppState, selectStoriesOrderedByNumber, selectPersons } from "../../store";
 import { selectCamp, selectCampsListOrderedByNameAndNumber } from "../../store/selectors";
 import { Box, Link, List, ListItemButton, ListItemText, Paper, Typography } from "@mui/material";
-import { Link as RouterLink, useParams } from "react-router-dom";
+import { Link as RouterLink, useParams } from "react-router";
 import { Page, getNavUrl } from "../../utils/navUtils";
 import css from "./barkochbaExportScreen.module.scss";
 

@@ -5,7 +5,7 @@ import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useSnackbar } from "notistack";
 import { Grid as Grid2 } from "@mui/material";
 import { LoginWithEmailLink } from "./LoginWithEmailLink";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router";
 import { getNavUrl, Page } from "../../utils/navUtils";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import { CenteredCard } from "../common";

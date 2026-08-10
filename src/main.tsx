@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client"
 import "./index.scss";
 import App from "./app";
 import { createAppStore } from "./store";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router";
 import { registerSW } from "virtual:pwa-register"
 
 const store = createAppStore();

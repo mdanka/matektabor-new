@@ -1,5 +1,4 @@
-import { matchPath } from "react-router-dom";
-import { NavigateFunction } from "react-router";
+import { matchPath, NavigateFunction } from "react-router";
 
 export enum Page {
     Home = "home",

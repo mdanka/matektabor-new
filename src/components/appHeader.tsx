@@ -6,7 +6,7 @@ import {
     selectIsFlyingAnimalEnabled,
     setFlyingAnimalEnabledForUser,
 } from "../store";
-import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
+import { Link as RouterLink, useLocation, useNavigate } from "react-router";
 import {
     Button,
     Link,
