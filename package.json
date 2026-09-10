@@ -58,7 +58,7 @@
     "typescript-eslint": "^8.56.1",
     "vite": "^7.3.5",
     "vite-plugin-pwa": "^1.2.0",
-    "vitest": "^3.2.4"
+    "vitest": "^5.0.0"
   },
   "eslintConfig": {
     "extends": "react-app"
